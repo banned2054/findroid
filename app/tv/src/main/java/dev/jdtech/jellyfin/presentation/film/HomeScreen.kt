@@ -50,7 +50,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
     isLoading: (Boolean) -> Unit,
-) {
+              )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -62,7 +63,8 @@ fun HomeScreen(
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
+        when (event)
+        {
             is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
@@ -71,28 +73,34 @@ fun HomeScreen(
     HomeScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
-                is HomeAction.OnItemClick -> {
-                    when (action.item) {
-                        is FindroidMovie -> navigateToMovie(action.item.id)
-                        is FindroidShow -> navigateToShow(action.item.id)
-                        is FindroidEpisode -> {
+            when (action)
+            {
+                is HomeAction.OnItemClick ->
+                {
+                    when (action.item)
+                    {
+                        is FindroidMovie   -> navigateToMovie(action.item.id)
+                        is FindroidShow    -> navigateToShow(action.item.id)
+                        is FindroidEpisode ->
+                        {
                             playerViewModel.loadPlayerItems(item = action.item)
                         }
                     }
                 }
-                else -> Unit
+
+                else                      -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                    )
 }
 
 @Composable
 private fun HomeScreenLayout(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
-) {
+                            )
+{
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(state.sections) {
@@ -105,21 +113,21 @@ private fun HomeScreenLayout(
             .focusRequester(focusRequester),
         contentPadding = PaddingValues(bottom = MaterialTheme.spacings.large),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
-    ) {
+              ) {
         items(state.sections, key = { it.id }) { section ->
             Column(
                 modifier = Modifier.animateItem(),
-            ) {
+                  ) {
                 Text(
                     text = section.homeSection.name.asString(),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(start = MaterialTheme.spacings.large),
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                ) {
+                       ) {
                     items(section.homeSection.items, key = { it.id }) { item ->
                         ItemCard(
                             item = item,
@@ -127,7 +135,7 @@ private fun HomeScreenLayout(
                             onClick = {
                                 onAction(HomeAction.OnItemClick(it))
                             },
-                        )
+                                )
                     }
                 }
             }
@@ -135,17 +143,17 @@ private fun HomeScreenLayout(
         items(state.views, key = { it.id }) { view ->
             Column(
                 modifier = Modifier.animateItem(),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(id = FilmR.string.latest_library, view.view.name),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(start = MaterialTheme.spacings.large),
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.large),
-                ) {
+                       ) {
                     items(view.view.items, key = { it.id }) { item ->
                         ItemCard(
                             item = item,
@@ -153,7 +161,7 @@ private fun HomeScreenLayout(
                             onClick = {
                                 onAction(HomeAction.OnItemClick(it))
                             },
-                        )
+                                )
                     }
                 }
             }
@@ -163,14 +171,15 @@ private fun HomeScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun HomeScreenLayoutPreview() {
+private fun HomeScreenLayoutPreview()
+{
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
                 sections = listOf(dummyHomeSection),
                 views = listOf(dummyHomeView),
-            ),
+                             ),
             onAction = {},
-        )
+                        )
     }
 }

@@ -32,7 +32,8 @@ fun MediaScreen(
     navigateToLibrary: (libraryId: UUID, libraryName: String, libraryType: CollectionType) -> Unit,
     isLoading: (Boolean) -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
-) {
+               )
+{
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true) {
@@ -46,22 +47,26 @@ fun MediaScreen(
     LibrariesScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
-                is MediaAction.OnItemClick -> {
+            when (action)
+            {
+                is MediaAction.OnItemClick ->
+                {
                     navigateToLibrary(action.item.id, action.item.name, action.item.type)
                 }
-                else -> Unit
+
+                else                       -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                         )
 }
 
 @Composable
 private fun LibrariesScreenLayout(
     state: MediaState,
     onAction: (MediaAction) -> Unit,
-) {
+                                 )
+{
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(state.libraries) {
@@ -77,9 +82,9 @@ private fun LibrariesScreenLayout(
             top = MaterialTheme.spacings.small,
             end = MaterialTheme.spacings.large,
             bottom = MaterialTheme.spacings.large,
-        ),
+                                      ),
         modifier = Modifier.focusRequester(focusRequester),
-    ) {
+                    ) {
         items(state.libraries, key = { it.id }) { library ->
             ItemCard(
                 item = library,
@@ -87,18 +92,19 @@ private fun LibrariesScreenLayout(
                 onClick = {
                     onAction(MediaAction.OnItemClick(library))
                 },
-            )
+                    )
         }
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun LibrariesScreenLayoutPreview() {
+private fun LibrariesScreenLayoutPreview()
+{
     FindroidTheme {
         LibrariesScreenLayout(
             state = MediaState(libraries = dummyCollections),
             onAction = {},
-        )
+                             )
     }
 }

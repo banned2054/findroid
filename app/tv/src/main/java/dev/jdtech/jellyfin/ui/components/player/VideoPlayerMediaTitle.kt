@@ -12,30 +12,33 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 fun VideoPlayerMediaTitle(
     title: String,
     subtitle: String?,
-) {
+                         )
+{
     Column {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
-        )
-        if (subtitle != null) {
+            )
+        if (subtitle != null)
+        {
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.White.copy(alpha = .75f),
-            )
+                )
         }
     }
 }
 
 @Preview
 @Composable
-private fun VideoPlayerMediaTitlePreview() {
+private fun VideoPlayerMediaTitlePreview()
+{
     FindroidTheme {
         VideoPlayerMediaTitle(
             title = "S1:E23 - Handler One",
             subtitle = "86 EIGHTY-SIX",
-        )
+                             )
     }
 }

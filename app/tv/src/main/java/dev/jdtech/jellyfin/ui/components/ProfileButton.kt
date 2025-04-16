@@ -32,7 +32,8 @@ fun ProfileButton(
     user: User?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+                 )
+{
     val context = LocalContext.current
     val baseUrl = JellyfinApi.getInstance(context).api.baseUrl
     Surface(
@@ -42,19 +43,19 @@ fun ProfileButton(
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             border = Border(BorderStroke(1.dp, Color.White), shape = CircleShape),
             focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape),
-        ),
+                                                ),
         shape = ClickableSurfaceDefaults.shape(
             shape = CircleShape,
             focusedShape = CircleShape,
-        ),
+                                              ),
         modifier = modifier
             .width(32.dp)
             .aspectRatio(1f),
-    ) {
+           ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_user),
             contentDescription = null,
@@ -63,25 +64,26 @@ fun ProfileButton(
                 .width(16.dp)
                 .height(16.dp)
                 .align(Alignment.Center),
-        )
+            )
         user?.let {
             AsyncImage(
                 model = "$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
-            )
+                      )
         }
     }
 }
 
 @Preview
 @Composable
-private fun ProfileButtonPreview() {
+private fun ProfileButtonPreview()
+{
     FindroidTheme {
         ProfileButton(
             user = dummyUser,
             onClick = {},
-        )
+                     )
     }
 }

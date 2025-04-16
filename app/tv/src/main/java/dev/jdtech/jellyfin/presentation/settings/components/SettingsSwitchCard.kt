@@ -37,7 +37,8 @@ fun SettingsSwitchCard(
     preference: PreferenceSwitch,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-) {
+                      )
+{
     Surface(
         onClick = onClick,
         enabled = preference.enabled,
@@ -46,74 +47,77 @@ fun SettingsSwitchCard(
             containerColor = MaterialTheme.colorScheme.surface,
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             disabledContainerColor = MaterialTheme.colorScheme.surface,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = RoundedCornerShape(10.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier
             .fillMaxWidth(),
-    ) {
+           ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(id = preference.iconDrawableId!!),
                     contentDescription = null,
-                )
+                    )
                 Spacer(modifier = Modifier.width(16.dp))
             }
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(
                         text = stringResource(id = it),
                         style = MaterialTheme.typography.labelMedium,
-                    )
+                        )
                 }
             }
 
             Switch(
                 checked = preference.value,
                 onCheckedChange = null,
-            )
+                  )
         }
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardPreview() {
+private fun SettingsSwitchCardPreview()
+{
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = SettingsR.string.settings_use_cache_title,
                 iconDrawableId = null,
                 backendPreference = Preference("", false),
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardDisabledPreview() {
+private fun SettingsSwitchCardDisabledPreview()
+{
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
@@ -121,15 +125,16 @@ private fun SettingsSwitchCardDisabledPreview() {
                 iconDrawableId = null,
                 enabled = false,
                 backendPreference = Preference("", false),
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardDescriptionPreview() {
+private fun SettingsSwitchCardDescriptionPreview()
+{
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
@@ -137,8 +142,8 @@ private fun SettingsSwitchCardDescriptionPreview() {
                 descriptionStringRes = SettingsR.string.settings_use_cache_summary,
                 iconDrawableId = null,
                 backendPreference = Preference("", false),
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }

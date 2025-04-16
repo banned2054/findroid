@@ -66,14 +66,16 @@ fun MovieScreen(
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     movieViewModel: MovieViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
-) {
+               )
+{
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         movieViewModel.loadData(itemId)
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
+        when (event)
+        {
             is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
@@ -87,14 +89,17 @@ fun MovieScreen(
             playerViewModel.loadPlayerItems(movieViewModel.item)
         },
         onTrailerClick = { trailerUri ->
-            try {
+            try
+            {
                 Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse(trailerUri),
-                ).also {
+                      ).also {
                     context.startActivity(it)
                 }
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         },
@@ -104,7 +109,7 @@ fun MovieScreen(
         onFavoriteClick = {
             movieViewModel.toggleFavorite()
         },
-    )
+                     )
 }
 
 @Composable
@@ -114,14 +119,17 @@ private fun MovieScreenLayout(
     onTrailerClick: (String) -> Unit,
     onPlayedClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-) {
+                             )
+{
     val focusRequester = remember { FocusRequester() }
     val configuration = LocalConfiguration.current
     val locale = configuration.locales.get(0)
 
-    when (uiState) {
+    when (uiState)
+    {
         is MovieViewModel.UiState.Loading -> Text(text = "LOADING")
-        is MovieViewModel.UiState.Normal -> {
+        is MovieViewModel.UiState.Normal  ->
+        {
             val item = uiState.item
             var size by remember {
                 mutableStateOf(Size.Zero)
@@ -132,15 +140,16 @@ private fun MovieScreenLayout(
                     .onGloballyPositioned { coordinates ->
                         size = coordinates.size.toSize()
                     },
-            ) {
+               ) {
                 AsyncImage(
                     model = item.images.backdrop,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize(),
-                )
-                if (size != Size.Zero) {
+                          )
+                if (size != Size.Zero)
+                {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -149,44 +158,48 @@ private fun MovieScreenLayout(
                                     listOf(Color.Black.copy(alpha = .2f), Color.Black),
                                     center = Offset(size.width, 0f),
                                     radius = size.width * .8f,
-                                ),
-                            ),
-                    )
+                                                    ),
+                                       ),
+                       )
                 }
                 Column(
                     modifier = Modifier
-                        .padding(start = MaterialTheme.spacings.default * 2, end = MaterialTheme.spacings.default * 2),
-                ) {
+                        .padding(
+                            start = MaterialTheme.spacings.default * 2,
+                            end = MaterialTheme.spacings.default * 2
+                                ),
+                      ) {
                     Spacer(modifier = Modifier.height(112.dp))
                     Text(
                         text = item.name,
                         style = MaterialTheme.typography.displayMedium,
-                    )
-                    if (item.originalTitle != item.name) {
+                        )
+                    if (item.originalTitle != item.name)
+                    {
                         item.originalTitle?.let { originalTitle ->
                             Text(
                                 text = originalTitle,
                                 style = MaterialTheme.typography.bodyMedium,
-                            )
+                                )
                         }
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-                    ) {
+                       ) {
                         Text(
                             text = uiState.dateString,
                             style = MaterialTheme.typography.labelMedium,
-                        )
+                            )
                         Text(
                             text = uiState.runTime,
                             style = MaterialTheme.typography.labelMedium,
-                        )
+                            )
                         item.officialRating?.let {
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.labelMedium,
-                            )
+                                )
                         }
                         item.communityRating?.let {
                             Row {
@@ -195,12 +208,12 @@ private fun MovieScreenLayout(
                                     contentDescription = null,
                                     tint = Yellow,
                                     modifier = Modifier.size(16.dp),
-                                )
+                                    )
                                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                                 Text(
                                     text = String.format(locale, "%.1f", it),
                                     style = MaterialTheme.typography.labelMedium,
-                                )
+                                    )
                             }
                         }
                     }
@@ -211,21 +224,21 @@ private fun MovieScreenLayout(
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.width(640.dp),
-                    )
+                        )
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    ) {
+                       ) {
                         Button(
                             onClick = {
                                 onPlayClick()
                             },
                             modifier = Modifier.focusRequester(focusRequester),
-                        ) {
+                              ) {
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_play),
                                 contentDescription = null,
-                            )
+                                )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(text = stringResource(id = CoreR.string.play))
                         }
@@ -234,11 +247,11 @@ private fun MovieScreenLayout(
                                 onClick = {
                                     onTrailerClick(trailerUri)
                                 },
-                            ) {
+                                  ) {
                                 Icon(
                                     painter = painterResource(id = CoreR.drawable.ic_film),
                                     contentDescription = null,
-                                )
+                                    )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(text = stringResource(id = CoreR.string.watch_trailer))
                             }
@@ -247,12 +260,12 @@ private fun MovieScreenLayout(
                             onClick = {
                                 onPlayedClick()
                             },
-                        ) {
+                              ) {
                             Icon(
                                 painter = painterResource(id = CoreR.drawable.ic_check),
                                 contentDescription = null,
                                 tint = if (item.played) Color.Red else LocalContentColor.current,
-                            )
+                                )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(text = stringResource(id = if (item.played) CoreR.string.unmark_as_played else CoreR.string.mark_as_played))
                         }
@@ -260,12 +273,12 @@ private fun MovieScreenLayout(
                             onClick = {
                                 onFavoriteClick()
                             },
-                        ) {
+                              ) {
                             Icon(
                                 painter = painterResource(id = if (item.favorite) CoreR.drawable.ic_heart_filled else CoreR.drawable.ic_heart),
                                 contentDescription = null,
                                 tint = if (item.favorite) Color.Red else LocalContentColor.current,
-                            )
+                                )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(text = stringResource(id = if (item.favorite) CoreR.string.remove_from_favorites else CoreR.string.add_to_favorites))
                         }
@@ -273,17 +286,17 @@ private fun MovieScreenLayout(
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
-                    ) {
+                       ) {
                         Column {
                             Text(
                                 text = stringResource(id = CoreR.string.genres),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.White.copy(alpha = .5f),
-                            )
+                                )
                             Text(
                                 text = uiState.genresString,
                                 style = MaterialTheme.typography.bodyMedium,
-                            )
+                                )
                         }
                         uiState.director?.let { director ->
                             Column {
@@ -291,11 +304,11 @@ private fun MovieScreenLayout(
                                     text = stringResource(id = CoreR.string.director),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = Color.White.copy(alpha = .5f),
-                                )
+                                    )
                                 Text(
                                     text = director.name ?: "Unknown",
                                     style = MaterialTheme.typography.bodyMedium,
-                                )
+                                    )
                             }
                         }
                         Column {
@@ -303,11 +316,11 @@ private fun MovieScreenLayout(
                                 text = stringResource(id = CoreR.string.writers),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.White.copy(alpha = .5f),
-                            )
+                                )
                             Text(
                                 text = uiState.writersString,
                                 style = MaterialTheme.typography.bodyMedium,
-                            )
+                                )
                         }
                     }
 //                    Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
@@ -323,13 +336,14 @@ private fun MovieScreenLayout(
             }
         }
 
-        is MovieViewModel.UiState.Error -> Text(text = uiState.error.toString())
+        is MovieViewModel.UiState.Error   -> Text(text = uiState.error.toString())
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun MovieScreenLayoutPreview() {
+private fun MovieScreenLayoutPreview()
+{
     FindroidTheme {
         MovieScreenLayout(
             uiState = MovieViewModel.UiState.Normal(
@@ -339,7 +353,7 @@ private fun MovieScreenLayoutPreview() {
                     id = UUID.randomUUID(),
                     name = "Robert Rodriguez",
                     type = PersonKind.DIRECTOR,
-                ),
+                                         ),
                 writers = emptyList(),
                 videoMetadata = dummyVideoMetadata,
                 writersString = "James Cameron, Laeta Kalogridis, Yukito Kishiro",
@@ -349,11 +363,11 @@ private fun MovieScreenLayoutPreview() {
                 subtitleString = "",
                 runTime = "121 min",
                 dateString = "2019",
-            ),
+                                                   ),
             onPlayClick = {},
             onTrailerClick = {},
             onPlayedClick = {},
             onFavoriteClick = {},
-        )
+                         )
     }
 }

@@ -38,15 +38,17 @@ fun ItemCard(
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
     modifier: Modifier = Modifier,
-) {
-    val width = when (direction) {
+            )
+{
+    val width = when (direction)
+    {
         Direction.HORIZONTAL -> 260
-        Direction.VERTICAL -> 150
+        Direction.VERTICAL   -> 150
     }
     Column(
         modifier = modifier
             .width(width.dp),
-    ) {
+          ) {
         Surface(
             onClick = { onClick(item) },
             shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
@@ -55,29 +57,30 @@ fun ItemCard(
                     BorderStroke(
                         4.dp,
                         Color.White,
-                    ),
+                                ),
                     shape = RoundedCornerShape(10.dp),
-                ),
-            ),
+                                      ),
+                                                    ),
             scale = ClickableSurfaceScale.None,
-        ) {
+               ) {
             Box {
                 ItemPoster(
                     item = item,
                     direction = direction,
-                )
+                          )
                 ProgressBadge(
                     item = item,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(MaterialTheme.spacings.small),
-                )
-                if (direction == Direction.HORIZONTAL) {
+                             )
+                if (direction == Direction.HORIZONTAL)
+                {
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(MaterialTheme.spacings.small),
-                    ) {
+                          ) {
                         Box(
                             modifier = Modifier
                                 .height(4.dp)
@@ -85,18 +88,18 @@ fun ItemCard(
                                     item.playbackPositionTicks
                                         .div(
                                             item.runtimeTicks.toFloat(),
-                                        )
+                                            )
                                         .times(
                                             width - 16,
-                                        ).dp,
-                                )
+                                              ).dp,
+                                      )
                                 .clip(
                                     MaterialTheme.shapes.extraSmall,
-                                )
+                                     )
                                 .background(
                                     MaterialTheme.colorScheme.primary,
-                                ),
-                        )
+                                           ),
+                           )
                     }
                 }
             }
@@ -107,56 +110,60 @@ fun ItemCard(
             style = MaterialTheme.typography.titleMedium,
             maxLines = if (direction == Direction.HORIZONTAL) 1 else 2,
             overflow = TextOverflow.Ellipsis,
-        )
-        if (item is FindroidEpisode) {
+            )
+        if (item is FindroidEpisode)
+        {
             Text(
                 text = stringResource(
                     id = R.string.episode_name_extended,
                     item.parentIndexNumber,
                     item.indexNumber,
                     item.name,
-                ),
+                                     ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-            )
+                )
         }
     }
 }
 
 @Preview
 @Composable
-private fun ItemCardPreviewMovie() {
+private fun ItemCardPreviewMovie()
+{
     FindroidTheme {
         ItemCard(
             item = dummyMovie,
             direction = Direction.HORIZONTAL,
             onClick = {},
-        )
+                )
     }
 }
 
 @Preview
 @Composable
-private fun ItemCardPreviewMovieVertical() {
+private fun ItemCardPreviewMovieVertical()
+{
     FindroidTheme {
         ItemCard(
             item = dummyMovie,
             direction = Direction.VERTICAL,
             onClick = {},
-        )
+                )
     }
 }
 
 @Preview
 @Composable
-private fun ItemCardPreviewEpisode() {
+private fun ItemCardPreviewEpisode()
+{
     FindroidTheme {
         ItemCard(
             item = dummyEpisode,
             direction = Direction.HORIZONTAL,
             onClick = {},
-        )
+                )
     }
 }

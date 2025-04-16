@@ -38,14 +38,15 @@ fun UserItem(
     modifier: Modifier = Modifier,
     onClick: (User) -> Unit = {},
     baseUrl: String = "",
-) {
+            )
+{
     val context = LocalContext.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .width(120.dp),
-    ) {
+          ) {
         Surface(
             onClick = {
                 onClick(user)
@@ -53,19 +54,19 @@ fun UserItem(
             colors = ClickableSurfaceDefaults.colors(
                 containerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
-            ),
+                                                    ),
             border = ClickableSurfaceDefaults.border(
                 border = Border(BorderStroke(1.dp, Color.White), shape = CircleShape),
                 focusedBorder = Border(BorderStroke(4.dp, Color.White), shape = CircleShape),
-            ),
+                                                    ),
             shape = ClickableSurfaceDefaults.shape(
                 shape = CircleShape,
                 focusedShape = CircleShape,
-            ),
+                                                  ),
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),
-        ) {
+               ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_user),
                 contentDescription = null,
@@ -74,28 +75,29 @@ fun UserItem(
                     .width(48.dp)
                     .height(48.dp)
                     .align(Alignment.Center),
-            )
+                )
             AsyncImage(
                 model = "$baseUrl/users/${user.id}/Images/${ImageType.PRIMARY}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
-            )
+                      )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
         Text(
             text = user.name,
             style = MaterialTheme.typography.titleMedium,
-        )
+            )
     }
 }
 
 @Preview
 @Composable
-private fun UserComponentPreview() {
+private fun UserComponentPreview()
+{
     FindroidTheme {
         UserItem(
             user = dummyUser,
-        )
+                )
     }
 }

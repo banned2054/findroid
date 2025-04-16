@@ -57,7 +57,8 @@ import dev.jdtech.jellyfin.utils.ObserveAsEvents
 fun AddServerScreen(
     onSuccess: () -> Unit,
     viewModel: AddServerViewModel = hiltViewModel(),
-) {
+                   )
+{
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true) {
@@ -65,7 +66,8 @@ fun AddServerScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is AddServerEvent.Success -> onSuccess()
         }
     }
@@ -75,14 +77,15 @@ fun AddServerScreen(
         onAction = { action ->
             viewModel.onAction(action)
         },
-    )
+                         )
 }
 
 @Composable
 private fun AddServerScreenLayout(
     state: AddServerState,
     onAction: (AddServerAction) -> Unit,
-) {
+                                 )
+{
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
@@ -99,23 +102,23 @@ private fun AddServerScreenLayout(
     Box(
         modifier = Modifier
             .fillMaxSize(),
-    ) {
+       ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-        ) {
+              ) {
             Text(
                 text = stringResource(id = R.string.add_server),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
-                ) {
+                       ) {
                     items(state.discoveredServers) { discoveredServer ->
                         DiscoveredServerItem(
                             name = discoveredServer.name,
@@ -124,7 +127,7 @@ private fun AddServerScreenLayout(
                                 onAction(AddServerAction.OnConnectClick(discoveredServer.address))
                             },
                             modifier = Modifier.animateItem(),
-                        )
+                                            )
                     }
                 }
             }
@@ -135,63 +138,65 @@ private fun AddServerScreenLayout(
                     Icon(
                         painter = painterResource(id = dev.jdtech.jellyfin.core.R.drawable.ic_server),
                         contentDescription = null,
-                    )
+                        )
                 },
                 onValueChange = { serverAddress = it },
                 label = {
                     Text(
                         text = stringResource(id = R.string.edit_text_server_address_hint),
-                    )
+                        )
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Go,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
                     onGo = { doConnect() },
-                ),
+                                                 ),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
-                    if (state.error != null) {
+                    if (state.error != null)
+                    {
                         Text(
                             text = state.error!!.joinToString {
                                 it.asString(
                                     context.resources,
-                                )
+                                           )
                             },
                             color = MaterialTheme.colorScheme.error,
-                        )
+                            )
                     }
                 },
                 modifier = Modifier
                     .width(360.dp)
                     .focusRequester(focusRequester),
-            )
+                             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Box {
                 Button(
                     onClick = { doConnect() },
                     enabled = !state.isLoading,
                     modifier = Modifier.width(360.dp),
-                ) {
+                      ) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (state.isLoading) {
+                       ) {
+                        if (state.isLoading)
+                        {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.CenterStart),
-                            )
+                                                     )
                         }
                         Text(
                             text = stringResource(id = R.string.add_server_btn_connect),
                             modifier = Modifier.align(Alignment.Center),
-                        )
+                            )
                     }
                 }
             }
@@ -201,24 +206,26 @@ private fun AddServerScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun AddServerScreenLayoutPreview() {
+private fun AddServerScreenLayoutPreview()
+{
     FindroidTheme {
         AddServerScreenLayout(
             state = AddServerState(),
             onAction = {},
-        )
+                             )
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun AddServerScreenLayoutDiscoveredPreview() {
+private fun AddServerScreenLayoutDiscoveredPreview()
+{
     FindroidTheme {
         AddServerScreenLayout(
             state = AddServerState(
                 discoveredServers = listOf(dummyDiscoveredServer),
-            ),
+                                  ),
             onAction = {},
-        )
+                             )
     }
 }

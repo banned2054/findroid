@@ -33,51 +33,55 @@ import dev.jdtech.jellyfin.setup.presentation.welcome.WelcomeAction
 @Composable
 fun WelcomeScreen(
     onContinueClick: () -> Unit,
-) {
+                 )
+{
     val uriHandler = LocalUriHandler.current
 
     WelcomeScreenLayout(
         onAction = { action ->
-            when (action) {
-                is WelcomeAction.OnContinueClick -> onContinueClick()
-                is WelcomeAction.OnLearnMoreClick -> {
+            when (action)
+            {
+                is WelcomeAction.OnContinueClick  -> onContinueClick()
+                is WelcomeAction.OnLearnMoreClick ->
+                {
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
         },
-    )
+                       )
 }
 
 @Composable
 private fun WelcomeScreenLayout(
     onAction: (WelcomeAction) -> Unit,
-) {
+                               )
+{
     val focusRequester = remember { FocusRequester() }
 
     Box(
         modifier = Modifier.fillMaxSize(),
-    ) {
+       ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.align(Alignment.Center),
-        ) {
+              ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_banner),
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier.width(250.dp),
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             Text(
                 text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             Text(
                 text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_text),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(onClick = { onAction(WelcomeAction.OnLearnMoreClick) }) {
                 Text(text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_learn_more))
@@ -86,7 +90,7 @@ private fun WelcomeScreenLayout(
             Button(
                 onClick = { onAction(WelcomeAction.OnContinueClick) },
                 modifier = Modifier.focusRequester(focusRequester),
-            ) {
+                  ) {
                 Text(text = stringResource(dev.jdtech.jellyfin.setup.R.string.welcome_btn_continue))
             }
         }
@@ -99,10 +103,11 @@ private fun WelcomeScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun WelcomeScreenLayoutPreview() {
+private fun WelcomeScreenLayoutPreview()
+{
     FindroidTheme {
         WelcomeScreenLayout(
             onAction = {},
-        )
+                           )
     }
 }

@@ -40,7 +40,7 @@ val darkScheme = darkColorScheme(
     surfaceContainer = ColorDark.surfaceContainerDark,
     surfaceContainerHigh = ColorDark.surfaceContainerHighDark,
     surfaceContainerHighest = ColorDark.surfaceContainerHighestDark,
-)
+                                )
 
 val darkSchemeTv = darkColorSchemeTv(
     primary = ColorDark.primaryDark,
@@ -69,4 +69,4 @@ val darkSchemeTv = darkColorSchemeTv(
     inverseSurface = ColorDark.inverseSurfaceDark,
     inverseOnSurface = ColorDark.inverseOnSurfaceDark,
     inversePrimary = ColorDark.inversePrimaryDark,
-)
+                                    )

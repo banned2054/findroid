@@ -40,7 +40,8 @@ fun SettingsDetailsCard(
     preference: PreferenceSelect,
     onUpdate: (value: String?) -> Unit,
     modifier: Modifier = Modifier,
-) {
+                       )
+{
     val optionValues = stringArrayResource(preference.optionValues)
     val optionNames = stringArrayResource(preference.options)
     val notSetString = stringResource(CoreR.string.not_set)
@@ -48,7 +49,8 @@ fun SettingsDetailsCard(
     val options = remember(preference.nameStringResource) {
         val options = mutableListOf<Pair<String?, String>>()
 
-        if (preference.optionsIncludeNull) {
+        if (preference.optionsIncludeNull)
+        {
             options.add(Pair(null, notSetString))
         }
         options.addAll(optionValues.zip(optionNames))
@@ -58,14 +60,17 @@ fun SettingsDetailsCard(
 
     Surface(
         modifier = modifier,
-    ) {
+           ) {
         Column(
             modifier = Modifier.padding(
                 horizontal = MaterialTheme.spacings.default,
                 vertical = MaterialTheme.spacings.medium,
-            ),
-        ) {
-            Text(text = stringResource(id = preference.nameStringResource), style = MaterialTheme.typography.headlineMedium)
+                                       ),
+              ) {
+            Text(
+                text = stringResource(id = preference.nameStringResource),
+                style = MaterialTheme.typography.headlineMedium
+                )
             preference.descriptionStringRes?.let {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                 Text(text = stringResource(id = it), style = MaterialTheme.typography.bodyMedium)
@@ -74,14 +79,14 @@ fun SettingsDetailsCard(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium - MaterialTheme.spacings.extraSmall),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.extraSmall),
-            ) {
+                      ) {
                 items(options) { option ->
                     SettingsSelectDialogItem(
                         option = option,
                         isSelected = option.first == preference.value,
                         onSelect = onUpdate,
                         isEnabled = preference.enabled,
-                    )
+                                            )
                 }
             }
         }
@@ -94,34 +99,35 @@ private fun SettingsSelectDialogItem(
     isSelected: Boolean,
     onSelect: (String?) -> Unit,
     isEnabled: Boolean = true,
-) {
+                                    )
+{
     Surface(
         onClick = { onSelect(option.first) },
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(4.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = RoundedCornerShape(10.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         scale = ClickableSurfaceScale.None,
-    ) {
+           ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(MaterialTheme.spacings.extraSmall),
-        ) {
+           ) {
             RadioButton(
                 selected = isSelected,
                 onClick = null,
                 enabled = isEnabled,
-            )
+                       )
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
             Text(text = option.second, style = MaterialTheme.typography.bodyLarge)
         }
@@ -130,7 +136,8 @@ private fun SettingsSelectDialogItem(
 
 @Preview
 @Composable
-private fun SettingsDetailCardPreview() {
+private fun SettingsDetailCardPreview()
+{
     FindroidTheme {
         SettingsDetailsCard(
             preference = PreferenceSelect(
@@ -138,8 +145,8 @@ private fun SettingsDetailCardPreview() {
                 backendPreference = Preference("", ""),
                 options = SettingsR.array.languages,
                 optionValues = SettingsR.array.languages_values,
-            ),
+                                         ),
             onUpdate = {},
-        )
+                           )
     }
 }

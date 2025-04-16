@@ -17,19 +17,21 @@ import okio.Path.Companion.toOkioPath
 import javax.inject.Inject
 
 @HiltAndroidApp
-class BaseApplication : Application(), SingletonImageLoader.Factory {
+class BaseApplication : Application(), SingletonImageLoader.Factory
+{
     @Inject
     lateinit var appPreferences: AppPreferences
 
     @OptIn(ExperimentalCoilApi::class)
-    override fun newImageLoader(context: PlatformContext): ImageLoader {
+    override fun newImageLoader(context: PlatformContext): ImageLoader
+    {
         return ImageLoader.Builder(this)
             .components {
                 add(
                     OkHttpNetworkFetcherFactory(
                         cacheStrategy = { CacheControlCacheStrategy() },
-                    ),
-                )
+                                               ),
+                   )
                 add(SvgDecoder.Factory())
             }
             .diskCachePolicy(if (appPreferences.getValue(appPreferences.imageCache)) CachePolicy.ENABLED else CachePolicy.DISABLED)

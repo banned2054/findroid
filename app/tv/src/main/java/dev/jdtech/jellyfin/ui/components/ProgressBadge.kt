@@ -38,7 +38,8 @@ fun ProgressBadge(
                 .background(MaterialTheme.colorScheme.primary),
         ) {
             when (item.played) {
-                true -> {
+                true ->
+                {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_check),
                         contentDescription = "",

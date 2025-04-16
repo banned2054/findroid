@@ -42,17 +42,19 @@ fun SeasonScreen(
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     seasonViewModel: SeasonViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
-) {
+                )
+{
     LaunchedEffect(true) {
         seasonViewModel.loadEpisodes(
             seriesId = seriesId,
             seasonId = seasonId,
             offline = false,
-        )
+                                    )
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
+        when (event)
+        {
             is PlayerItemsEvent.PlayerItemsReady -> navigateToPlayer(ArrayList(event.items))
             is PlayerItemsEvent.PlayerItemsError -> Unit
         }
@@ -67,7 +69,7 @@ fun SeasonScreen(
         onClick = { episode ->
             playerViewModel.loadPlayerItems(item = episode)
         },
-    )
+                      )
 }
 
 @Composable
@@ -76,16 +78,19 @@ private fun SeasonScreenLayout(
     seasonName: String,
     uiState: SeasonViewModel.UiState,
     onClick: (FindroidEpisode) -> Unit,
-) {
+                              )
+{
     val focusRequester = remember { FocusRequester() }
 
-    when (uiState) {
+    when (uiState)
+    {
         is SeasonViewModel.UiState.Loading -> Text(text = "LOADING")
-        is SeasonViewModel.UiState.Normal -> {
+        is SeasonViewModel.UiState.Normal  ->
+        {
             val episodes = uiState.episodes
             Row(
                 modifier = Modifier.fillMaxSize(),
-            ) {
+               ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -93,35 +98,39 @@ private fun SeasonScreenLayout(
                             start = MaterialTheme.spacings.extraLarge,
                             top = MaterialTheme.spacings.large,
                             end = MaterialTheme.spacings.large,
-                        ),
-                ) {
+                                ),
+                      ) {
                     Text(
                         text = seasonName,
                         style = MaterialTheme.typography.displayMedium,
-                    )
+                        )
                     Text(
                         text = seriesName,
                         style = MaterialTheme.typography.headlineMedium,
-                    )
+                        )
                 }
                 LazyColumn(
                     contentPadding = PaddingValues(
                         top = MaterialTheme.spacings.large,
                         bottom = MaterialTheme.spacings.large,
-                    ),
+                                                  ),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                     modifier = Modifier
                         .weight(2f)
                         .padding(end = MaterialTheme.spacings.extraLarge)
                         .focusRequester(focusRequester),
-                ) {
+                          ) {
                     items(episodes) { episodeItem ->
-                        when (episodeItem) {
-                            is EpisodeItem.Episode -> {
-                                EpisodeCard(episode = episodeItem.episode, onClick = { onClick(episodeItem.episode) })
+                        when (episodeItem)
+                        {
+                            is EpisodeItem.Episode ->
+                            {
+                                EpisodeCard(
+                                    episode = episodeItem.episode,
+                                    onClick = { onClick(episodeItem.episode) })
                             }
 
-                            else -> Unit
+                            else                   -> Unit
                         }
                     }
                 }
@@ -131,19 +140,21 @@ private fun SeasonScreenLayout(
                 }
             }
         }
-        is SeasonViewModel.UiState.Error -> Text(text = uiState.error.toString())
+
+        is SeasonViewModel.UiState.Error   -> Text(text = uiState.error.toString())
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun SeasonScreenLayoutPreview() {
+private fun SeasonScreenLayoutPreview()
+{
     FindroidTheme {
         SeasonScreenLayout(
             seriesName = "86 EIGHTY-SIX",
             seasonName = "Season 1",
             uiState = SeasonViewModel.UiState.Normal(dummyEpisodeItems),
             onClick = {},
-        )
+                          )
     }
 }

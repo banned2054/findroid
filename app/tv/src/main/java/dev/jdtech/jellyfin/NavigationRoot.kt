@@ -28,7 +28,8 @@ import kotlinx.parcelize.parcelableCreator
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
-inline fun <reified T : Parcelable> T.toBase64(): String {
+inline fun <reified T : Parcelable> T.toBase64(): String
+{
     val parcel = Parcel.obtain()
     this.writeToParcel(parcel, 0)
     val bytearray = parcel.marshall()
@@ -36,7 +37,8 @@ inline fun <reified T : Parcelable> T.toBase64(): String {
     return bytearray.toBase64Str()
 }
 
-inline fun <reified T : Parcelable> String.base64ToParcelable(): T {
+inline fun <reified T : Parcelable> String.base64ToParcelable(): T
+{
     val bytearray = this.base64ToByteArray()
     val parcel = Parcel.obtain()
     parcel.unmarshall(bytearray, 0, bytearray.size)
@@ -60,7 +62,7 @@ data object UsersRoute
 @Serializable
 data class LoginRoute(
     val username: String? = null,
-)
+                     )
 
 @Serializable
 data object MainRoute
@@ -70,17 +72,17 @@ data class LibraryRoute(
     val libraryId: String,
     val libraryName: String,
     val libraryType: CollectionType,
-)
+                       )
 
 @Serializable
 data class MovieRoute(
     val itemId: String,
-)
+                     )
 
 @Serializable
 data class ShowRoute(
     val itemId: String,
-)
+                    )
 
 @Serializable
 data class SeasonRoute(
@@ -88,12 +90,12 @@ data class SeasonRoute(
     val seriesId: String,
     val seasonName: String,
     val seriesName: String,
-)
+                      )
 
 @Serializable
 data class PlayerRoute(
     val items: Array<String>,
-)
+                      )
 
 @Serializable
 data object SettingsRoute
@@ -101,7 +103,7 @@ data object SettingsRoute
 @Serializable
 data class SettingsSubRoute(
     val indexes: IntArray,
-)
+                           )
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
@@ -110,23 +112,25 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
-) {
-    val startDestination = when {
+                  )
+{
+    val startDestination = when
+    {
         hasServers && hasCurrentServer && hasCurrentUser -> MainRoute
-        hasServers && hasCurrentServer -> UsersRoute
-        hasServers -> ServersRoute
-        else -> WelcomeRoute
+        hasServers && hasCurrentServer                   -> UsersRoute
+        hasServers                                       -> ServersRoute
+        else                                             -> WelcomeRoute
     }
     NavHost(
         navController = navController,
         startDestination = startDestination,
-    ) {
+           ) {
         composable<WelcomeRoute> {
             WelcomeScreen(
                 onContinueClick = {
                     navController.navigate(ServersRoute)
                 },
-            )
+                         )
         }
         composable<ServersRoute> {
             ServersScreen(
@@ -139,14 +143,14 @@ fun NavigationRoot(
                 onAddClick = {
                     navController.navigate(AddServerRoute)
                 },
-            )
+                         )
         }
         composable<AddServerRoute> {
             AddServerScreen(
                 onSuccess = {
                     navController.navigate(UsersRoute)
                 },
-            )
+                           )
         }
         composable<UsersRoute> {
             UsersScreen(
@@ -171,7 +175,7 @@ fun NavigationRoot(
                 onPublicUserClick = { username ->
                     navController.navigate(LoginRoute(username = username))
                 },
-            )
+                       )
         }
         composable<LoginRoute> { backStackEntry ->
             val route: LoginRoute = backStackEntry.toRoute()
@@ -192,7 +196,7 @@ fun NavigationRoot(
                     }
                 },
                 prefilledUsername = route.username,
-            )
+                       )
         }
         composable<MainRoute> {
             MainScreen(
@@ -200,7 +204,13 @@ fun NavigationRoot(
                     navController.navigate(SettingsRoute)
                 },
                 navigateToLibrary = { libraryId, libraryName, libraryType ->
-                    navController.navigate(LibraryRoute(libraryId = libraryId.toString(), libraryName = libraryName, libraryType = libraryType))
+                    navController.navigate(
+                        LibraryRoute(
+                            libraryId = libraryId.toString(),
+                            libraryName = libraryName,
+                            libraryType = libraryType
+                                    )
+                                          )
                 },
                 navigateToMovie = { itemId ->
                     navController.navigate(MovieRoute(itemId.toString()))
@@ -212,7 +222,7 @@ fun NavigationRoot(
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))
                 },
-            )
+                      )
         }
         composable<LibraryRoute> { backStackEntry ->
             val route: LibraryRoute = backStackEntry.toRoute()
@@ -221,7 +231,13 @@ fun NavigationRoot(
                 libraryName = route.libraryName,
                 libraryType = route.libraryType,
                 navigateToLibrary = { libraryId, libraryName, libraryType ->
-                    navController.navigate(LibraryRoute(libraryId = libraryId.toString(), libraryName = libraryName, libraryType = libraryType))
+                    navController.navigate(
+                        LibraryRoute(
+                            libraryId = libraryId.toString(),
+                            libraryName = libraryName,
+                            libraryType = libraryType
+                                    )
+                                          )
                 },
                 navigateToMovie = { itemId ->
                     navController.navigate(MovieRoute(itemId.toString()))
@@ -229,7 +245,7 @@ fun NavigationRoot(
                 navigateToShow = { itemId ->
                     navController.navigate(ShowRoute(itemId.toString()))
                 },
-            )
+                         )
         }
         composable<MovieRoute> { backStackEntry ->
             val route: MovieRoute = backStackEntry.toRoute()
@@ -239,20 +255,27 @@ fun NavigationRoot(
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))
                 },
-            )
+                       )
         }
         composable<ShowRoute> { backStackEntry ->
             val route: ShowRoute = backStackEntry.toRoute()
             ShowScreen(
                 itemId = UUID.fromString(route.itemId),
                 navigateToSeason = { seriesId, seasonId, seriesName, seasonName ->
-                    navController.navigate(SeasonRoute(seasonId = seasonId.toString(), seriesId = seriesId.toString(), seasonName = seasonName, seriesName = seriesName))
+                    navController.navigate(
+                        SeasonRoute(
+                            seasonId = seasonId.toString(),
+                            seriesId = seriesId.toString(),
+                            seasonName = seasonName,
+                            seriesName = seriesName
+                                   )
+                                          )
                 },
                 navigateToPlayer = { items ->
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))
                 },
-            )
+                      )
         }
         composable<SeasonRoute> { backStackEntry ->
             val route: SeasonRoute = backStackEntry.toRoute()
@@ -265,14 +288,14 @@ fun NavigationRoot(
                     val mappedItems = items.map { it.toBase64() }.toTypedArray()
                     navController.navigate(PlayerRoute(mappedItems))
                 },
-            )
+                        )
         }
         composable<PlayerRoute> { backStackEntry ->
             val route: PlayerRoute = backStackEntry.toRoute()
             val items = route.items.map { it.base64ToParcelable<PlayerItem>() }.toTypedArray()
             PlayerScreen(
                 items = items,
-            )
+                        )
         }
         composable<SettingsRoute> {
             SettingsScreen(
@@ -285,7 +308,7 @@ fun NavigationRoot(
                 navigateToSubSettings = { indexes ->
                     navController.navigate(SettingsSubRoute(indexes = indexes))
                 },
-            )
+                          )
         }
         composable<SettingsSubRoute> { backStackEntry ->
             val route: SettingsSubRoute = backStackEntry.toRoute()
@@ -300,7 +323,7 @@ fun NavigationRoot(
                 navigateToSubSettings = { indexes ->
                     navController.navigate(SettingsSubRoute(indexes = indexes))
                 },
-            )
+                             )
         }
     }
 }

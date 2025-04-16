@@ -33,37 +33,38 @@ fun DiscoveredServerItem(
     name: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-) {
+                        )
+{
     Column(
         modifier = modifier.width(80.dp),
-    ) {
+          ) {
         Surface(
             onClick = onClick,
             colors = ClickableSurfaceDefaults.colors(
                 containerColor = Color(0xFF132026),
                 focusedContainerColor = Color(0xFF132026),
-            ),
+                                                    ),
             shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(16.dp)),
             border = ClickableSurfaceDefaults.border(
                 focusedBorder = Border(
                     BorderStroke(
                         4.dp,
                         Color.White,
-                    ),
+                                ),
                     shape = RoundedCornerShape(16.dp),
-                ),
-            ),
+                                      ),
+                                                    ),
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),
-        ) {
+               ) {
             Icon(
                 painter = painterResource(CoreR.drawable.ic_server),
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier
                     .align(Alignment.Center),
-            )
+                )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
         Text(
@@ -74,13 +75,14 @@ fun DiscoveredServerItem(
             textAlign = TextAlign.Center,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth(),
-        )
+            )
     }
 }
 
 @Composable
 @Preview
-private fun DiscoveredServerItemPreview() {
+private fun DiscoveredServerItemPreview()
+{
     FindroidTheme {
         DiscoveredServerItem(dummyServer.name)
     }

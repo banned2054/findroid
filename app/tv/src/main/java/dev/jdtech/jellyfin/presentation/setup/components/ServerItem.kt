@@ -32,28 +32,29 @@ fun ServerItem(
     address: String,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
-) {
+              )
+{
     Surface(
         onClick = onClick,
         onLongClick = onLongClick,
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color(0xFF132026),
             focusedContainerColor = Color(0xFF132026),
-        ),
+                                                ),
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(16.dp)),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         modifier = Modifier
             .width(270.dp)
             .height(115.dp),
-    ) {
+           ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -63,21 +64,21 @@ fun ServerItem(
                     .padding(
                         vertical = MaterialTheme.spacings.default,
                         horizontal = MaterialTheme.spacings.medium,
-                    ),
-            ) {
+                            ),
+                  ) {
                 Text(
                     text = name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
+                    )
                 Text(
                     text = address,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFFBDBDBD),
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
+                    )
             }
         }
     }
@@ -85,11 +86,12 @@ fun ServerItem(
 
 @Preview
 @Composable
-private fun ServerItemPreview() {
+private fun ServerItemPreview()
+{
     FindroidTheme {
         ServerItem(
             name = dummyDiscoveredServer.name,
             address = dummyDiscoveredServer.address,
-        )
+                  )
     }
 }

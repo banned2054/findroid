@@ -33,7 +33,8 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 fun SettingsCategoryCard(
     preference: PreferenceCategory,
     modifier: Modifier = Modifier,
-) {
+                        )
+{
     Surface(
         onClick = {
             preference.onClick(preference)
@@ -43,46 +44,49 @@ fun SettingsCategoryCard(
         colors = ClickableSurfaceDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surface,
             focusedContainerColor = MaterialTheme.colorScheme.surface,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = RoundedCornerShape(10.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier,
-    ) {
+           ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(id = preference.iconDrawableId!!),
                     contentDescription = null,
-                )
-            } else {
+                    )
+            }
+            else
+            {
                 Spacer(modifier = Modifier.size(24.dp))
             }
 
             Spacer(modifier = Modifier.width(24.dp))
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(
                         text = stringResource(id = it),
                         style = MaterialTheme.typography.labelMedium,
-                    )
+                        )
                 }
             }
         }
@@ -91,13 +95,14 @@ fun SettingsCategoryCard(
 
 @Preview
 @Composable
-private fun SettingsCategoryCardPreview() {
+private fun SettingsCategoryCardPreview()
+{
     FindroidTheme {
         SettingsCategoryCard(
             preference = PreferenceCategory(
                 nameStringResource = SettingsR.string.settings_category_player,
                 iconDrawableId = SettingsR.drawable.ic_play,
-            ),
-        )
+                                           ),
+                            )
     }
 }

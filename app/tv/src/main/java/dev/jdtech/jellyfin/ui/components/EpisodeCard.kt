@@ -35,42 +35,43 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 fun EpisodeCard(
     episode: FindroidEpisode,
     onClick: (FindroidEpisode) -> Unit,
-) {
+               )
+{
     Surface(
         onClick = { onClick(episode) },
         shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(10.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = RoundedCornerShape(10.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         scale = ClickableSurfaceScale.None,
         modifier = Modifier
             .fillMaxWidth(),
-    ) {
+           ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.small),
-        ) {
+           ) {
             Box(modifier = Modifier.width(160.dp)) {
                 ItemPoster(
                     item = episode,
                     direction = Direction.HORIZONTAL,
                     modifier = Modifier.clip(RoundedCornerShape(10.dp)),
-                )
+                          )
                 ProgressBadge(
                     item = episode,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(PaddingValues(MaterialTheme.spacings.small)),
-                )
+                             )
             }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
             Column {
@@ -79,18 +80,18 @@ fun EpisodeCard(
                         id = dev.jdtech.jellyfin.core.R.string.episode_name,
                         episode.indexNumber,
                         episode.name,
-                    ),
+                                         ),
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = episode.overview,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis,
-                )
+                    )
             }
         }
     }
@@ -98,11 +99,12 @@ fun EpisodeCard(
 
 @Preview
 @Composable
-private fun ItemCardPreviewEpisode() {
+private fun ItemCardPreviewEpisode()
+{
     FindroidTheme {
         EpisodeCard(
             episode = dummyEpisode,
             onClick = {},
-        )
+                   )
     }
 }

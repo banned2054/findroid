@@ -60,7 +60,8 @@ fun LoginScreen(
     onChangeServerClick: () -> Unit,
     prefilledUsername: String? = null,
     viewModel: LoginViewModel = hiltViewModel(),
-) {
+               )
+{
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true) {
@@ -70,7 +71,8 @@ fun LoginScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is LoginEvent.Success -> onSuccess()
         }
     }
@@ -78,14 +80,15 @@ fun LoginScreen(
     LoginScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is LoginAction.OnChangeServerClick -> onChangeServerClick()
-                else -> Unit
+                else                               -> Unit
             }
             viewModel.onAction(action)
         },
         prefilledUsername = prefilledUsername,
-    )
+                     )
 }
 
 @Composable
@@ -93,7 +96,8 @@ private fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
     prefilledUsername: String? = null,
-) {
+                             )
+{
     var username by rememberSaveable {
         mutableStateOf(prefilledUsername ?: "")
     }
@@ -107,7 +111,7 @@ private fun LoginScreenLayout(
     Box(
         modifier = Modifier
             .fillMaxSize(),
-    ) {
+       ) {
         IconButton(
             onClick = {
                 onAction(LoginAction.OnChangeServerClick)
@@ -115,7 +119,7 @@ private fun LoginScreenLayout(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(MaterialTheme.spacings.small),
-        ) {
+                  ) {
             Icon(painter = painterResource(R.drawable.ic_server), contentDescription = null)
         }
         Column(
@@ -123,19 +127,19 @@ private fun LoginScreenLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-        ) {
+              ) {
             Text(
                 text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.login),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             Text(
                 text = stringResource(
                     dev.jdtech.jellyfin.setup.R.string.server_subtitle,
                     state.serverName ?: "",
-                ),
+                                     ),
                 style = MaterialTheme.typography.titleMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             OutlinedTextField(
                 value = username,
@@ -143,7 +147,7 @@ private fun LoginScreenLayout(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_user),
                         contentDescription = null,
-                    )
+                        )
                 },
                 onValueChange = { username = it },
                 label = { Text(text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.edit_text_username_hint)) },
@@ -152,13 +156,13 @@ private fun LoginScreenLayout(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next,
-                ),
+                                                 ),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 modifier = Modifier
                     .width(360.dp)
                     .focusRequester(focusRequester),
-            )
+                             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
             OutlinedTextField(
                 value = password,
@@ -166,7 +170,7 @@ private fun LoginScreenLayout(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_lock),
                         contentDescription = null,
-                    )
+                        )
                 },
                 onValueChange = { password = it },
                 label = { Text(text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.edit_text_password_hint)) },
@@ -175,46 +179,48 @@ private fun LoginScreenLayout(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Go,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
                     onGo = { doLogin() },
-                ),
+                                                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
-                    if (state.error != null) {
+                    if (state.error != null)
+                    {
                         Text(
                             text = state.error!!.asString(),
                             color = MaterialTheme.colorScheme.error,
-                        )
+                            )
                     }
                 },
                 modifier = Modifier
                     .width(360.dp),
-            )
+                             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
             Box {
                 Button(
                     onClick = { doLogin() },
                     enabled = !state.isLoading,
                     modifier = Modifier.width(360.dp),
-                ) {
+                      ) {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (state.isLoading) {
+                       ) {
+                        if (state.isLoading)
+                        {
                             CircularProgressIndicator(
                                 color = LocalContentColor.current,
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.CenterStart),
-                            )
+                                                     )
                         }
                         Text(
                             text = stringResource(id = dev.jdtech.jellyfin.setup.R.string.login_btn_login),
                             modifier = Modifier.align(Alignment.Center),
-                        )
+                            )
                     }
                 }
             }
@@ -224,56 +230,65 @@ private fun LoginScreenLayout(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.width(360.dp),
-                    ) {
+                       ) {
                         HorizontalDivider(
-                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
-                        )
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                                         )
                         Text(
                             text = stringResource(dev.jdtech.jellyfin.setup.R.string.or),
                             color = DividerDefaults.color,
                             style = MaterialTheme.typography.bodySmall,
-                        )
+                            )
                         HorizontalDivider(
-                            modifier = Modifier.weight(1f).padding(horizontal = 12.dp),
-                        )
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                                         )
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                     Box {
                         OutlinedButton(
                             onClick = { onAction(LoginAction.OnQuickConnectClick) },
                             modifier = Modifier.width(360.dp),
-                        ) {
+                                      ) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                if (state.quickConnectCode != null) {
+                               ) {
+                                if (state.quickConnectCode != null)
+                                {
                                     CircularProgressIndicator(
                                         color = LocalContentColor.current,
                                         modifier = Modifier
                                             .size(24.dp)
                                             .align(Alignment.CenterStart),
-                                    )
+                                                             )
                                 }
                                 Text(
-                                    text = if (state.quickConnectCode != null) {
+                                    text = if (state.quickConnectCode != null)
+                                    {
                                         state.quickConnectCode!!
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         stringResource(
                                             dev.jdtech.jellyfin.setup.R.string.login_btn_quick_connect,
-                                        )
+                                                      )
                                     },
                                     modifier = Modifier.align(Alignment.Center),
-                                )
+                                    )
                             }
                         }
                     }
                 }
             }
-            if (state.disclaimer != null) {
+            if (state.disclaimer != null)
+            {
                 Text(
                     text = state.disclaimer!!,
                     modifier = Modifier.padding(MaterialTheme.spacings.default),
-                )
+                    )
             }
         }
     }
@@ -285,28 +300,30 @@ private fun LoginScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun LoginScreenLayoutPreview() {
+private fun LoginScreenLayoutPreview()
+{
     FindroidTheme {
         LoginScreenLayout(
             state = LoginState(
                 serverName = "Demo Server",
                 quickConnectEnabled = true,
-            ),
+                              ),
             onAction = {},
-        )
+                         )
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun LoginScreenLayoutPreviewError() {
+private fun LoginScreenLayoutPreviewError()
+{
     FindroidTheme {
         LoginScreenLayout(
             state = LoginState(
                 serverName = "Demo Server",
                 error = UiText.DynamicString("Invalid username or password"),
-            ),
+                              ),
             onAction = {},
-        )
+                         )
     }
 }

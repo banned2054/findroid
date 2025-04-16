@@ -32,17 +32,22 @@ fun VideoPlayerOverlay(
     state: VideoPlayerState = rememberVideoPlayerState(),
     focusRequester: FocusRequester = remember { FocusRequester() },
     controls: @Composable () -> Unit = {},
-) {
+                      )
+{
     LaunchedEffect(state.controlsVisible) {
-        if (state.controlsVisible) {
+        if (state.controlsVisible)
+        {
             focusRequester.requestFocus()
         }
     }
 
     LaunchedEffect(isPlaying) {
-        if (!isPlaying) {
+        if (!isPlaying)
+        {
             state.showControls(seconds = Int.MAX_VALUE)
-        } else {
+        }
+        else
+        {
             state.showControls()
         }
     }
@@ -51,11 +56,11 @@ fun VideoPlayerOverlay(
         visible = state.controlsVisible,
         enter = fadeIn(),
         exit = fadeOut(),
-    ) {
+                      ) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter,
-        ) {
+           ) {
             Spacer(
                 modifier = modifier
                     .fillMaxSize()
@@ -64,14 +69,14 @@ fun VideoPlayerOverlay(
                             listOf(
                                 Color.Black.copy(alpha = 0.4f),
                                 Color.Black.copy(alpha = 0.8f),
-                            ),
-                        ),
-                    ),
-            )
+                                  ),
+                                              ),
+                               ),
+                  )
 
             Column(
                 Modifier.padding(MaterialTheme.spacings.default * 2),
-            ) {
+                  ) {
                 controls()
             }
         }
@@ -80,7 +85,8 @@ fun VideoPlayerOverlay(
 
 @Preview(device = "id:tv_4k")
 @Composable
-private fun VideoPlayerOverlayPreview() {
+private fun VideoPlayerOverlayPreview()
+{
     FindroidTheme {
         Box(Modifier.fillMaxSize()) {
             VideoPlayerOverlay(
@@ -92,9 +98,9 @@ private fun VideoPlayerOverlayPreview() {
                             .fillMaxWidth()
                             .height(120.dp)
                             .background(Color.Blue),
-                    )
+                       )
                 },
-            )
+                              )
         }
     }
 }

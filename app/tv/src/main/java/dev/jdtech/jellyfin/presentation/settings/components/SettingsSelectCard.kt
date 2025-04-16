@@ -38,7 +38,8 @@ fun SettingsSelectCard(
     preference: PreferenceSelect,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-) {
+                      )
+{
     val optionValues = stringArrayResource(preference.optionValues)
     val optionNames = stringArrayResource(preference.options)
     val notSetString = stringResource(CoreR.string.not_set)
@@ -46,7 +47,8 @@ fun SettingsSelectCard(
     val options = remember(preference.nameStringResource) {
         val options = mutableListOf<Pair<String?, String>>()
 
-        if (preference.optionsIncludeNull) {
+        if (preference.optionsIncludeNull)
+        {
             options.add(Pair(null, notSetString))
         }
         options.addAll(optionValues.zip(optionNames))
@@ -66,45 +68,46 @@ fun SettingsSelectCard(
             containerColor = MaterialTheme.colorScheme.surface,
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             disabledContainerColor = MaterialTheme.colorScheme.surface,
-        ),
+                                                ),
         border = ClickableSurfaceDefaults.border(
             focusedBorder = Border(
                 BorderStroke(
                     4.dp,
                     Color.White,
-                ),
+                            ),
                 shape = RoundedCornerShape(10.dp),
-            ),
-        ),
+                                  ),
+                                                ),
         scale = ClickableSurfaceScale.None,
         modifier = modifier
             .fillMaxWidth(),
-    ) {
+           ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.default),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(id = preference.iconDrawableId!!),
                     contentDescription = null,
-                )
+                    )
                 Spacer(modifier = Modifier.width(24.dp))
             }
 
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(id = preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = optionsMap.getOrDefault(preference.value, notSetString),
                     style = MaterialTheme.typography.labelMedium,
-                )
+                    )
             }
         }
     }
@@ -112,7 +115,8 @@ fun SettingsSelectCard(
 
 @Preview
 @Composable
-private fun SettingsSelectCardPreview() {
+private fun SettingsSelectCardPreview()
+{
     FindroidTheme {
         SettingsSelectCard(
             preference = PreferenceSelect(
@@ -121,8 +125,8 @@ private fun SettingsSelectCardPreview() {
                 backendPreference = Preference("", ""),
                 options = SettingsR.array.languages,
                 optionValues = SettingsR.array.languages_values,
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }

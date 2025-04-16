@@ -51,7 +51,8 @@ fun ServersScreen(
     navigateToUsers: () -> Unit,
     onAddClick: () -> Unit,
     viewModel: ServersViewModel = hiltViewModel(),
-) {
+                 )
+{
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(true) {
@@ -59,7 +60,8 @@ fun ServersScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is ServersEvent.NavigateToLogin -> navigateToLogin()
             is ServersEvent.NavigateToUsers -> navigateToUsers()
         }
@@ -68,48 +70,53 @@ fun ServersScreen(
     ServersScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is ServersAction.OnAddClick -> onAddClick()
-                else -> Unit
+                else                        -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                       )
 }
 
 @Composable
 private fun ServersScreenLayout(
     state: ServersState,
     onAction: (ServersAction) -> Unit,
-) {
+                               )
+{
     var openDeleteDialog by remember { mutableStateOf(false) }
     var selectedServer by remember { mutableStateOf<Server?>(null) }
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
-    ) {
+       ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-        ) {
+              ) {
             Text(
                 text = stringResource(id = SetupR.string.servers),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
-            if (state.servers.isEmpty()) {
+            if (state.servers.isEmpty())
+            {
                 Text(
                     text = stringResource(id = SetupR.string.servers_no_servers),
                     style = MaterialTheme.typography.bodyMedium,
-                )
-            } else {
+                    )
+            }
+            else
+            {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
                     contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default),
-                ) {
+                       ) {
                     items(state.servers) { server ->
                         ServerItem(
                             name = server.server.name,
@@ -121,27 +128,33 @@ private fun ServersScreenLayout(
                                 selectedServer = server.server
                                 openDeleteDialog = true
                             },
-                        )
+                                  )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.large))
             OutlinedButton(
                 onClick = { onAction(ServersAction.OnAddClick) },
-            ) {
+                          ) {
                 Text(text = stringResource(id = SetupR.string.add_server))
             }
         }
     }
 
-    if (openDeleteDialog && selectedServer != null) {
+    if (openDeleteDialog && selectedServer != null)
+    {
         var firstInteraction by remember { mutableStateOf(true) }
         AlertDialog(
             title = {
                 Text(text = stringResource(SetupR.string.remove_server_dialog))
             },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.name))
+                Text(
+                    text = stringResource(
+                        SetupR.string.remove_server_dialog_text,
+                        selectedServer!!.name
+                                         )
+                    )
             },
             onDismissRequest = {
                 openDeleteDialog = false
@@ -152,7 +165,7 @@ private fun ServersScreenLayout(
                         openDeleteDialog = false
                         onAction(ServersAction.DeleteServer(selectedServer!!.id))
                     },
-                ) {
+                          ) {
                     Text(text = stringResource(SetupR.string.confirm))
                 }
             },
@@ -163,10 +176,14 @@ private fun ServersScreenLayout(
                     },
                     modifier = Modifier.onPreviewKeyEvent { event ->
                         // Long press on server would trigger the cancel button. This fixes that by capturing the first up event.
-                        when (event.nativeKeyEvent.keyCode) {
-                            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                                if (firstInteraction) {
-                                    if (event.nativeKeyEvent.action == KeyEvent.ACTION_UP) {
+                        when (event.nativeKeyEvent.keyCode)
+                        {
+                            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER ->
+                            {
+                                if (firstInteraction)
+                                {
+                                    if (event.nativeKeyEvent.action == KeyEvent.ACTION_UP)
+                                    {
                                         firstInteraction = false
                                     }
                                     return@onPreviewKeyEvent true
@@ -175,17 +192,18 @@ private fun ServersScreenLayout(
                         }
                         false
                     },
-                ) {
+                          ) {
                     Text(text = stringResource(SetupR.string.cancel))
                 }
             },
-        )
+                   )
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun ServersScreenLayoutPreview() {
+private fun ServersScreenLayoutPreview()
+{
     FindroidTheme {
         ServersScreenLayout(
             state = ServersState(
@@ -197,24 +215,25 @@ private fun ServersScreenLayoutPreview() {
                                 id = UUID.randomUUID(),
                                 address = dummyDiscoveredServer.address,
                                 serverId = "",
-                            ),
-                        ),
+                                         ),
+                                          ),
                         user = null,
-                    ),
-                ),
-            ),
+                                       ),
+                                ),
+                                ),
             onAction = {},
-        )
+                           )
     }
 }
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun ServersScreenLayoutPreviewNoServers() {
+private fun ServersScreenLayoutPreviewNoServers()
+{
     FindroidTheme {
         ServersScreenLayout(
             state = ServersState(),
             onAction = {},
-        )
+                           )
     }
 }

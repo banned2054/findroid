@@ -33,43 +33,53 @@ fun VideoPlayerSeeker(
     onSeek: (Float) -> Unit,
     contentProgress: Duration,
     contentDuration: Duration,
-) {
+                     )
+{
     val contentProgressString =
         contentProgress.toComponents { h, m, s, _ ->
-            if (h > 0) {
+            if (h > 0)
+            {
                 "$h:${m.padStartWith0()}:${s.padStartWith0()}"
-            } else {
+            }
+            else
+            {
                 "${m.padStartWith0()}:${s.padStartWith0()}"
             }
         }
     val contentDurationString =
         contentDuration.toComponents { h, m, s, _ ->
-            if (h > 0) {
+            if (h > 0)
+            {
                 "$h:${m.padStartWith0()}:${s.padStartWith0()}"
-            } else {
+            }
+            else
+            {
                 "${m.padStartWith0()}:${s.padStartWith0()}"
             }
         }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-    ) {
+       ) {
         IconButton(
             onClick = {
                 onPlayPauseToggle(!isPlaying)
             },
             modifier = Modifier.focusRequester(focusRequester),
-        ) {
-            if (!isPlaying) {
+                  ) {
+            if (!isPlaying)
+            {
                 Icon(
                     painter = painterResource(id = CoreR.drawable.ic_play),
                     contentDescription = null,
-                )
-            } else {
+                    )
+            }
+            else
+            {
                 Icon(
                     painter = painterResource(id = CoreR.drawable.ic_pause),
                     contentDescription = null,
-                )
+                    )
             }
         }
         Spacer(modifier = Modifier.width(MaterialTheme.spacings.medium))
@@ -77,31 +87,32 @@ fun VideoPlayerSeeker(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
+               ) {
                 Text(
                     text = contentProgressString,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White,
-                )
+                    )
                 Text(
                     text = contentDurationString,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White,
-                )
+                    )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
             VideoPlayerSeekBar(
                 progress = (contentProgress / contentDuration).toFloat(),
                 onSeek = onSeek,
                 state = state,
-            )
+                              )
         }
     }
 }
 
 @Preview
 @Composable
-private fun VideoPlayerSeekerPreview() {
+private fun VideoPlayerSeekerPreview()
+{
     FindroidTheme {
         VideoPlayerSeeker(
             focusRequester = FocusRequester(),
@@ -111,7 +122,7 @@ private fun VideoPlayerSeekerPreview() {
             onSeek = {},
             contentProgress = Duration.parse("7m 51s"),
             contentDuration = Duration.parse("23m 40s"),
-        )
+                         )
     }
 }
 

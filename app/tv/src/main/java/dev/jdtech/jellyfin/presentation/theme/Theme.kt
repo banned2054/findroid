@@ -19,32 +19,33 @@ import androidx.tv.material3.contentColorFor as contentColorForTv
 @Composable
 fun FindroidTheme(
     content: @Composable BoxScope.() -> Unit,
-) {
+                 )
+{
     MaterialTheme(
         colorScheme = darkScheme,
         typography = Typography,
         shapes = shapes,
-    ) {
+                 ) {
         MaterialThemeTv(
             colorScheme = darkSchemeTv,
             typography = TypographyTv,
             shapes = shapesTv,
-        ) {
+                       ) {
             CompositionLocalProvider(
                 LocalContentColor provides contentColorFor(MaterialTheme.colorScheme.background),
                 LocalContentColorTv provides contentColorForTv(MaterialThemeTv.colorScheme.background),
                 LocalSpacings provides Spacings,
-            ) {
+                                    ) {
                 Box(
                     modifier = Modifier.background(
                         Brush.linearGradient(
                             listOf(
                                 Color.Black,
                                 Color(0xFF001721),
-                            ),
-                        ),
-                    ),
-                ) {
+                                  ),
+                                            ),
+                                                  ),
+                   ) {
                     content()
                 }
             }

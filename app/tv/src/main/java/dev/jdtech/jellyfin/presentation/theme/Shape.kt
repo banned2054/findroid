@@ -8,9 +8,9 @@ import androidx.tv.material3.Shapes as ShapesTv
 val shapes = Shapes(
     extraSmall = RoundedCornerShape(10.dp),
     small = RoundedCornerShape(10.dp),
-)
+                   )
 
 val shapesTv = ShapesTv(
     extraSmall = shapes.extraSmall,
     small = shapes.small,
-)
+                       )

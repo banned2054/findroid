@@ -60,7 +60,8 @@ fun LibraryScreen(
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
-) {
+                 )
+{
     val state by viewModel.state.collectAsState()
 
     var initialLoad by rememberSaveable {
@@ -71,8 +72,9 @@ fun LibraryScreen(
         viewModel.setup(
             parentId = libraryId,
             libraryType = libraryType,
-        )
-        if (initialLoad) {
+                       )
+        if (initialLoad)
+        {
             viewModel.loadItems()
             initialLoad = false
         }
@@ -82,19 +84,27 @@ fun LibraryScreen(
         libraryName = libraryName,
         state = state,
         onAction = { action ->
-            when (action) {
-                is LibraryAction.OnItemClick -> {
-                    when (action.item) {
+            when (action)
+            {
+                is LibraryAction.OnItemClick ->
+                {
+                    when (action.item)
+                    {
                         is FindroidMovie -> navigateToMovie(action.item.id)
                         is FindroidShow -> navigateToShow(action.item.id)
-                        is FindroidFolder -> navigateToLibrary(action.item.id, action.item.name, libraryType)
+                        is FindroidFolder -> navigateToLibrary(
+                            action.item.id,
+                            action.item.name,
+                            libraryType
+                                                              )
                     }
                 }
-                else -> Unit
+
+                else                         -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                       )
 }
 
 @Composable
@@ -102,7 +112,8 @@ private fun LibraryScreenLayout(
     libraryName: String,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
-) {
+                               )
+{
     val focusRequester = remember { FocusRequester() }
 
     val items = state.items.collectAsLazyPagingItems()
@@ -115,34 +126,37 @@ private fun LibraryScreenLayout(
         columns = GridCells.Fixed(5),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
+        contentPadding = PaddingValues(
+            horizontal = MaterialTheme.spacings.default * 2,
+            vertical = MaterialTheme.spacings.large
+                                      ),
         modifier = Modifier
             .fillMaxSize()
             .focusRequester(focusRequester),
-    ) {
+                    ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-            ) {
+               ) {
                 Text(
                     text = libraryName,
                     style = MaterialTheme.typography.displayMedium,
-                )
+                    )
                 Button(
                     onClick = {
                         showSortByDialog = true
                     },
-                ) {
+                      ) {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_arrow_down_up),
                         contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize),
-                    )
+                        )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text(
                         text = stringResource(CoreR.string.sort_by),
-                    )
+                        )
                 }
             }
         }
@@ -156,12 +170,13 @@ private fun LibraryScreenLayout(
                         onAction(LibraryAction.OnItemClick(item))
                     },
                     modifier = Modifier.animateItem(),
-                )
+                        )
             }
         }
     }
 
-    if (showSortByDialog) {
+    if (showSortByDialog)
+    {
         SortByDialog(
             currentSortBy = state.sortBy,
             currentSortOrder = state.sortOrder,
@@ -171,11 +186,12 @@ private fun LibraryScreenLayout(
             onDismissRequest = {
                 showSortByDialog = false
             },
-        )
+                    )
     }
 
     LaunchedEffect(items.itemCount > 0) {
-        if (items.itemCount > 0) {
+        if (items.itemCount > 0)
+        {
             focusRequester.requestFocus()
         }
     }
@@ -183,13 +199,14 @@ private fun LibraryScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun LibraryScreenLayoutPreview() {
+private fun LibraryScreenLayoutPreview()
+{
     val items: Flow<PagingData<FindroidItem>> = flowOf(PagingData.from(dummyMovies))
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
             state = LibraryState(items = items),
             onAction = {},
-        )
+                           )
     }
 }

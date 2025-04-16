@@ -12,7 +12,8 @@ import dev.jdtech.jellyfin.models.FindroidEpisode
 import dev.jdtech.jellyfin.models.FindroidItem
 import dev.jdtech.jellyfin.models.FindroidMovie
 
-enum class Direction {
+enum class Direction
+{
     HORIZONTAL, VERTICAL
 }
 
@@ -21,15 +22,21 @@ fun ItemPoster(
     item: FindroidItem,
     direction: Direction,
     modifier: Modifier = Modifier,
-) {
+              )
+{
     var imageUri = item.images.primary
 
-    when (direction) {
-        Direction.HORIZONTAL -> {
+    when (direction)
+    {
+        Direction.HORIZONTAL ->
+        {
             if (item is FindroidMovie) imageUri = item.images.backdrop
         }
-        Direction.VERTICAL -> {
-            when (item) {
+
+        Direction.VERTICAL   ->
+        {
+            when (item)
+            {
                 is FindroidEpisode -> imageUri = item.images.showPrimary
             }
         }
@@ -44,6 +51,6 @@ fun ItemPoster(
             .aspectRatio(if (direction == Direction.HORIZONTAL) 1.77f else 0.66f)
             .background(
                 MaterialTheme.colorScheme.surface,
-            ),
-    )
+                       ),
+              )
 }

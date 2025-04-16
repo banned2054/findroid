@@ -16,11 +16,13 @@ import kotlinx.coroutines.flow.debounce
 class VideoPlayerState internal constructor(
     @IntRange(from = 0)
     private val hideSeconds: Int,
-) {
+                                           )
+{
     private var _controlsVisible by mutableStateOf(true)
     val controlsVisible get() = _controlsVisible
 
-    fun showControls(seconds: Int = hideSeconds) {
+    fun showControls(seconds: Int = hideSeconds)
+    {
         _controlsVisible = true
         channel.trySend(seconds)
     }
@@ -28,7 +30,8 @@ class VideoPlayerState internal constructor(
     private val channel = Channel<Int>(CONFLATED)
 
     @OptIn(FlowPreview::class)
-    suspend fun observe() {
+    suspend fun observe()
+    {
         channel.consumeAsFlow()
             .debounce { it.toLong() * 1000 }
             .collect { _controlsVisible = false }

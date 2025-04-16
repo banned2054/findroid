@@ -61,7 +61,8 @@ fun MainScreen(
     navigateToShow: (itemId: UUID) -> Unit,
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel(),
-) {
+              )
+{
     val delegatedUiState by mainViewModel.uiState.collectAsState()
 
     LaunchedEffect(true) {
@@ -75,13 +76,14 @@ fun MainScreen(
         navigateToMovie = navigateToMovie,
         navigateToShow = navigateToShow,
         navigateToPlayer = navigateToPlayer,
-    )
+                    )
 }
 
 enum class TabDestination(
     @DrawableRes val icon: Int,
     @StringRes val label: Int,
-) {
+                         )
+{
     Search(CoreR.drawable.ic_search, CoreR.string.search),
     Home(CoreR.drawable.ic_home, CoreR.string.title_home),
     Libraries(CoreR.drawable.ic_library, CoreR.string.libraries),
@@ -96,30 +98,34 @@ private fun MainScreenLayout(
     navigateToMovie: (itemId: UUID) -> Unit,
     navigateToShow: (itemId: UUID) -> Unit,
     navigateToPlayer: (items: ArrayList<PlayerItem>) -> Unit,
-) {
+                            )
+{
     var focusedTabIndex by rememberSaveable { mutableIntStateOf(1) }
     var activeTabIndex by rememberSaveable { mutableIntStateOf(focusedTabIndex) }
 
     var isLoading by remember { mutableStateOf(false) }
 
     var user: User? = null
-    when (uiState) {
-        is MainViewModel.UiState.Normal -> {
+    when (uiState)
+    {
+        is MainViewModel.UiState.Normal ->
+        {
             user = uiState.user
         }
-        else -> Unit
+
+        else                            -> Unit
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize(),
-    ) {
+          ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
                 .padding(horizontal = MaterialTheme.spacings.default),
-        ) {
+           ) {
             Icon(
                 painter = painterResource(id = CoreR.drawable.ic_logo),
                 contentDescription = null,
@@ -127,7 +133,7 @@ private fun MainScreenLayout(
                 modifier = Modifier
                     .size(32.dp)
                     .align(Alignment.CenterStart),
-            )
+                )
             TabRow(
                 selectedTabIndex = focusedTabIndex,
                 indicator = { tabPositions, isActivated ->
@@ -137,7 +143,7 @@ private fun MainScreenLayout(
                         activeBorderColor = Color.White,
                         inactiveBorderColor = Color.Transparent,
                         doesTabRowHaveFocus = isActivated,
-                    )
+                                       )
 
                     // SelectedTab's indicator
                     TabRowDefaults.PillIndicator(
@@ -145,10 +151,10 @@ private fun MainScreenLayout(
                         activeColor = Color.White,
                         inactiveColor = Color.White,
                         doesTabRowHaveFocus = isActivated,
-                    )
+                                                )
                 },
                 modifier = Modifier.align(Alignment.Center),
-            ) {
+                  ) {
                 TabDestination.entries.forEachIndexed { index, tab ->
                     Tab(
                         selected = activeTabIndex == index,
@@ -158,31 +164,35 @@ private fun MainScreenLayout(
                             selectedContentColor = MaterialTheme.colorScheme.onPrimary,
                             focusedContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                             focusedSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
-                        ),
+                                                                   ),
                         onClick = {
                             focusedTabIndex = index
                             activeTabIndex = index
                         },
-                        modifier = Modifier.padding(horizontal = MaterialTheme.spacings.default / 2, vertical = MaterialTheme.spacings.small),
-                    ) {
+                        modifier = Modifier.padding(
+                            horizontal = MaterialTheme.spacings.default / 2,
+                            vertical = MaterialTheme.spacings.small
+                                                   ),
+                       ) {
                         Icon(
                             painter = painterResource(id = tab.icon),
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
-                        )
+                            )
                         Spacer(modifier = Modifier.width(MaterialTheme.spacings.extraSmall))
                         Text(
                             text = stringResource(id = tab.label),
                             style = MaterialTheme.typography.titleSmall,
-                        )
+                            )
                     }
                 }
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
                 modifier = Modifier.align(Alignment.CenterEnd),
-            ) {
-                if (isLoading) {
+               ) {
+                if (isLoading)
+                {
                     LoadingIndicator()
                 }
                 ProfileButton(
@@ -190,23 +200,27 @@ private fun MainScreenLayout(
                     onClick = {
                         navigateToSettings()
                     },
-                )
+                             )
             }
         }
-        when (activeTabIndex) {
-            1 -> {
+        when (activeTabIndex)
+        {
+            1 ->
+            {
                 HomeScreen(
                     navigateToMovie = navigateToMovie,
                     navigateToShow = navigateToShow,
                     navigateToPlayer = navigateToPlayer,
                     isLoading = { isLoading = it },
-                )
+                          )
             }
-            2 -> {
+
+            2 ->
+            {
                 MediaScreen(
                     navigateToLibrary = navigateToLibrary,
                     isLoading = { isLoading = it },
-                )
+                           )
             }
         }
     }
@@ -214,7 +228,8 @@ private fun MainScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun MainScreenLayoutPreview() {
+private fun MainScreenLayoutPreview()
+{
     FindroidTheme {
         MainScreenLayout(
             uiState = MainViewModel.UiState.Normal(server = dummyServer, user = dummyUser),
@@ -223,6 +238,6 @@ private fun MainScreenLayoutPreview() {
             navigateToMovie = {},
             navigateToShow = {},
             navigateToPlayer = {},
-        )
+                        )
     }
 }

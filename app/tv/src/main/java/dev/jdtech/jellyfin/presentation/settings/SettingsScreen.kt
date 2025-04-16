@@ -40,7 +40,8 @@ fun SettingsScreen(
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
-) {
+                  )
+{
     val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -50,15 +51,21 @@ fun SettingsScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes)
-            is SettingsEvent.NavigateToUsers -> navigateToUsers()
-            is SettingsEvent.NavigateToServers -> navigateToServers()
-            is SettingsEvent.UpdateTheme -> Unit
-            is SettingsEvent.LaunchIntent -> {
-                try {
+            is SettingsEvent.NavigateToUsers    -> navigateToUsers()
+            is SettingsEvent.NavigateToServers  -> navigateToServers()
+            is SettingsEvent.UpdateTheme        -> Unit
+            is SettingsEvent.LaunchIntent       ->
+            {
+                try
+                {
                     context.startActivity(event.intent)
-                } catch (_: Exception) { }
+                }
+                catch (_: Exception)
+                {
+                }
             }
         }
     }
@@ -66,44 +73,51 @@ fun SettingsScreen(
     SettingsScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
-                is SettingsAction.OnUpdate -> {
+            when (action)
+            {
+                is SettingsAction.OnUpdate ->
+                {
                     viewModel.onAction(action)
                     viewModel.loadPreferences(intArrayOf(), DeviceType.TV)
                 }
-                else -> Unit
+
+                else                       -> Unit
             }
         },
-    )
+                        )
 }
 
 @Composable
 private fun SettingsScreenLayout(
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
-) {
+                                )
+{
     val focusRequester = remember { FocusRequester() }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        contentPadding = PaddingValues(horizontal = MaterialTheme.spacings.default * 2, vertical = MaterialTheme.spacings.large),
+        contentPadding = PaddingValues(
+            horizontal = MaterialTheme.spacings.default * 2,
+            vertical = MaterialTheme.spacings.large
+                                      ),
         modifier = Modifier
             .fillMaxSize()
             .focusRequester(focusRequester),
-    ) {
+                    ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Text(
                 text = stringResource(id = SettingsR.string.title_settings),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
         }
         items(state.preferenceGroups) { group ->
             SettingsGroupCard(
                 group = group,
                 onAction = onAction,
-            )
+                             )
         }
     }
     LaunchedEffect(true) {
@@ -113,7 +127,8 @@ private fun SettingsScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun SettingsScreenLayoutPreview() {
+private fun SettingsScreenLayoutPreview()
+{
     FindroidTheme {
         SettingsScreenLayout(
             state = SettingsState(
@@ -124,21 +139,21 @@ private fun SettingsScreenLayoutPreview() {
                             PreferenceCategory(
                                 nameStringResource = SettingsR.string.settings_category_language,
                                 iconDrawableId = SettingsR.drawable.ic_languages,
-                            ),
-                        ),
-                    ),
+                                              ),
+                                            ),
+                                   ),
                     PreferenceGroup(
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
                                 nameStringResource = SettingsR.string.settings_category_appearance,
                                 iconDrawableId = SettingsR.drawable.ic_palette,
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+                                              ),
+                                            ),
+                                   ),
+                                         ),
+                                 ),
             onAction = {},
-        )
+                            )
     }
 }

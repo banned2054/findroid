@@ -52,7 +52,8 @@ import kotlin.time.Duration.Companion.milliseconds
 fun PlayerScreen(
     items: Array<PlayerItem>,
     // resultRecipient: ResultRecipient<VideoPlayerTrackSelectorDialogDestination, VideoPlayerTrackSelectorDialogResult>,
-) {
+                )
+{
     val viewModel = hiltViewModel<PlayerActivityViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
@@ -80,18 +81,23 @@ fun PlayerScreen(
             lifecycle = event
 
             // Handle creation and release of media session
-            when (lifecycle) {
-                Lifecycle.Event.ON_STOP -> {
+            when (lifecycle)
+            {
+                Lifecycle.Event.ON_STOP  ->
+                {
                     println("ON_STOP")
                     mediaSession?.release()
                 }
 
-                Lifecycle.Event.ON_START -> {
+                Lifecycle.Event.ON_START ->
+                {
                     println("ON_START")
                     mediaSession = MediaSession.Builder(context, viewModel.player).build()
                 }
 
-                else -> {}
+                else                     ->
+                {
+                }
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -110,7 +116,8 @@ fun PlayerScreen(
         mutableStateOf(viewModel.player.isPlaying)
     }
     LaunchedEffect(Unit) {
-        while (true) {
+        while (true)
+        {
             delay(300)
             currentPosition = viewModel.player.currentPosition
             isPlaying = viewModel.player.isPlaying
@@ -151,9 +158,9 @@ fun PlayerScreen(
             .dPadEvents(
                 exoPlayer = viewModel.player,
                 videoPlayerState = videoPlayerState,
-            )
+                       )
             .focusable(),
-    ) {
+       ) {
         AndroidView(
             factory = { context ->
                 PlayerView(context).also { playerView ->
@@ -164,27 +171,30 @@ fun PlayerScreen(
                         context.resources.getColor(
                             android.R.color.black,
                             context.theme,
-                        ),
-                    )
+                                                  ),
+                                                 )
                 }
             },
             update = {
-                when (lifecycle) {
-                    Lifecycle.Event.ON_PAUSE -> {
+                when (lifecycle)
+                {
+                    Lifecycle.Event.ON_PAUSE  ->
+                    {
                         it.onPause()
                         it.player?.pause()
                     }
 
-                    Lifecycle.Event.ON_RESUME -> {
+                    Lifecycle.Event.ON_RESUME ->
+                    {
                         it.onResume()
                     }
 
-                    else -> Unit
+                    else                      -> Unit
                 }
             },
             modifier = Modifier
                 .fillMaxSize(),
-        )
+                   )
         val focusRequester = remember { FocusRequester() }
         VideoPlayerOverlay(
             modifier = Modifier.align(Alignment.BottomCenter),
@@ -200,9 +210,9 @@ fun PlayerScreen(
                     state = videoPlayerState,
                     focusRequester = focusRequester,
                     // navigator = navigator,
-                )
+                                   )
             },
-        )
+                          )
     }
 }
 
@@ -216,11 +226,15 @@ fun VideoPlayerControls(
     state: VideoPlayerState,
     focusRequester: FocusRequester,
     // navigator: DestinationsNavigator,
-) {
+                       )
+{
     val onPlayPauseToggle = { shouldPlay: Boolean ->
-        if (shouldPlay) {
+        if (shouldPlay)
+        {
             player.play()
-        } else {
+        }
+        else
+        {
             player.pause()
         }
     }
@@ -230,7 +244,7 @@ fun VideoPlayerControls(
             VideoPlayerMediaTitle(
                 title = title,
                 subtitle = null,
-            )
+                                 )
         },
         seeker = {
             VideoPlayerSeeker(
@@ -241,12 +255,12 @@ fun VideoPlayerControls(
                 onSeek = { player.seekTo(player.duration.times(it).toLong()) },
                 contentProgress = contentCurrentPosition.milliseconds,
                 contentDuration = player.duration.milliseconds,
-            )
+                             )
         },
         mediaActions = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-            ) {
+               ) {
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_speaker),
                     state = state,
@@ -255,7 +269,7 @@ fun VideoPlayerControls(
                         val tracks = getTracks(player, C.TRACK_TYPE_AUDIO)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_AUDIO, tracks))
                     },
-                )
+                                      )
                 VideoPlayerMediaButton(
                     icon = painterResource(id = R.drawable.ic_closed_caption),
                     state = state,
@@ -264,16 +278,16 @@ fun VideoPlayerControls(
                         val tracks = getTracks(player, C.TRACK_TYPE_TEXT)
                         // navigator.navigate(VideoPlayerTrackSelectorDialogDestination(C.TRACK_TYPE_TEXT, tracks))
                     },
-                )
+                                      )
             }
         },
-    )
+                             )
 }
 
 private fun Modifier.dPadEvents(
     exoPlayer: Player,
     videoPlayerState: VideoPlayerState,
-): Modifier = this.handleDPadKeyEvents(
+                               ): Modifier = this.handleDPadKeyEvents(
     onLeft = {},
     onRight = {},
     onUp = {},
@@ -282,14 +296,17 @@ private fun Modifier.dPadEvents(
         exoPlayer.pause()
         videoPlayerState.showControls()
     },
-)
+                                                                     )
 
 @androidx.annotation.OptIn(UnstableApi::class)
-private fun getTracks(player: Player, type: Int): Array<Track> {
+private fun getTracks(player: Player, type: Int): Array<Track>
+{
     val tracks = arrayListOf<Track>()
-    for (groupIndex in 0 until player.currentTracks.groups.count()) {
+    for (groupIndex in 0 until player.currentTracks.groups.count())
+    {
         val group = player.currentTracks.groups[groupIndex]
-        if (group.type == type) {
+        if (group.type == type)
+        {
             val format = group.mediaTrackGroup.getFormat(0)
 
             val track = Track(
@@ -299,7 +316,7 @@ private fun getTracks(player: Player, type: Int): Array<Track> {
                 codec = format.codecs,
                 selected = group.isSelected,
                 supported = group.isSupported,
-            )
+                             )
 
             tracks.add(track)
         }
@@ -312,6 +329,6 @@ private fun getTracks(player: Player, type: Int): Array<Track> {
         codec = null,
         selected = !tracks.any { it.selected },
         supported = true,
-    )
+                         )
     return arrayOf(noneTrack) + tracks
 }

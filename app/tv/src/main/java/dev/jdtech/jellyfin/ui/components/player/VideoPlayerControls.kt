@@ -24,15 +24,16 @@ fun VideoPlayerControlsLayout(
     mediaTitle: @Composable () -> Unit,
     seeker: @Composable () -> Unit,
     mediaActions: @Composable () -> Unit,
-) {
+                             )
+{
     Column(
         modifier = Modifier.fillMaxWidth(),
-    ) {
+          ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
-        ) {
+           ) {
             Box(modifier = Modifier.weight(1f)) {
                 mediaTitle()
             }
@@ -45,7 +46,8 @@ fun VideoPlayerControlsLayout(
 
 @Preview
 @Composable
-private fun VideoPlayerControlsLayoutPreview() {
+private fun VideoPlayerControlsLayoutPreview()
+{
     FindroidTheme {
         VideoPlayerControlsLayout(
             mediaTitle = {
@@ -55,7 +57,7 @@ private fun VideoPlayerControlsLayoutPreview() {
                         .background(Color.LightGray)
                         .fillMaxWidth()
                         .height(96.dp),
-                )
+                   )
             },
             seeker = {
                 Box(
@@ -64,7 +66,7 @@ private fun VideoPlayerControlsLayoutPreview() {
                         .background(Color.LightGray)
                         .fillMaxWidth()
                         .height(48.dp),
-                )
+                   )
             },
             mediaActions = {
                 Box(
@@ -73,8 +75,8 @@ private fun VideoPlayerControlsLayoutPreview() {
                         .background(Color.LightGray)
                         .fillMaxWidth()
                         .height(48.dp),
-                )
+                   )
             },
-        )
+                                 )
     }
 }

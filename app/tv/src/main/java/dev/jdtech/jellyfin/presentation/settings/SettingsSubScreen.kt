@@ -48,7 +48,8 @@ fun SettingsSubScreen(
     navigateToServers: () -> Unit,
     navigateToUsers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
-) {
+                     )
+{
     val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,15 +59,21 @@ fun SettingsSubScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is SettingsEvent.NavigateToSettings -> navigateToSubSettings(event.indexes)
-            is SettingsEvent.NavigateToUsers -> navigateToUsers()
-            is SettingsEvent.NavigateToServers -> navigateToServers()
-            is SettingsEvent.UpdateTheme -> Unit
-            is SettingsEvent.LaunchIntent -> {
-                try {
+            is SettingsEvent.NavigateToUsers    -> navigateToUsers()
+            is SettingsEvent.NavigateToServers  -> navigateToServers()
+            is SettingsEvent.UpdateTheme        -> Unit
+            is SettingsEvent.LaunchIntent       ->
+            {
+                try
+                {
                     context.startActivity(event.intent)
-                } catch (_: Exception) { }
+                }
+                catch (_: Exception)
+                {
+                }
             }
         }
     }
@@ -75,15 +82,18 @@ fun SettingsSubScreen(
         title = indexes.last(),
         state = state,
         onAction = { action ->
-            when (action) {
-                is SettingsAction.OnUpdate -> {
+            when (action)
+            {
+                is SettingsAction.OnUpdate ->
+                {
                     viewModel.onAction(action)
                     viewModel.loadPreferences(indexes, DeviceType.TV)
                 }
-                else -> Unit
+
+                else                       -> Unit
             }
         },
-    )
+                           )
 }
 
 @Composable
@@ -91,7 +101,8 @@ private fun SettingsSubScreenLayout(
     @StringRes title: Int,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
-) {
+                                   )
+{
     val focusRequester = remember { FocusRequester() }
 
     var focusedPreference by remember(state.preferenceGroups.isNotEmpty()) {
@@ -104,43 +115,44 @@ private fun SettingsSubScreenLayout(
                 start = MaterialTheme.spacings.large,
                 top = MaterialTheme.spacings.default * 2,
                 end = MaterialTheme.spacings.large,
-            ),
-    ) {
+                    ),
+          ) {
         Column {
             Text(
                 text = stringResource(id = title),
                 style = MaterialTheme.typography.displayMedium,
-            )
+                )
             Text(
                 text = stringResource(id = SettingsR.string.title_settings),
                 style = MaterialTheme.typography.headlineMedium,
-            )
+                )
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.large),
-        ) {
+           ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 contentPadding = PaddingValues(vertical = MaterialTheme.spacings.large),
                 modifier = Modifier
                     .weight(1f)
                     .focusRequester(focusRequester),
-            ) {
+                      ) {
                 items(state.preferenceGroups) { group ->
                     SettingsGroupCard(
                         group = group,
                         onAction = onAction,
                         onFocusChange = { focusState, preference ->
-                            if (focusState.isFocused) {
+                            if (focusState.isFocused)
+                            {
                                 focusedPreference = preference
                             }
                         },
-                    )
+                                     )
                 }
             }
             Box(
                 modifier = Modifier.weight(2f),
-            ) {
+               ) {
                 (focusedPreference as? PreferenceSelect)?.let { preference ->
                     SettingsDetailsCard(
                         preference = preference,
@@ -151,10 +163,10 @@ private fun SettingsSubScreenLayout(
                             onAction(
                                 SettingsAction.OnUpdate(
                                     preference.copy(value = value),
-                                ),
-                            )
+                                                       ),
+                                    )
                         },
-                    )
+                                       )
                 }
             }
         }
@@ -166,7 +178,8 @@ private fun SettingsSubScreenLayout(
 
 @Preview(device = "id:tv_1080p")
 @Composable
-private fun SettingsSubScreenLayoutPreview() {
+private fun SettingsSubScreenLayoutPreview()
+{
     FindroidTheme {
         SettingsSubScreenLayout(
             title = SettingsR.string.title_settings,
@@ -179,12 +192,12 @@ private fun SettingsSubScreenLayoutPreview() {
                                 backendPreference = Preference("", ""),
                                 options = SettingsR.array.mpv_hwdec,
                                 optionValues = SettingsR.array.mpv_hwdec,
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+                                            ),
+                                            ),
+                                   ),
+                                         ),
+                                 ),
             onAction = {},
-        )
+                               )
     }
 }

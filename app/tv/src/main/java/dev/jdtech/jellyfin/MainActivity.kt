@@ -12,10 +12,12 @@ import dev.jdtech.jellyfin.presentation.theme.FindroidTheme
 import dev.jdtech.jellyfin.viewmodels.MainViewModel
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity()
+{
     private val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -23,13 +25,14 @@ class MainActivity : ComponentActivity() {
 
             FindroidTheme {
                 val navController = rememberNavController()
-                if (!state.isLoading) {
+                if (!state.isLoading)
+                {
                     NavigationRoot(
                         navController = navController,
                         hasServers = state.hasServers,
                         hasCurrentServer = state.hasCurrentServer,
                         hasCurrentUser = state.hasCurrentUser,
-                    )
+                                  )
                 }
             }
         }
