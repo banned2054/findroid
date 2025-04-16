@@ -40,7 +40,8 @@ class PlayerGestureHelper(
     private val activity: PlayerActivity,
     private val playerView: PlayerView,
     private val audioManager: AudioManager,
-) {
+                         )
+{
     /**
      * Tracks whether video content should fill the screen, cutting off unwanted content on the sides.
      * Useful on wide-screen phones to remove black bars from some movies.
@@ -77,8 +78,10 @@ class PlayerGestureHelper(
 
     private val tapGestureDetector = GestureDetector(
         playerView.context,
-        object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        object : GestureDetector.SimpleOnGestureListener()
+        {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean
+            {
                 playerView.apply {
                     if (!isControllerFullyVisible) showController() else hideController()
                 }
@@ -86,7 +89,8 @@ class PlayerGestureHelper(
                 return true
             }
 
-            override fun onLongPress(e: MotionEvent) {
+            override fun onLongPress(e: MotionEvent)
+            {
                 // Disables long press gesture if view is locked
                 if (isControlsLocked) return
 
@@ -95,14 +99,18 @@ class PlayerGestureHelper(
 
                 // This is a temporary solution for chapter skipping.
                 // TODO: Remove this after implementing #636
-                if (appPreferences.getValue(appPreferences.playerGesturesChapterSkip)) {
+                if (appPreferences.getValue(appPreferences.playerGesturesChapterSkip))
+                {
                     handleChapterSkip(e)
-                } else {
+                }
+                else
+                {
                     enableSpeedIncrease()
                 }
             }
 
-            override fun onDoubleTap(e: MotionEvent): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean
+            {
                 // Disables double tap gestures if view is locked
                 if (isControlsLocked) return false
 
@@ -114,16 +122,22 @@ class PlayerGestureHelper(
                 val middleAreaStart = areaWidth * 2
                 val rightmostAreaStart = middleAreaStart + areaWidth
 
-                when (e.x.toInt()) {
-                    in leftmostAreaStart until middleAreaStart -> {
+                when (e.x.toInt())
+                {
+                    in leftmostAreaStart until middleAreaStart ->
+                    {
                         // Tapped on the leftmost area (seek backward)
                         rewind()
                     }
-                    in middleAreaStart until rightmostAreaStart -> {
+
+                    in middleAreaStart until rightmostAreaStart ->
+                    {
                         // Tapped on the middle area (toggle pause/unpause)
                         togglePlayback()
                     }
-                    in rightmostAreaStart until viewWidth -> {
+
+                    in rightmostAreaStart until viewWidth ->
+                    {
                         // Tapped on the rightmost area (seek forward)
                         fastForward()
                     }
@@ -131,12 +145,14 @@ class PlayerGestureHelper(
                 return true
             }
         },
-    )
+                                                    )
 
     @SuppressLint("SetTextI18n")
-    private fun enableSpeedIncrease() {
+    private fun enableSpeedIncrease()
+    {
         playerView.player?.let {
-            if (it.isPlaying) {
+            if (it.isPlaying)
+            {
                 lastPlaybackSpeed = it.playbackParameters.speed
                 it.setPlaybackSpeed(playbackSpeedIncrease)
                 activity.binding.gestureSpeedText.text = playbackSpeedIncrease.toString() + "x"
@@ -145,8 +161,10 @@ class PlayerGestureHelper(
         }
     }
 
-    private fun handleChapterSkip(e: MotionEvent) {
-        if (isControlsLocked) {
+    private fun handleChapterSkip(e: MotionEvent)
+    {
+        if (isControlsLocked)
+        {
             return
         }
 
@@ -158,14 +176,19 @@ class PlayerGestureHelper(
         val middleAreaStart = areaWidth * 2
         val rightmostAreaStart = middleAreaStart + areaWidth
 
-        when (e.x.toInt()) {
-            in leftmostAreaStart until middleAreaStart -> {
+        when (e.x.toInt())
+        {
+            in leftmostAreaStart until middleAreaStart ->
+            {
                 activity.viewModel.seekToPreviousChapter()?.let { chapter ->
                     displayChapter(chapter)
                 }
             }
-            in rightmostAreaStart until viewWidth -> {
-                if (activity.viewModel.isLastChapter() == true) {
+
+            in rightmostAreaStart until viewWidth      ->
+            {
+                if (activity.viewModel.isLastChapter() == true)
+                {
                     playerView.player?.seekToNextMediaItem()
                     return
                 }
@@ -173,39 +196,48 @@ class PlayerGestureHelper(
                     displayChapter(chapter)
                 }
             }
-            else -> return
+
+            else                                       -> return
         }
     }
 
-    private fun displayChapter(chapter: PlayerChapter) {
+    private fun displayChapter(chapter: PlayerChapter)
+    {
         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
         activity.binding.progressScrubberText.text = chapter.name ?: ""
     }
 
-    private fun fastForward() {
+    private fun fastForward()
+    {
         val currentPosition = playerView.player?.currentPosition ?: 0
-        val fastForwardPosition = currentPosition + appPreferences.getValue(appPreferences.playerSeekForwardInc)
+        val fastForwardPosition =
+            currentPosition + appPreferences.getValue(appPreferences.playerSeekForwardInc)
         seekTo(fastForwardPosition)
         animateRipple(activity.binding.imageFfwdAnimationRipple)
     }
 
-    private fun rewind() {
+    private fun rewind()
+    {
         val currentPosition = playerView.player?.currentPosition ?: 0
-        val rewindPosition = currentPosition - appPreferences.getValue(appPreferences.playerSeekBackInc)
+        val rewindPosition =
+            currentPosition - appPreferences.getValue(appPreferences.playerSeekBackInc)
         seekTo(rewindPosition.coerceAtLeast(0))
         animateRipple(activity.binding.imageRewindAnimationRipple)
     }
 
-    private fun togglePlayback() {
+    private fun togglePlayback()
+    {
         playerView.player?.playWhenReady = !playerView.player?.playWhenReady!!
         animateRipple(activity.binding.imagePlaybackAnimationRipple)
     }
 
-    private fun seekTo(position: Long) {
+    private fun seekTo(position: Long)
+    {
         playerView.player?.seekTo(position)
     }
 
-    private fun animateRipple(image: ImageView) {
+    private fun animateRipple(image: ImageView)
+    {
         image
             .animateSeekingRippleStart()
             .withEndAction {
@@ -214,7 +246,8 @@ class PlayerGestureHelper(
             .start()
     }
 
-    private fun ImageView.animateSeekingRippleStart(): ViewPropertyAnimator {
+    private fun ImageView.animateSeekingRippleStart(): ViewPropertyAnimator
+    {
         val rippleImageHeight = this.height
         val playerViewHeight = playerView.height.toFloat()
         val playerViewWidth = playerView.width.toFloat()
@@ -229,7 +262,8 @@ class PlayerGestureHelper(
             .setInterpolator(DecelerateInterpolator())
     }
 
-    private fun resetRippleImage(image: ImageView) {
+    private fun resetRippleImage(image: ImageView)
+    {
         image
             .animateSeekingRippleEnd()
             .withEndAction {
@@ -246,14 +280,16 @@ class PlayerGestureHelper(
 
     private val seekGestureDetector = GestureDetector(
         playerView.context,
-        object : GestureDetector.SimpleOnGestureListener() {
+        object : GestureDetector.SimpleOnGestureListener()
+        {
             @SuppressLint("SetTextI18n")
             override fun onScroll(
                 firstEvent: MotionEvent?,
                 currentEvent: MotionEvent,
                 distanceX: Float,
                 distanceY: Float,
-            ): Boolean {
+                                 ): Boolean
+            {
                 if (firstEvent == null) return false
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
@@ -261,12 +297,14 @@ class PlayerGestureHelper(
                 if (isControlsLocked) return false
 
                 // Check whether swipe was oriented vertically
-                if (abs(distanceY / distanceX) < 2) {
+                if (abs(distanceY / distanceX) < 2)
+                {
                     return if ((abs(currentEvent.x - firstEvent.x) > 50 || swipeGestureProgressOpen) &&
                         !swipeGestureBrightnessOpen &&
                         !swipeGestureVolumeOpen &&
                         (SystemClock.elapsedRealtime() - lastScaleEvent) > 200
-                    ) {
+                    )
+                    {
                         val currentPos = playerView.player?.currentPosition ?: 0
                         val vidDuration = (playerView.player?.duration ?: 0).coerceAtLeast(0)
 
@@ -274,39 +312,48 @@ class PlayerGestureHelper(
                         val newPos = (currentPos + difference).coerceIn(0, vidDuration)
 
                         activity.binding.progressScrubberLayout.visibility = View.VISIBLE
-                        activity.binding.progressScrubberText.text = "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
+                        activity.binding.progressScrubberText.text =
+                            "${longToTimestamp(difference)} [${longToTimestamp(newPos, true)}]"
                         swipeGestureValueTrackerProgress = newPos
 
-                        if (appPreferences.getValue(appPreferences.playerGesturesSeekTrickplay)) {
-                            if (currentTrickplay != null) {
+                        if (appPreferences.getValue(appPreferences.playerGesturesSeekTrickplay))
+                        {
+                            if (currentTrickplay != null)
+                            {
                                 activity.binding.progressScrubberTrickplay.visibility = View.VISIBLE
                                 updateTrickplayImage(newPos)
-                            } else {
+                            }
+                            else
+                            {
                                 activity.binding.progressScrubberTrickplay.visibility = View.GONE
                             }
                         }
 
                         swipeGestureProgressOpen = true
                         true
-                    } else {
+                    }
+                    else
+                    {
                         false
                     }
                 }
                 return true
             }
         },
-    )
+                                                     )
 
     private val vbGestureDetector = GestureDetector(
         playerView.context,
-        object : GestureDetector.SimpleOnGestureListener() {
+        object : GestureDetector.SimpleOnGestureListener()
+        {
             @SuppressLint("SetTextI18n")
             override fun onScroll(
                 firstEvent: MotionEvent?,
                 currentEvent: MotionEvent,
                 distanceX: Float,
                 distanceY: Float,
-            ): Boolean {
+                                 ): Boolean
+            {
                 if (firstEvent == null) return false
                 // Excludes area where app gestures conflicting with system gestures
                 if (inExclusionArea(firstEvent)) return false
@@ -315,59 +362,88 @@ class PlayerGestureHelper(
 
                 if (abs(distanceY / distanceX) < 2) return false
 
-                if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen) {
+                if (swipeGestureValueTrackerProgress > -1 || swipeGestureProgressOpen)
+                {
                     return false
                 }
 
                 val viewCenterX = playerView.measuredWidth / 2
 
                 // Distance to swipe to go from min to max
-                val distanceFull = playerView.measuredHeight * Constants.FULL_SWIPE_RANGE_SCREEN_RATIO
+                val distanceFull =
+                    playerView.measuredHeight * Constants.FULL_SWIPE_RANGE_SCREEN_RATIO
                 val ratioChange = distanceY / distanceFull
 
-                if (firstEvent.x.toInt() > viewCenterX) {
+                if (firstEvent.x.toInt() > viewCenterX)
+                {
                     // Swiping on the right, change volume
 
                     val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-                    if (swipeGestureValueTrackerVolume == -1f) swipeGestureValueTrackerVolume = currentVolume.toFloat()
+                    if (swipeGestureValueTrackerVolume == -1f) swipeGestureValueTrackerVolume =
+                        currentVolume.toFloat()
 
                     val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                     val change = ratioChange * maxVolume
-                    swipeGestureValueTrackerVolume = (swipeGestureValueTrackerVolume + change).coerceIn(0f, maxVolume.toFloat())
+                    swipeGestureValueTrackerVolume =
+                        (swipeGestureValueTrackerVolume + change).coerceIn(0f, maxVolume.toFloat())
 
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, swipeGestureValueTrackerVolume.toInt(), 0)
+                    audioManager.setStreamVolume(
+                        AudioManager.STREAM_MUSIC,
+                        swipeGestureValueTrackerVolume.toInt(),
+                        0
+                                                )
 
                     activity.binding.gestureVolumeLayout.visibility = View.VISIBLE
                     activity.binding.gestureVolumeProgressBar.max = maxVolume.times(100)
-                    activity.binding.gestureVolumeProgressBar.progress = swipeGestureValueTrackerVolume.times(100).toInt()
-                    val process = (swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()
+                    activity.binding.gestureVolumeProgressBar.progress =
+                        swipeGestureValueTrackerVolume.times(100).toInt()
+                    val process =
+                        (swipeGestureValueTrackerVolume / maxVolume.toFloat()).times(100).toInt()
                     activity.binding.gestureVolumeText.text = "$process%"
                     activity.binding.gestureVolumeImage.setImageLevel(process)
 
                     swipeGestureVolumeOpen = true
-                } else {
+                }
+                else
+                {
                     // Swiping on the left, change brightness
                     val window = activity.window
                     val brightnessRange = BRIGHTNESS_OVERRIDE_OFF..BRIGHTNESS_OVERRIDE_FULL
 
                     // Initialize on first swipe
-                    if (swipeGestureValueTrackerBrightness == -1f) {
+                    if (swipeGestureValueTrackerBrightness == -1f)
+                    {
                         val brightness = window.attributes.screenBrightness
-                        Timber.d("Brightness ${Settings.System.getFloat(activity.contentResolver, Settings.System.SCREEN_BRIGHTNESS)}")
-                        swipeGestureValueTrackerBrightness = when (brightness) {
+                        Timber.d(
+                            "Brightness ${
+                                Settings.System.getFloat(
+                                    activity.contentResolver,
+                                    Settings.System.SCREEN_BRIGHTNESS
+                                                        )
+                            }"
+                                )
+                        swipeGestureValueTrackerBrightness = when (brightness)
+                        {
                             in brightnessRange -> brightness
-                            else -> Settings.System.getFloat(activity.contentResolver, Settings.System.SCREEN_BRIGHTNESS) / 255
+                            else               -> Settings.System.getFloat(
+                                activity.contentResolver,
+                                Settings.System.SCREEN_BRIGHTNESS
+                                                                          ) / 255
                         }
                     }
-                    swipeGestureValueTrackerBrightness = (swipeGestureValueTrackerBrightness + ratioChange).coerceIn(brightnessRange)
+                    swipeGestureValueTrackerBrightness =
+                        (swipeGestureValueTrackerBrightness + ratioChange).coerceIn(brightnessRange)
                     val lp = window.attributes
                     lp.screenBrightness = swipeGestureValueTrackerBrightness
                     window.attributes = lp
 
                     activity.binding.gestureBrightnessLayout.visibility = View.VISIBLE
-                    activity.binding.gestureBrightnessProgressBar.max = BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
-                    activity.binding.gestureBrightnessProgressBar.progress = lp.screenBrightness.times(100).toInt()
-                    val process = (lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()
+                    activity.binding.gestureBrightnessProgressBar.max =
+                        BRIGHTNESS_OVERRIDE_FULL.times(100).toInt()
+                    activity.binding.gestureBrightnessProgressBar.progress =
+                        lp.screenBrightness.times(100).toInt()
+                    val process =
+                        (lp.screenBrightness / BRIGHTNESS_OVERRIDE_FULL).times(100).toInt()
                     activity.binding.gestureBrightnessText.text = "$process%"
                     activity.binding.gestureBrightnessImage.setImageLevel(process)
 
@@ -376,7 +452,7 @@ class PlayerGestureHelper(
                 return true
             }
         },
-    )
+                                                   )
 
     private val hideGestureVolumeIndicatorOverlayAction = Runnable {
         activity.binding.gestureVolumeLayout.visibility = View.GONE
@@ -384,8 +460,12 @@ class PlayerGestureHelper(
 
     private val hideGestureBrightnessIndicatorOverlayAction = Runnable {
         activity.binding.gestureBrightnessLayout.visibility = View.GONE
-        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-            appPreferences.setValue(appPreferences.playerBrightness, activity.window.attributes.screenBrightness)
+        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember))
+        {
+            appPreferences.setValue(
+                appPreferences.playerBrightness,
+                activity.window.attributes.screenBrightness
+                                   )
         }
     }
 
@@ -398,15 +478,18 @@ class PlayerGestureHelper(
      */
     private val zoomGestureDetector = ScaleGestureDetector(
         playerView.context,
-        object : ScaleGestureDetector.OnScaleGestureListener {
+        object : ScaleGestureDetector.OnScaleGestureListener
+        {
             override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
+            override fun onScale(detector: ScaleGestureDetector): Boolean
+            {
                 // Disables zoom gesture if view is locked
                 if (isControlsLocked) return false
                 lastScaleEvent = SystemClock.elapsedRealtime()
                 val scaleFactor = detector.scaleFactor
-                if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD) {
+                if (abs(scaleFactor - Constants.ZOOM_SCALE_BASE) > Constants.ZOOM_SCALE_THRESHOLD)
+                {
                     val enableZoom = scaleFactor > 1
                     updateZoomMode(enableZoom)
                 }
@@ -415,36 +498,47 @@ class PlayerGestureHelper(
 
             override fun onScaleEnd(detector: ScaleGestureDetector) = Unit
         },
-    ).apply { isQuickScaleEnabled = false }
+                                                          ).apply { isQuickScaleEnabled = false }
 
-    fun updateZoomMode(enabled: Boolean) {
-        if (playerView.player is MPVPlayer) {
+    fun updateZoomMode(enabled: Boolean)
+    {
+        if (playerView.player is MPVPlayer)
+        {
             (playerView.player as MPVPlayer).updateZoomMode(enabled)
-        } else {
-            playerView.resizeMode = if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
+        else
+        {
+            playerView.resizeMode =
+                if (enabled) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
         }
         isZoomEnabled = enabled
     }
 
-    private fun releaseAction(event: MotionEvent) {
-        if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+    private fun releaseAction(event: MotionEvent)
+    {
+        if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)
+        {
             activity.binding.gestureVolumeLayout.apply {
-                if (visibility == View.VISIBLE) {
+                if (visibility == View.VISIBLE)
+                {
                     removeCallbacks(hideGestureVolumeIndicatorOverlayAction)
                     postDelayed(hideGestureVolumeIndicatorOverlayAction, 1000)
                     swipeGestureVolumeOpen = false
                 }
             }
             activity.binding.gestureBrightnessLayout.apply {
-                if (visibility == View.VISIBLE) {
+                if (visibility == View.VISIBLE)
+                {
                     removeCallbacks(hideGestureBrightnessIndicatorOverlayAction)
                     postDelayed(hideGestureBrightnessIndicatorOverlayAction, 1000)
                     swipeGestureBrightnessOpen = false
                 }
             }
             activity.binding.progressScrubberLayout.apply {
-                if (visibility == View.VISIBLE) {
-                    if (swipeGestureValueTrackerProgress > -1) {
+                if (visibility == View.VISIBLE)
+                {
+                    if (swipeGestureValueTrackerProgress > -1)
+                    {
                         playerView.player?.seekTo(swipeGestureValueTrackerProgress)
                     }
                     removeCallbacks(hideGestureProgressOverlayAction)
@@ -456,48 +550,65 @@ class PlayerGestureHelper(
             }
             currentNumberOfPointers = 0
         }
-        if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
+        if (lastPlaybackSpeed > 0 && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL))
+        {
             playerView.player?.setPlaybackSpeed(lastPlaybackSpeed)
             lastPlaybackSpeed = 0f
             activity.binding.gestureSpeedLayout.visibility = View.GONE
         }
     }
 
-    private fun longToTimestamp(duration: Long, noSign: Boolean = false): String {
+    private fun longToTimestamp(duration: Long, noSign: Boolean = false): String
+    {
         val sign = if (noSign) "" else if (duration < 0) "-" else "+"
         val seconds = abs(duration).div(1000)
 
-        return String.format("%s%02d:%02d:%02d", sign, seconds / 3600, (seconds / 60) % 60, seconds % 60)
+        return String.format(
+            "%s%02d:%02d:%02d",
+            sign,
+            seconds / 3600,
+            (seconds / 60) % 60,
+            seconds % 60
+                            )
     }
 
     /**
      * Check if [firstEvent] is in the gesture exclusion area
      */
-    private fun inExclusionArea(firstEvent: MotionEvent): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val insets = playerView.rootWindowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
+    private fun inExclusionArea(firstEvent: MotionEvent): Boolean
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            val insets =
+                playerView.rootWindowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
 
             if ((firstEvent.x < insets.left) || (firstEvent.x > (screenWidth - insets.right)) ||
                 (firstEvent.y < insets.top) || (firstEvent.y > (screenHeight - insets.bottom))
-            ) {
+            )
+            {
                 return true
             }
-        } else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
+        }
+        else if (firstEvent.y < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
             firstEvent.y > screenHeight - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_VERTICAL) ||
             firstEvent.x < playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL) ||
             firstEvent.x > screenWidth - playerView.resources.dip(Constants.GESTURE_EXCLUSION_AREA_HORIZONTAL)
-        ) {
+        )
+        {
             return true
         }
         return false
     }
 
-    fun updateTrickplayImage(position: Long) {
-        try {
+    fun updateTrickplayImage(position: Long)
+    {
+        try
+        {
             val trickplay = currentTrickplay ?: return
             val bitmap = trickplay.images[position.div(trickplay.interval).toInt()]
 
-            if (currentTrickplayBitmap != bitmap) {
+            if (currentTrickplayBitmap != bitmap)
+            {
                 activity.binding.progressScrubberTrickplay.load(bitmap) {
                     coroutineContext(Dispatchers.Main.immediate)
                     crossfade(false)
@@ -505,31 +616,47 @@ class PlayerGestureHelper(
                 }
                 currentTrickplayBitmap = bitmap
             }
-        } catch (e: Exception) {
+        }
+        catch (e: Exception)
+        {
             activity.binding.progressScrubberTrickplay.visibility = View.GONE
             Timber.d(e)
         }
     }
 
-    init {
-        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-            activity.window.attributes.screenBrightness = appPreferences.getValue(appPreferences.playerBrightness)
+    init
+    {
+        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember))
+        {
+            activity.window.attributes.screenBrightness =
+                appPreferences.getValue(appPreferences.playerBrightness)
         }
 
         updateZoomMode(appPreferences.getValue(appPreferences.playerGesturesStartMaximized))
 
         @Suppress("ClickableViewAccessibility")
         playerView.setOnTouchListener { _, event ->
-            if (playerView.useController) {
+            if (playerView.useController)
+            {
                 currentNumberOfPointers = event.pointerCount
-                when (event.pointerCount) {
-                    1 -> {
+                when (event.pointerCount)
+                {
+                    1 ->
+                    {
                         tapGestureDetector.onTouchEvent(event)
-                        if (appPreferences.getValue(appPreferences.playerGesturesVB)) vbGestureDetector.onTouchEvent(event)
-                        if (appPreferences.getValue(appPreferences.playerGesturesSeek)) seekGestureDetector.onTouchEvent(event)
+                        if (appPreferences.getValue(appPreferences.playerGesturesVB)) vbGestureDetector.onTouchEvent(
+                            event
+                                                                                                                    )
+                        if (appPreferences.getValue(appPreferences.playerGesturesSeek)) seekGestureDetector.onTouchEvent(
+                            event
+                                                                                                                        )
                     }
-                    2 -> {
-                        if (appPreferences.getValue(appPreferences.playerGesturesZoom)) zoomGestureDetector.onTouchEvent(event)
+
+                    2 ->
+                    {
+                        if (appPreferences.getValue(appPreferences.playerGesturesZoom)) zoomGestureDetector.onTouchEvent(
+                            event
+                                                                                                                        )
                     }
                 }
             }

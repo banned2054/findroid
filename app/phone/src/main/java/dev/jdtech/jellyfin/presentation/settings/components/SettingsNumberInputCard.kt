@@ -33,7 +33,8 @@ fun SettingsIntInputCard(
     preference: PreferenceIntInput,
     onUpdate: (value: Int) -> Unit,
     modifier: Modifier = Modifier,
-) {
+                        )
+{
     var showDialog by remember {
         mutableStateOf(false)
     }
@@ -53,9 +54,10 @@ fun SettingsIntInputCard(
             showDialog = true
         },
         modifier = modifier,
-    )
+                           )
 
-    if (showDialog) {
+    if (showDialog)
+    {
         SettingsIntInputDialog(
             preference = preference,
             onUpdate = { value ->
@@ -65,7 +67,7 @@ fun SettingsIntInputCard(
             onDismissRequest = {
                 showDialog = false
             },
-        )
+                              )
     }
 }
 
@@ -74,7 +76,8 @@ fun SettingsLongInputCard(
     preference: PreferenceLongInput,
     onUpdate: (value: Long) -> Unit,
     modifier: Modifier = Modifier,
-) {
+                         )
+{
     var showDialog by remember {
         mutableStateOf(false)
     }
@@ -94,9 +97,10 @@ fun SettingsLongInputCard(
             showDialog = true
         },
         modifier = modifier,
-    )
+                           )
 
-    if (showDialog) {
+    if (showDialog)
+    {
         SettingsLongInputDialog(
             preference = preference,
             onUpdate = { value ->
@@ -106,7 +110,7 @@ fun SettingsLongInputCard(
             onDismissRequest = {
                 showDialog = false
             },
-        )
+                               )
     }
 }
 
@@ -116,35 +120,37 @@ fun SettingsNumberInputCard(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+                           )
+{
     SettingsBaseCard(
         preference = preference,
         onClick = onClick,
         modifier = modifier,
-    ) {
+                    ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(preference.iconDrawableId!!),
                     contentDescription = null,
-                )
+                    )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodyMedium,
-                )
+                    )
             }
         }
     }
@@ -152,7 +158,8 @@ fun SettingsNumberInputCard(
 
 @Preview
 @Composable
-private fun SettingsIntInputCardPreview() {
+private fun SettingsIntInputCardPreview()
+{
     FindroidTheme {
         SettingsIntInputCard(
             preference = PreferenceIntInput(
@@ -160,15 +167,16 @@ private fun SettingsIntInputCardPreview() {
                 backendPreference = PreferenceBackend("", 0),
                 suffixRes = SettingsR.string.mb,
                 value = 25,
-            ),
+                                           ),
             onUpdate = {},
-        )
+                            )
     }
 }
 
 @Preview
 @Composable
-private fun SettingsLongInputCardPreview() {
+private fun SettingsLongInputCardPreview()
+{
     FindroidTheme {
         SettingsLongInputCard(
             preference = PreferenceLongInput(
@@ -176,8 +184,8 @@ private fun SettingsLongInputCardPreview() {
                 backendPreference = PreferenceBackend("", 0L),
                 suffixRes = SettingsR.string.mb,
                 value = 25,
-            ),
+                                            ),
             onUpdate = {},
-        )
+                             )
     }
 }

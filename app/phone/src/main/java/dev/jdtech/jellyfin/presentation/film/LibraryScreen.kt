@@ -69,7 +69,8 @@ fun LibraryScreen(
     libraryType: CollectionType,
     navigateBack: () -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
-) {
+                 )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var initialLoad by rememberSaveable {
@@ -80,8 +81,9 @@ fun LibraryScreen(
         viewModel.setup(
             parentId = libraryId,
             libraryType = libraryType,
-        )
-        if (initialLoad) {
+                       )
+        if (initialLoad)
+        {
             viewModel.loadItems()
             initialLoad = false
         }
@@ -91,13 +93,14 @@ fun LibraryScreen(
         libraryName = libraryName,
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is LibraryAction.OnBackClick -> navigateBack()
-                else -> Unit
+                else                         -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                       )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,12 +109,15 @@ private fun LibraryScreenLayout(
     libraryName: String,
     state: LibraryState,
     onAction: (LibraryAction) -> Unit,
-) {
+                               )
+{
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
@@ -141,11 +147,11 @@ private fun LibraryScreenLayout(
                         onClick = {
                             onAction(LibraryAction.OnBackClick)
                         },
-                    ) {
+                              ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
-                        )
+                            )
                     }
                 },
                 actions = {
@@ -153,21 +159,21 @@ private fun LibraryScreenLayout(
                         onClick = {
                             showSortByDialog = true
                         },
-                    ) {
+                              ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_down_up),
                             contentDescription = null,
-                        )
+                            )
                     }
                 },
                 windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
                 scrollBehavior = scrollBehavior,
-            )
+                     )
         },
-    ) { innerPadding ->
+            ) { innerPadding ->
         Column(
             modifier = Modifier.padding(top = innerPadding.calculateTopPadding()),
-        ) {
+              ) {
             ErrorGroup(
                 loadStates = items.loadState,
                 onRefresh = {
@@ -179,8 +185,8 @@ private fun LibraryScreenLayout(
                         start = paddingStart,
                         top = paddingTop,
                         end = paddingEnd,
-                    ),
-            )
+                            ),
+                      )
             LazyVerticalGrid(
                 columns = GridCellsAdaptiveWithMinColumns(minSize = 160.dp, minColumns = 2),
                 modifier = Modifier.fillMaxSize(),
@@ -189,14 +195,14 @@ private fun LibraryScreenLayout(
                     top = paddingTop,
                     end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
                     bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-                ),
+                                              ),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-            ) {
+                            ) {
                 items(
                     count = items.itemCount,
                     key = items.itemKey { it.id },
-                ) {
+                     ) {
                     val item = items[it]
                     item?.let { item ->
                         ItemCard(
@@ -206,14 +212,15 @@ private fun LibraryScreenLayout(
                                 onAction(LibraryAction.OnItemClick(item))
                             },
                             modifier = Modifier.animateItem(),
-                        )
+                                )
                     }
                 }
             }
         }
     }
 
-    if (showSortByDialog) {
+    if (showSortByDialog)
+    {
         SortByDialog(
             currentSortBy = state.sortBy,
             currentSortOrder = state.sortOrder,
@@ -223,25 +230,37 @@ private fun LibraryScreenLayout(
             onDismissRequest = {
                 showSortByDialog = false
             },
-        )
+                    )
     }
 }
 
 @Composable
-private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
+private fun ErrorGroup(
+    loadStates: CombinedLoadStates,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier
+                      )
+{
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
-    val loadStateError = when {
-        loadStates.refresh is LoadState.Error -> {
+    val loadStateError = when
+    {
+        loadStates.refresh is LoadState.Error ->
+        {
             loadStates.refresh as LoadState.Error
         }
-        loadStates.prepend is LoadState.Error -> {
+
+        loadStates.prepend is LoadState.Error ->
+        {
             loadStates.prepend as LoadState.Error
         }
-        loadStates.append is LoadState.Error -> {
+
+        loadStates.append is LoadState.Error  ->
+        {
             loadStates.append as LoadState.Error
         }
-        else -> null
+
+        else                                  -> null
     }
 
     loadStateError?.let {
@@ -251,25 +270,27 @@ private fun ErrorGroup(loadStates: CombinedLoadStates, onRefresh: () -> Unit, mo
             },
             onRetryClick = onRefresh,
             modifier = modifier,
-        )
-        if (showErrorDialog) {
+                 )
+        if (showErrorDialog)
+        {
             ErrorDialog(
                 exception = it.error,
                 onDismissRequest = { showErrorDialog = false },
-            )
+                       )
         }
     }
 }
 
 @PreviewScreenSizes
 @Composable
-private fun LibraryScreenLayoutPreview() {
+private fun LibraryScreenLayoutPreview()
+{
     val items: Flow<PagingData<FindroidItem>> = flowOf(PagingData.from(dummyMovies))
     FindroidTheme {
         LibraryScreenLayout(
             libraryName = "Movies",
             state = LibraryState(items = items),
             onAction = {},
-        )
+                           )
     }
 }

@@ -59,7 +59,8 @@ fun AddServerScreen(
     onSuccess: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: AddServerViewModel = hiltViewModel(),
-) {
+                   )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -67,7 +68,8 @@ fun AddServerScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is AddServerEvent.Success -> onSuccess()
         }
     }
@@ -75,20 +77,22 @@ fun AddServerScreen(
     AddServerScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is AddServerAction.OnBackClick -> onBackClick()
-                else -> Unit
+                else                           -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                         )
 }
 
 @Composable
 private fun AddServerScreenLayout(
     state: AddServerState,
     onAction: (AddServerAction) -> Unit,
-) {
+                                 )
+{
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val scrollState = rememberScrollState()
@@ -112,16 +116,19 @@ private fun AddServerScreenLayout(
                 .widthIn(max = 480.dp)
                 .align(Alignment.Center)
                 .verticalScroll(scrollState),
-        ) {
+              ) {
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),
-            )
+                 )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.add_server), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(SetupR.string.add_server),
+                style = MaterialTheme.typography.headlineMedium
+                )
             Spacer(modifier = Modifier.height(16.dp))
             AnimatedVisibility(state.discoveredServers.isNotEmpty()) {
                 LazyRow {
@@ -133,7 +140,7 @@ private fun AddServerScreenLayout(
                                 onAction(AddServerAction.OnConnectClick(discoveredServer.address))
                             },
                             modifier = Modifier.animateItem(),
-                        )
+                                            )
                     }
                 }
             }
@@ -144,52 +151,53 @@ private fun AddServerScreenLayout(
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_server),
                         contentDescription = null,
-                    )
+                        )
                 },
                 onValueChange = { serverAddress = it },
                 label = {
                     Text(
                         text = stringResource(SetupR.string.edit_text_server_address_hint),
-                    )
+                        )
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Go,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
                     onGo = { doConnect() },
-                ),
+                                                 ),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
-                    if (state.error != null) {
+                    if (state.error != null)
+                    {
                         Text(
                             text = state.error!!.joinToString {
                                 it.asString(
                                     context.resources,
-                                )
+                                           )
                             },
                             color = MaterialTheme.colorScheme.error,
-                        )
+                            )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-            )
+                             )
             LoadingButton(
                 text = stringResource(SetupR.string.add_server_btn_connect),
                 onClick = { doConnect() },
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
-            )
+                         )
         }
         IconButton(
             onClick = { onAction(AddServerAction.OnBackClick) },
             modifier = Modifier.padding(start = 8.dp),
-        ) {
+                  ) {
             Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
         }
     }
@@ -197,11 +205,12 @@ private fun AddServerScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun AddServerScreenLayoutPreview() {
+private fun AddServerScreenLayoutPreview()
+{
     FindroidTheme {
         AddServerScreenLayout(
             state = AddServerState(),
             onAction = {},
-        )
+                             )
     }
 }

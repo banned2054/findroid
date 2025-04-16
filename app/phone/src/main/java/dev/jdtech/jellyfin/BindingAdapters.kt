@@ -14,7 +14,8 @@ import org.jellyfin.sdk.model.api.ImageType
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
 
-fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
+fun bindItemImage(imageView: ImageView, item: BaseItemDto)
+{
     val itemId =
         if (item.type == BaseItemKind.EPISODE || item.type == BaseItemKind.SEASON && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
 
@@ -23,10 +24,12 @@ fun bindItemImage(imageView: ImageView, item: BaseItemDto) {
         .posterDescription(item.name)
 }
 
-fun bindItemImage(imageView: ImageView, item: FindroidItem) {
-    val itemId = when (item) {
+fun bindItemImage(imageView: ImageView, item: FindroidItem)
+{
+    val itemId = when (item)
+    {
         is FindroidEpisode -> item.seriesId
-        else -> item.id
+        else               -> item.id
     }
 
     imageView
@@ -34,7 +37,8 @@ fun bindItemImage(imageView: ImageView, item: FindroidItem) {
         .posterDescription(item.name)
 }
 
-fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
+fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?)
+{
     if (item == null) return
 
     imageView
@@ -42,20 +46,27 @@ fun bindItemBackdropImage(imageView: ImageView, item: FindroidItem?) {
         .backdropDescription(item.name)
 }
 
-fun bindItemBackdropById(imageView: ImageView, itemId: UUID) {
+fun bindItemBackdropById(imageView: ImageView, itemId: UUID)
+{
     imageView.loadImage("/items/$itemId/Images/${ImageType.BACKDROP}")
 }
 
-fun bindPersonImage(imageView: ImageView, person: BaseItemPerson) {
+fun bindPersonImage(imageView: ImageView, person: BaseItemPerson)
+{
     imageView
-        .loadImage("/items/${person.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.person_placeholder)
+        .loadImage(
+            "/items/${person.id}/Images/${ImageType.PRIMARY}",
+            placeholderId = CoreR.drawable.person_placeholder
+                  )
         .posterDescription(person.name)
 }
 
-fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
-    val imageType = when (item) {
+fun bindCardItemImage(imageView: ImageView, item: FindroidItem)
+{
+    val imageType = when (item)
+    {
         is FindroidMovie -> ImageType.BACKDROP
-        else -> ImageType.PRIMARY
+        else             -> ImageType.PRIMARY
     }
 
     imageView
@@ -63,27 +74,35 @@ fun bindCardItemImage(imageView: ImageView, item: FindroidItem) {
         .posterDescription(item.name)
 }
 
-fun bindSeasonPoster(imageView: ImageView, seasonId: UUID) {
+fun bindSeasonPoster(imageView: ImageView, seasonId: UUID)
+{
     imageView.loadImage("/items/$seasonId/Images/${ImageType.PRIMARY}")
 }
 
-fun bindUserImage(imageView: ImageView, user: User) {
+fun bindUserImage(imageView: ImageView, user: User)
+{
     imageView
-        .loadImage("/users/${user.id}/Images/${ImageType.PRIMARY}", placeholderId = CoreR.drawable.user_placeholder)
+        .loadImage(
+            "/users/${user.id}/Images/${ImageType.PRIMARY}",
+            placeholderId = CoreR.drawable.user_placeholder
+                  )
         .posterDescription(user.name)
 }
 
 private fun ImageView.loadImage(
     url: String,
     @DrawableRes placeholderId: Int = CoreR.color.neutral_800,
-): View {
+                               ): View
+{
     return this
 }
 
-private fun View.posterDescription(name: String?) {
+private fun View.posterDescription(name: String?)
+{
     contentDescription = context.resources.getString(CoreR.string.image_description_poster, name)
 }
 
-private fun View.backdropDescription(name: String?) {
+private fun View.backdropDescription(name: String?)
+{
     contentDescription = context.resources.getString(CoreR.string.image_description_backdrop, name)
 }

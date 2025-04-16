@@ -34,88 +34,96 @@ fun SettingsGroupCard(
     group: PreferenceGroup,
     onAction: (SettingsAction) -> Unit,
     modifier: Modifier = Modifier,
-) {
+                     )
+{
     Column {
         group.nameStringResource?.let {
             Text(
                 text = stringResource(it),
                 modifier = Modifier.padding(start = MaterialTheme.spacings.medium),
                 style = MaterialTheme.typography.titleSmall,
-            )
+                )
             Spacer(modifier.height(MaterialTheme.spacings.small))
         }
         Card(
             modifier = modifier,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
-        ) {
+                                            ),
+            ) {
             group.preferences.fastForEachIndexed { index, preference ->
-                when (preference) {
-                    is PreferenceCategory -> SettingsCategoryCard(
+                when (preference)
+                {
+                    is PreferenceCategory    -> SettingsCategoryCard(
                         preference = preference,
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
-                    is PreferenceSwitch -> SettingsSwitchCard(
+                                                                    )
+
+                    is PreferenceSwitch      -> SettingsSwitchCard(
                         preference = preference,
                         onClick = {
                             onAction(
                                 SettingsAction.OnUpdate(
                                     preference.copy(value = !preference.value),
-                                ),
-                            )
+                                                       ),
+                                    )
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
-                    is PreferenceSelect -> SettingsSelectCard(
+                                                                  )
+
+                    is PreferenceSelect      -> SettingsSelectCard(
                         preference = preference,
                         onUpdate = { value ->
                             onAction(
                                 SettingsAction.OnUpdate(
                                     preference.copy(value = value),
-                                ),
-                            )
+                                                       ),
+                                    )
                             preference.onUpdate(value)
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
-                    is PreferenceIntInput -> SettingsIntInputCard(
+                                                                  )
+
+                    is PreferenceIntInput    -> SettingsIntInputCard(
                         preference = preference,
                         onUpdate = { value ->
                             onAction(
                                 SettingsAction.OnUpdate(
                                     preference.copy(value = value),
-                                ),
-                            )
+                                                       ),
+                                    )
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
-                    is PreferenceLongInput -> SettingsLongInputCard(
+                                                                    )
+
+                    is PreferenceLongInput   -> SettingsLongInputCard(
                         preference = preference,
                         onUpdate = { value ->
                             onAction(
                                 SettingsAction.OnUpdate(
                                     preference.copy(value = value),
-                                ),
-                            )
+                                                       ),
+                                    )
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
+                                                                     )
+
                     is PreferenceAppLanguage -> SettingsAppLanguageCard(
                         preference = preference,
                         modifier = Modifier
                             .fillMaxWidth(),
-                    )
+                                                                       )
                 }
-                if (index < group.preferences.lastIndex) {
+                if (index < group.preferences.lastIndex)
+                {
                     HorizontalDivider(
                         color = DividerDefaults.color.copy(alpha = 0.2f),
-                    )
+                                     )
                 }
             }
         }
@@ -124,7 +132,8 @@ fun SettingsGroupCard(
 
 @Preview
 @Composable
-private fun SettingsGroupCardPreview() {
+private fun SettingsGroupCardPreview()
+{
     FindroidTheme {
         SettingsGroupCard(
             group = PreferenceGroup(
@@ -134,31 +143,31 @@ private fun SettingsGroupCardPreview() {
                         nameStringResource = SettingsR.string.mpv_player,
                         descriptionStringRes = SettingsR.string.mpv_player_summary,
                         backendPreference = Preference("", false),
-                    ),
+                                    ),
                     PreferenceSelect(
                         nameStringResource = SettingsR.string.pref_player_mpv_hwdec,
                         dependencies = listOf(Preference("", false)),
                         backendPreference = Preference("", ""),
                         options = SettingsR.array.mpv_hwdec,
                         optionValues = SettingsR.array.mpv_hwdec,
-                    ),
+                                    ),
                     PreferenceSelect(
                         nameStringResource = SettingsR.string.pref_player_mpv_vo,
                         dependencies = listOf(Preference("", false)),
                         backendPreference = Preference("", ""),
                         options = SettingsR.array.mpv_vos,
                         optionValues = SettingsR.array.mpv_vos,
-                    ),
+                                    ),
                     PreferenceSelect(
                         nameStringResource = SettingsR.string.pref_player_mpv_ao,
                         dependencies = listOf(Preference("", false)),
                         backendPreference = Preference("", ""),
                         options = SettingsR.array.mpv_aos,
                         optionValues = SettingsR.array.mpv_aos,
-                    ),
-                ),
-            ),
+                                    ),
+                                    ),
+                                   ),
             onAction = {},
-        )
+                         )
     }
 }

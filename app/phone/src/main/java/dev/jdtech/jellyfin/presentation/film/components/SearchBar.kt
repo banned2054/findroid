@@ -32,29 +32,30 @@ fun FilmSearchBar(
     paddingEnd: Dp = 0.dp,
     inputPaddingStart: Dp = 0.dp,
     inputPaddingEnd: Dp = 0.dp,
-) {
+                 )
+{
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     val searchBarPaddingStart by animateDpAsState(
         targetValue = if (expanded) 0.dp else paddingStart,
         label = "search_bar_padding_start",
-    )
+                                                 )
 
     val searchBarPaddingEnd by animateDpAsState(
         targetValue = if (expanded) 0.dp else paddingEnd,
         label = "search_bar_padding_end",
-    )
+                                               )
 
     val searchBarInputPaddingStart by animateDpAsState(
         targetValue = if (expanded) inputPaddingStart else 0.dp,
         label = "search_bar_padding_start",
-    )
+                                                      )
 
     val searchBarInputPaddingEnd by animateDpAsState(
         targetValue = if (expanded) inputPaddingEnd else 0.dp,
         label = "search_bar_padding_end",
-    )
+                                                    )
 
     SearchBar(
         inputField = {
@@ -71,29 +72,32 @@ fun FilmSearchBar(
                         text = stringResource(FilmR.string.search_placeholder),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                    )
+                        )
                 },
                 leadingIcon = {
                     AnimatedContent(
                         targetState = expanded,
                         label = "search_to_back",
-                    ) { targetExpanded ->
-                        if (targetExpanded) {
+                                   ) { targetExpanded ->
+                        if (targetExpanded)
+                        {
                             IconButton(
                                 onClick = {
                                     expanded = false
                                 },
-                            ) {
+                                      ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_arrow_left),
                                     contentDescription = null,
-                                )
+                                    )
                             }
-                        } else {
+                        }
+                        else
+                        {
                             Icon(
                                 painter = painterResource(CoreR.drawable.ic_search),
                                 contentDescription = null,
-                            )
+                                )
                         }
                     }
                 },
@@ -101,31 +105,34 @@ fun FilmSearchBar(
                     AnimatedContent(
                         targetState = expanded,
                         label = "search_to_back",
-                    ) { targetExpanded ->
-                        if (targetExpanded) {
+                                   ) { targetExpanded ->
+                        if (targetExpanded)
+                        {
                             IconButton(
                                 onClick = {
                                     searchQuery = ""
                                 },
-                            ) {
+                                      ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_x),
                                     contentDescription = null,
-                                )
+                                    )
                             }
-                        } else {
+                        }
+                        else
+                        {
                             IconButton(
                                 onClick = onSettingsClick,
-                            ) {
+                                      ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_user),
                                     contentDescription = null,
-                                )
+                                    )
                             }
                         }
                     }
                 },
-            )
+                                        )
         },
         expanded = expanded,
         onExpandedChange = { expanded = it },
@@ -133,6 +140,6 @@ fun FilmSearchBar(
             .padding(
                 start = searchBarPaddingStart,
                 end = searchBarPaddingEnd,
-            ),
-    ) { }
+                    ),
+             ) { }
 }

@@ -25,44 +25,47 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @Composable
-fun VideoMetadataBar(videoMetadata: VideoMetadata) {
+fun VideoMetadataBar(videoMetadata: VideoMetadata)
+{
     Row(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-    ) {
+       ) {
         videoMetadata.resolution.firstOrNull()?.apply {
             VideoMetadataBarItem(
                 text = this.raw,
-            )
+                                )
         }
         videoMetadata.videoCodecs.firstOrNull()?.apply {
             VideoMetadataBarItem(
                 text = this.raw,
-            )
+                                )
         }
         videoMetadata.displayProfiles.firstOrNull()?.apply {
-            val icon = when (this) {
+            val icon = when (this)
+            {
                 DisplayProfile.DOLBY_VISION -> CoreR.drawable.ic_dolby
-                else -> null
+                else                        -> null
             }
             VideoMetadataBarItem(
                 text = this.raw,
                 icon = icon,
-            )
+                                )
         }
         videoMetadata.audioCodecs.firstOrNull()?.apply {
-            val icon = when (this) {
+            val icon = when (this)
+            {
                 AudioCodec.AC3, AudioCodec.EAC3, AudioCodec.TRUEHD -> CoreR.drawable.ic_dolby
-                else -> null
+                else                                               -> null
             }
             VideoMetadataBarItem(
                 text = this.raw,
                 icon = icon,
-            )
+                                )
         }
         videoMetadata.audioChannels.firstOrNull()?.apply {
             VideoMetadataBarItem(
                 text = this.raw,
-            )
+                                )
         }
     }
 }
@@ -71,7 +74,8 @@ fun VideoMetadataBar(videoMetadata: VideoMetadata) {
 fun VideoMetadataBarItem(
     text: String,
     @DrawableRes icon: Int? = null,
-) {
+                        )
+{
     Row(
         modifier = Modifier
             .clip(MaterialTheme.shapes.small)
@@ -79,26 +83,28 @@ fun VideoMetadataBarItem(
             .padding(
                 horizontal = MaterialTheme.spacings.small,
                 vertical = MaterialTheme.spacings.extraSmall,
-            ),
+                    ),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.extraSmall),
         verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (icon != null) {
+       ) {
+        if (icon != null)
+        {
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-            )
+                )
         }
         Text(
             text = text,
             style = MaterialTheme.typography.labelMedium,
-        )
+            )
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-private fun VideoMetadataBarPreview() {
+private fun VideoMetadataBarPreview()
+{
     FindroidTheme {
         VideoMetadataBar(
             videoMetadata = VideoMetadata(
@@ -108,7 +114,7 @@ private fun VideoMetadataBarPreview() {
                 audioCodecs = listOf(AudioCodec.TRUEHD),
                 audioChannels = listOf(AudioChannel.CH_7_1),
                 isAtmos = listOf(false),
-            ),
-        )
+                                         ),
+                        )
     }
 }

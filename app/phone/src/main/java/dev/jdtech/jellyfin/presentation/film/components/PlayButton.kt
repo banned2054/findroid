@@ -33,53 +33,67 @@ fun PlayButton(
     onClick: () -> Unit,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-) {
+              )
+{
     val runtimeMinutes by remember(item.playbackPositionTicks) {
         mutableLongStateOf(item.playbackPositionTicks.div(600000000))
     }
-    if (runtimeMinutes > 0) {
+    if (runtimeMinutes > 0)
+    {
         Button(
             onClick = onClick,
             modifier = Modifier.padding(end = 4.dp),
             enabled = enabled,
-        ) {
-            when (isLoading) {
-                true -> {
+              ) {
+            when (isLoading)
+            {
+                true  ->
+                {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = LocalContentColor.current,
-                    )
+                                             )
                 }
-                false -> {
+
+                false ->
+                {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_play),
                         contentDescription = null,
-                    )
+                        )
                 }
             }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
             Text(
                 text = stringResource(CoreR.string.runtime_minutes, runtimeMinutes),
-            )
+                )
         }
-    } else {
+    }
+    else
+    {
         FilledIconButton(
             onClick = onClick,
-            modifier = Modifier.width(72.dp).padding(end = 4.dp),
+            modifier = Modifier
+                .width(72.dp)
+                .padding(end = 4.dp),
             enabled = enabled,
-        ) {
-            when (isLoading) {
-                true -> {
+                        ) {
+            when (isLoading)
+            {
+                true  ->
+                {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = LocalContentColor.current,
-                    )
+                                             )
                 }
-                false -> {
+
+                false ->
+                {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_play),
                         contentDescription = null,
-                    )
+                        )
                 }
             }
         }
@@ -88,22 +102,24 @@ fun PlayButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun PlayButtonMoviePreview() {
+private fun PlayButtonMoviePreview()
+{
     FindroidTheme {
         PlayButton(
             item = dummyMovie,
             onClick = {},
-        )
+                  )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PlayButtonEpisodePreview() {
+private fun PlayButtonEpisodePreview()
+{
     FindroidTheme {
         PlayButton(
             item = dummyEpisode,
             onClick = {},
-        )
+                  )
     }
 }

@@ -13,4 +13,4 @@ data class PlayerChapter(
      * The name.
      */
     val name: String? = null,
-) : Parcelable
+                        ) : Parcelable

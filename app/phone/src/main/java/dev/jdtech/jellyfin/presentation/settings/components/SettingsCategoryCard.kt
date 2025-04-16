@@ -26,41 +26,45 @@ import dev.jdtech.jellyfin.settings.R as SettingsR
 fun SettingsCategoryCard(
     preference: PreferenceCategory,
     modifier: Modifier = Modifier,
-) {
+                        )
+{
     SettingsBaseCard(
         preference = preference,
         onClick = {
             preference.onClick(preference)
         },
         modifier = modifier,
-    ) {
+                    ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(preference.iconDrawableId!!),
                     contentDescription = null,
-                )
-            } else {
+                    )
+            }
+            else
+            {
                 Spacer(modifier = Modifier.size(MaterialTheme.spacings.default))
             }
 
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(
                         text = stringResource(id = it),
                         style = MaterialTheme.typography.bodyMedium,
-                    )
+                        )
                 }
             }
         }
@@ -69,13 +73,14 @@ fun SettingsCategoryCard(
 
 @Preview
 @Composable
-private fun SettingsCategoryCardPreview() {
+private fun SettingsCategoryCardPreview()
+{
     FindroidTheme {
         SettingsCategoryCard(
             preference = PreferenceCategory(
                 nameStringResource = SettingsR.string.settings_category_player,
                 iconDrawableId = CoreR.drawable.ic_play,
-            ),
-        )
+                                           ),
+                            )
     }
 }

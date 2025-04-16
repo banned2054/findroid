@@ -61,7 +61,8 @@ fun HomeScreen(
     onSettingsClick: () -> Unit,
     onItemClick: (item: FindroidItem) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-) {
+              )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -71,15 +72,16 @@ fun HomeScreen(
     HomeScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
-                is HomeAction.OnItemClick -> onItemClick(action.item)
-                is HomeAction.OnLibraryClick -> onLibraryClick(action.library)
+            when (action)
+            {
+                is HomeAction.OnItemClick     -> onItemClick(action.item)
+                is HomeAction.OnLibraryClick  -> onLibraryClick(action.library)
                 is HomeAction.OnSettingsClick -> onSettingsClick()
-                else -> Unit
+                else                          -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,12 +89,15 @@ fun HomeScreen(
 private fun HomeScreenLayout(
     state: HomeState,
     onAction: (HomeAction) -> Unit,
-) {
+                            )
+{
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
     val paddingEnd = safePaddingEnd + MaterialTheme.spacings.default
@@ -100,16 +105,19 @@ private fun HomeScreenLayout(
     val itemsPadding = PaddingValues(
         start = paddingStart,
         end = paddingEnd,
-    )
+                                    )
 
     val contentPaddingTop by animateDpAsState(
-        targetValue = if (state.error != null) {
+        targetValue = if (state.error != null)
+        {
             with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 136.dp }
-        } else {
+        }
+        else
+        {
             with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp }
         },
         label = "content_padding",
-    )
+                                             )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -117,7 +125,7 @@ private fun HomeScreenLayout(
         modifier = Modifier
             .fillMaxSize()
             .semantics { isTraversalGroup = true },
-    ) {
+       ) {
         FilmSearchBar(
             onSettingsClick = {
                 onAction(HomeAction.OnSettingsClick)
@@ -129,38 +137,40 @@ private fun HomeScreenLayout(
             paddingEnd = paddingEnd,
             inputPaddingStart = safePaddingStart,
             inputPaddingEnd = safePaddingEnd,
-        )
+                     )
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .semantics { traversalIndex = 1f },
             contentPadding = PaddingValues(
                 top = contentPaddingTop,
-                bottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default },
-            ),
+                bottom = with(density) {
+                    WindowInsets.safeDrawing.getBottom(this).toDp() + MaterialTheme.spacings.default
+                },
+                                          ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
-        ) {
+                  ) {
             items(state.sections, key = { it.id }) { section ->
                 Column(
                     modifier = Modifier.animateItem(),
-                ) {
+                      ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(42.dp)
                             .padding(itemsPadding),
-                    ) {
+                       ) {
                         Text(
                             text = section.homeSection.name.asString(),
                             modifier = Modifier.align(Alignment.CenterStart),
                             style = MaterialTheme.typography.titleMedium,
-                        )
+                            )
                     }
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     LazyRow(
                         contentPadding = itemsPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
+                           ) {
                         items(section.homeSection.items, key = { it.id }) { item ->
                             ItemCard(
                                 item = item,
@@ -168,7 +178,7 @@ private fun HomeScreenLayout(
                                 onClick = {
                                     onAction(HomeAction.OnItemClick(item))
                                 },
-                            )
+                                    )
                         }
                     }
                 }
@@ -176,18 +186,18 @@ private fun HomeScreenLayout(
             items(state.views, key = { it.id }) { view ->
                 Column(
                     modifier = Modifier.animateItem(),
-                ) {
+                      ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(42.dp)
                             .padding(itemsPadding),
-                    ) {
+                       ) {
                         Text(
                             text = stringResource(FilmR.string.latest_library, view.view.name),
                             modifier = Modifier.align(Alignment.CenterStart),
                             style = MaterialTheme.typography.titleMedium,
-                        )
+                            )
                         TextButton(
                             onClick = {
                                 onAction(
@@ -197,12 +207,12 @@ private fun HomeScreenLayout(
                                             name = view.view.name,
                                             images = FindroidImages(),
                                             type = view.view.type,
-                                        ),
-                                    ),
-                                )
+                                                          ),
+                                                             ),
+                                        )
                             },
                             modifier = Modifier.align(Alignment.CenterEnd),
-                        ) {
+                                  ) {
                             Text(stringResource(CoreR.string.view_all))
                         }
                     }
@@ -210,19 +220,20 @@ private fun HomeScreenLayout(
                     LazyRow(
                         contentPadding = itemsPadding,
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-                    ) {
+                           ) {
                         items(view.view.items, key = { it.id }) { item ->
                             ItemCard(
                                 item = item,
                                 direction = Direction.VERTICAL,
                                 onClick = {},
-                            )
+                                    )
                         }
                     }
                 }
             }
         }
-        if (state.error != null) {
+        if (state.error != null)
+        {
             ErrorCard(
                 onShowStacktrace = {
                     showErrorDialog = true
@@ -234,15 +245,18 @@ private fun HomeScreenLayout(
                     .fillMaxWidth()
                     .padding(
                         start = paddingStart,
-                        top = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp },
+                        top = with(density) {
+                            WindowInsets.safeDrawing.getTop(this).toDp() + 80.dp
+                        },
                         end = paddingEnd,
-                    ),
-            )
-            if (showErrorDialog) {
+                            ),
+                     )
+            if (showErrorDialog)
+            {
                 ErrorDialog(
                     exception = state.error!!,
                     onDismissRequest = { showErrorDialog = false },
-                )
+                           )
             }
         }
     }
@@ -250,15 +264,16 @@ private fun HomeScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun HomeScreenLayoutPreview() {
+private fun HomeScreenLayoutPreview()
+{
     FindroidTheme {
         HomeScreenLayout(
             state = HomeState(
                 sections = listOf(dummyHomeSection),
                 views = listOf(dummyHomeView),
                 error = Exception("Failed to load data"),
-            ),
+                             ),
             onAction = {},
-        )
+                        )
     }
 }

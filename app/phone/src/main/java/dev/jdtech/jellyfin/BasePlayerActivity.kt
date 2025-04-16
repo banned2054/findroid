@@ -11,57 +11,71 @@ import androidx.core.view.updatePadding
 import androidx.media3.session.MediaSession
 import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
 
-abstract class BasePlayerActivity : AppCompatActivity() {
+abstract class BasePlayerActivity : AppCompatActivity()
+{
 
     abstract val viewModel: PlayerActivityViewModel
 
     private lateinit var mediaSession: MediaSession
     private var wasPip: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
-    override fun onStart() {
+    override fun onStart()
+    {
         super.onStart()
 
         mediaSession = MediaSession.Builder(this, viewModel.player).build()
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
 
-        if (wasPip) {
+        if (wasPip)
+        {
             wasPip = false
-        } else {
+        }
+        else
+        {
             viewModel.player.playWhenReady = viewModel.playWhenReady
         }
         hideSystemUI()
     }
 
-    override fun onPause() {
+    override fun onPause()
+    {
         super.onPause()
 
-        if (isInPictureInPictureMode) {
+        if (isInPictureInPictureMode)
+        {
             wasPip = true
-        } else {
+        }
+        else
+        {
             viewModel.playWhenReady = viewModel.player.playWhenReady == true
             viewModel.player.playWhenReady = false
         }
     }
 
-    override fun onStop() {
+    override fun onStop()
+    {
         super.onStop()
 
         mediaSession.release()
 
-        if (wasPip) {
+        if (wasPip)
+        {
             finish()
         }
     }
 
-    protected fun hideSystemUI() {
+    protected fun hideSystemUI()
+    {
         WindowCompat.getInsetsController(window, window.decorView).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsetsCompat.Type.systemBars())
@@ -71,7 +85,8 @@ abstract class BasePlayerActivity : AppCompatActivity() {
             WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
     }
 
-    protected fun configureInsets(playerControls: View) {
+    protected fun configureInsets(playerControls: View)
+    {
         playerControls.setOnApplyWindowInsetsListener { _, windowInsets ->
             val cutout = windowInsets.displayCutout
             playerControls.updatePadding(
@@ -79,7 +94,7 @@ abstract class BasePlayerActivity : AppCompatActivity() {
                 top = cutout?.safeInsetTop ?: 0,
                 right = cutout?.safeInsetRight ?: 0,
                 bottom = cutout?.safeInsetBottom ?: 0,
-            )
+                                        )
             return@setOnApplyWindowInsetsListener windowInsets
         }
     }

@@ -20,10 +20,11 @@ fun ProgressBar(
     item: FindroidItem,
     width: Int,
     modifier: Modifier = Modifier,
-) {
+               )
+{
     Column(
         modifier = modifier,
-    ) {
+          ) {
         Box(
             modifier = Modifier
                 .height(4.dp)
@@ -31,28 +32,29 @@ fun ProgressBar(
                     item.playbackPositionTicks
                         .div(
                             item.runtimeTicks.toFloat(),
-                        )
+                            )
                         .times(
                             width - 16,
-                        ).dp,
-                )
+                              ).dp,
+                      )
                 .clip(
                     MaterialTheme.shapes.extraSmall,
-                )
+                     )
                 .background(
                     MaterialTheme.colorScheme.primary,
-                ),
-        )
+                           ),
+           )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ProgressBarPreview() {
+private fun ProgressBarPreview()
+{
     FindroidTheme {
         ProgressBar(
             item = dummyMovie,
             width = 142,
-        )
+                   )
     }
 }

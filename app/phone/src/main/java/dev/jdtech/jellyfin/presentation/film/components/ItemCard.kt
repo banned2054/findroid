@@ -32,10 +32,12 @@ fun ItemCard(
     direction: Direction,
     onClick: (FindroidItem) -> Unit,
     modifier: Modifier = Modifier,
-) {
-    val width = when (direction) {
+            )
+{
+    val width = when (direction)
+    {
         Direction.HORIZONTAL -> 260
-        Direction.VERTICAL -> 150
+        Direction.VERTICAL   -> 150
     }
     Column(
         modifier = modifier
@@ -45,30 +47,31 @@ fun ItemCard(
                 onClick = {
                     onClick(item)
                 },
-            ),
-    ) {
+                      ),
+          ) {
         Surface(
             shape = MaterialTheme.shapes.small,
-        ) {
+               ) {
             Box {
                 ItemPoster(
                     item = item,
                     direction = direction,
-                )
+                          )
                 ProgressBadge(
                     item = item,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(MaterialTheme.spacings.small),
-                )
-                if (direction == Direction.HORIZONTAL) {
+                             )
+                if (direction == Direction.HORIZONTAL)
+                {
                     ProgressBar(
                         item = item,
                         width = width,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(MaterialTheme.spacings.small),
-                    )
+                               )
                 }
             }
         }
@@ -78,56 +81,60 @@ fun ItemCard(
             style = MaterialTheme.typography.bodyMedium,
             maxLines = if (direction == Direction.HORIZONTAL) 1 else 2,
             overflow = TextOverflow.Ellipsis,
-        )
-        if (item is FindroidEpisode) {
+            )
+        if (item is FindroidEpisode)
+        {
             Text(
                 text = stringResource(
                     id = R.string.episode_name_extended,
                     item.parentIndexNumber,
                     item.indexNumber,
                     item.name,
-                ),
+                                     ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-            )
+                )
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ItemCardPreviewMovie() {
+private fun ItemCardPreviewMovie()
+{
     FindroidTheme {
         ItemCard(
             item = dummyMovie,
             direction = Direction.HORIZONTAL,
             onClick = {},
-        )
+                )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ItemCardPreviewMovieVertical() {
+private fun ItemCardPreviewMovieVertical()
+{
     FindroidTheme {
         ItemCard(
             item = dummyMovie,
             direction = Direction.VERTICAL,
             onClick = {},
-        )
+                )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ItemCardPreviewEpisode() {
+private fun ItemCardPreviewEpisode()
+{
     FindroidTheme {
         ItemCard(
             item = dummyEpisode,
             direction = Direction.HORIZONTAL,
             onClick = {},
-        )
+                )
     }
 }

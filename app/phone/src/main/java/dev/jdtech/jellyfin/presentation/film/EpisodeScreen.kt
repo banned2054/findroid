@@ -79,7 +79,8 @@ fun EpisodeScreen(
     navigateBack: () -> Unit,
     viewModel: EpisodeViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
-) {
+                 )
+{
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -91,18 +92,26 @@ fun EpisodeScreen(
     }
 
     ObserveAsEvents(playerViewModel.eventsChannelFlow) { event ->
-        when (event) {
-            is PlayerItemsEvent.PlayerItemsReady -> {
+        when (event)
+        {
+            is PlayerItemsEvent.PlayerItemsReady ->
+            {
                 isLoadingPlayer = false
                 isLoadingRestartPlayer = false
                 val intent = Intent(context, PlayerActivity::class.java)
                 intent.putExtra("items", ArrayList(event.items))
                 context.startActivity(intent)
             }
-            is PlayerItemsEvent.PlayerItemsError -> {
+
+            is PlayerItemsEvent.PlayerItemsError ->
+            {
                 isLoadingPlayer = false
                 isLoadingRestartPlayer = false
-                Toast.makeText(context, CoreR.string.error_preparing_player_items, Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    CoreR.string.error_preparing_player_items,
+                    Toast.LENGTH_LONG
+                              ).show()
             }
         }
     }
@@ -112,22 +121,29 @@ fun EpisodeScreen(
         isLoadingPlayer = isLoadingPlayer,
         isLoadingRestartPlayer = isLoadingRestartPlayer,
         onAction = { action ->
-            when (action) {
-                is EpisodeAction.Play -> {
-                    when (action.startFromBeginning) {
-                        true -> isLoadingRestartPlayer = true
+            when (action)
+            {
+                is EpisodeAction.Play        ->
+                {
+                    when (action.startFromBeginning)
+                    {
+                        true  -> isLoadingRestartPlayer = true
                         false -> isLoadingPlayer = true
                     }
                     state.episode?.let { episode ->
-                        playerViewModel.loadPlayerItems(episode, startFromBeginning = action.startFromBeginning)
+                        playerViewModel.loadPlayerItems(
+                            episode,
+                            startFromBeginning = action.startFromBeginning
+                                                       )
                     }
                 }
+
                 is EpisodeAction.OnBackClick -> navigateBack()
-                else -> Unit
+                else                         -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                       )
 }
 
 @Composable
@@ -136,12 +152,15 @@ private fun EpisodeScreenLayout(
     isLoadingPlayer: Boolean,
     isLoadingRestartPlayer: Boolean,
     onAction: (EpisodeAction) -> Unit,
-) {
+                               )
+{
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
@@ -156,18 +175,18 @@ private fun EpisodeScreenLayout(
 
     Box(
         modifier = Modifier.fillMaxSize(),
-    ) {
+       ) {
         state.episode?.let { episode ->
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(scrollState),
-            ) {
+                  ) {
                 Box(
                     modifier = Modifier
                         .height(240.dp)
                         .clipToBounds(),
-                ) {
+                   ) {
                     AsyncImage(
                         model = episode.images.primary,
                         contentDescription = null,
@@ -176,23 +195,23 @@ private fun EpisodeScreenLayout(
                             .parallaxLayoutModifier(
                                 scrollState = scrollState,
                                 2,
-                            ),
+                                                   ),
                         placeholder = ColorPainter(MaterialTheme.colorScheme.surfaceContainer),
                         contentScale = ContentScale.Crop,
-                    )
+                              )
                     Canvas(
                         modifier = Modifier
                             .fillMaxSize(),
-                    ) {
+                          ) {
                         drawRect(
                             Color.Black.copy(alpha = 0.1f),
-                        )
+                                )
                         drawRect(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, backgroundColor),
                                 startY = size.height / 2,
-                            ),
-                        )
+                                                          ),
+                                )
                     }
                     AsyncImage(
                         model = episode.images.showLogo,
@@ -203,34 +222,34 @@ private fun EpisodeScreenLayout(
                             .height(100.dp)
                             .fillMaxWidth(),
                         contentScale = ContentScale.Fit,
-                    )
+                              )
                 }
                 Column(
                     modifier = Modifier.padding(
                         start = paddingStart,
                         end = paddingEnd,
-                    ),
-                ) {
+                                               ),
+                      ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
+                       ) {
                         Column {
                             Text(
                                 text = stringResource(
                                     id = CoreR.string.season_episode,
                                     episode.parentIndexNumber,
                                     episode.indexNumber,
-                                ),
+                                                     ),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 style = MaterialTheme.typography.labelLarge,
-                            )
+                                )
                             Text(
                                 text = episode.name,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 3,
                                 style = MaterialTheme.typography.headlineMedium,
-                            )
+                                )
                         }
                     }
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
@@ -238,31 +257,34 @@ private fun EpisodeScreenLayout(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.small),
                         verticalAlignment = Alignment.Bottom,
-                    ) {
+                       ) {
                         episode.premiereDate?.let { premiereDate ->
                             Text(
                                 text = premiereDate.format(),
                                 style = MaterialTheme.typography.bodyMedium,
-                            )
+                                )
                         }
                         Text(
-                            text = stringResource(CoreR.string.runtime_minutes, episode.runtimeTicks.div(600000000)),
+                            text = stringResource(
+                                CoreR.string.runtime_minutes,
+                                episode.runtimeTicks.div(600000000)
+                                                 ),
                             style = MaterialTheme.typography.bodyMedium,
-                        )
+                            )
                         episode.communityRating?.let { communityRating ->
                             Row(
                                 verticalAlignment = Alignment.Bottom,
-                            ) {
+                               ) {
                                 Icon(
                                     painter = painterResource(CoreR.drawable.ic_star),
                                     contentDescription = null,
                                     tint = Color("#F2C94C".toColorInt()),
-                                )
+                                    )
                                 Spacer(Modifier.width(MaterialTheme.spacings.extraSmall))
                                 Text(
                                     text = "%.1f".format(communityRating),
                                     style = MaterialTheme.typography.bodyMedium,
-                                )
+                                    )
                             }
                         }
                     }
@@ -277,14 +299,16 @@ private fun EpisodeScreenLayout(
                             onAction(EpisodeAction.Play(startFromBeginning = startFromBeginning))
                         },
                         onMarkAsPlayedClick = {
-                            when (episode.played) {
-                                true -> onAction(EpisodeAction.UnmarkAsPlayed)
+                            when (episode.played)
+                            {
+                                true  -> onAction(EpisodeAction.UnmarkAsPlayed)
                                 false -> onAction(EpisodeAction.MarkAsPlayed)
                             }
                         },
                         onMarkAsFavoriteClick = {
-                            when (episode.favorite) {
-                                true -> onAction(EpisodeAction.UnmarkAsFavorite)
+                            when (episode.favorite)
+                            {
+                                true  -> onAction(EpisodeAction.UnmarkAsFavorite)
                                 false -> onAction(EpisodeAction.MarkAsFavorite)
                             }
                         },
@@ -293,7 +317,7 @@ private fun EpisodeScreenLayout(
                         modifier = Modifier.fillMaxWidth(),
                         isLoadingPlayer = isLoadingPlayer,
                         isLoadingRestartPlayer = isLoadingRestartPlayer,
-                    )
+                                  )
                     Spacer(Modifier.height(MaterialTheme.spacings.small))
                     Text(
                         text = episode.overview,
@@ -304,39 +328,40 @@ private fun EpisodeScreenLayout(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = if (expandedOverview) Int.MAX_VALUE else 3,
                         style = MaterialTheme.typography.bodyMedium,
-                    )
+                        )
                     Spacer(Modifier.height(MaterialTheme.spacings.medium))
                 }
-                if (episode.people.isNotEmpty()) {
+                if (episode.people.isNotEmpty())
+                {
                     Column(
                         modifier = Modifier
                             .padding(
                                 start = paddingStart,
                                 end = paddingEnd,
-                            ),
-                    ) {
+                                    ),
+                          ) {
                         Text(
                             text = stringResource(CoreR.string.cast_amp_crew),
                             style = MaterialTheme.typography.titleMedium,
-                        )
+                            )
                         Spacer(Modifier.height(MaterialTheme.spacings.small))
                     }
                     LazyRow(
                         contentPadding = PaddingValues(
                             start = paddingStart,
                             end = paddingEnd,
-                        ),
+                                                      ),
                         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
-                    ) {
+                           ) {
                         items(
                             items = episode.people,
                             key = { person ->
                                 person.id
                             },
-                        ) { person ->
+                             ) { person ->
                             PersonItem(
                                 person = person,
-                            )
+                                      )
                         }
                     }
                 }
@@ -346,7 +371,7 @@ private fun EpisodeScreenLayout(
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(Alignment.Center),
-            )
+                                     )
         }
 
         Row(
@@ -354,7 +379,7 @@ private fun EpisodeScreenLayout(
                 .fillMaxWidth()
                 .safeDrawingPadding()
                 .padding(horizontal = MaterialTheme.spacings.small),
-        ) {
+           ) {
             IconButton(
                 onClick = { onAction(EpisodeAction.OnBackClick) },
                 modifier = Modifier
@@ -362,12 +387,12 @@ private fun EpisodeScreenLayout(
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White,
-                ),
-            ) {
+                                                            ),
+                      ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_arrow_left),
                     contentDescription = null,
-                )
+                    )
             }
         }
     }
@@ -375,16 +400,17 @@ private fun EpisodeScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun EpisodeScreenLayoutPreview() {
+private fun EpisodeScreenLayoutPreview()
+{
     FindroidTheme {
         EpisodeScreenLayout(
             state = EpisodeState(
                 episode = dummyEpisode,
                 videoMetadata = dummyVideoMetadata,
-            ),
+                                ),
             isLoadingPlayer = false,
             isLoadingRestartPlayer = false,
             onAction = {},
-        )
+                           )
     }
 }

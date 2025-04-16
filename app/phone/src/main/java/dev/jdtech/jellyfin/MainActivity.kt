@@ -19,10 +19,12 @@ import dev.jdtech.jellyfin.viewmodels.MainViewModel
 import dev.jdtech.jellyfin.work.SyncWorker
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()
+{
     private val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
@@ -32,15 +34,16 @@ class MainActivity : AppCompatActivity() {
 
             FindroidTheme(
                 dynamicColor = state.isDynamicColors,
-            ) {
+                         ) {
                 val navController = rememberNavController()
-                if (!state.isLoading) {
+                if (!state.isLoading)
+                {
                     NavigationRoot(
                         navController = navController,
                         hasServers = state.hasServers,
                         hasCurrentServer = state.hasCurrentServer,
                         hasCurrentUser = state.hasCurrentUser,
-                    )
+                                  )
                 }
             }
         }
@@ -48,15 +51,16 @@ class MainActivity : AppCompatActivity() {
         scheduleUserDataSync()
     }
 
-    private fun scheduleUserDataSync() {
+    private fun scheduleUserDataSync()
+    {
         val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(
                         NetworkType.CONNECTED,
-                    )
+                                           )
                     .build(),
-            )
+                           )
             .build()
 
         val workManager = WorkManager.getInstance(applicationContext)

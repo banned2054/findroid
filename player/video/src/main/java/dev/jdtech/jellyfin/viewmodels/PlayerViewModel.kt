@@ -29,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject internal constructor(
     private val repository: JellyfinRepository,
-) : ViewModel() {
+                                                  ) : ViewModel()
+{
     private val eventsChannel = Channel<PlayerItemsEvent>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
@@ -37,16 +38,21 @@ class PlayerViewModel @Inject internal constructor(
         item: FindroidItem,
         mediaSourceIndex: Int? = null,
         startFromBeginning: Boolean = false,
-    ) {
+                       )
+    {
         Timber.d("Loading player items for item ${item.id}")
 
         viewModelScope.launch {
-            val playbackPosition = if (!startFromBeginning) item.playbackPositionTicks.div(10000) else 0
+            val playbackPosition =
+                if (!startFromBeginning) item.playbackPositionTicks.div(10000) else 0
 
-            try {
+            try
+            {
                 val items = prepareMediaPlayerItems(item, playbackPosition, mediaSourceIndex)
                 eventsChannel.send(PlayerItemsEvent.PlayerItemsReady(items))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 Timber.d(e)
                 eventsChannel.send(PlayerItemsEvent.PlayerItemsError(e))
             }
@@ -57,32 +63,38 @@ class PlayerViewModel @Inject internal constructor(
         item: FindroidItem,
         playbackPosition: Long,
         mediaSourceIndex: Int?,
-    ): List<PlayerItem> = when (item) {
-        is FindroidMovie -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
-        is FindroidShow -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        is FindroidSeason -> seasonToPlayerItems(item, playbackPosition, mediaSourceIndex)
+                                               ): List<PlayerItem> = when (item)
+    {
+        is FindroidMovie   -> movieToPlayerItem(item, playbackPosition, mediaSourceIndex)
+        is FindroidShow    -> seriesToPlayerItems(item, playbackPosition, mediaSourceIndex)
+        is FindroidSeason  -> seasonToPlayerItems(item, playbackPosition, mediaSourceIndex)
         is FindroidEpisode -> episodeToPlayerItems(item, playbackPosition, mediaSourceIndex)
-        else -> emptyList()
+        else               -> emptyList()
     }
 
     private suspend fun movieToPlayerItem(
         item: FindroidMovie,
         playbackPosition: Long,
         mediaSourceIndex: Int?,
-    ) = listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
+                                         ) =
+        listOf(item.toPlayerItem(mediaSourceIndex, playbackPosition))
 
     private suspend fun seriesToPlayerItems(
         item: FindroidShow,
         playbackPosition: Long,
         mediaSourceIndex: Int?,
-    ): List<PlayerItem> {
+                                           ): List<PlayerItem>
+    {
         val nextUp = repository.getNextUp(item.id)
 
-        return if (nextUp.isEmpty()) {
+        return if (nextUp.isEmpty())
+        {
             repository
                 .getSeasons(item.id)
                 .flatMap { seasonToPlayerItems(it, playbackPosition, mediaSourceIndex) }
-        } else {
+        }
+        else
+        {
             episodeToPlayerItems(nextUp.first(), playbackPosition, mediaSourceIndex)
         }
     }
@@ -91,13 +103,14 @@ class PlayerViewModel @Inject internal constructor(
         item: FindroidSeason,
         playbackPosition: Long,
         mediaSourceIndex: Int?,
-    ): List<PlayerItem> {
+                                           ): List<PlayerItem>
+    {
         return repository
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.id,
                 fields = listOf(ItemFields.MEDIA_SOURCES),
-            )
+                        )
             .filter { it.sources.isNotEmpty() }
             .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
@@ -107,21 +120,29 @@ class PlayerViewModel @Inject internal constructor(
         item: FindroidEpisode,
         playbackPosition: Long,
         mediaSourceIndex: Int?,
-    ): List<PlayerItem> {
+                                            ): List<PlayerItem>
+    {
         // TODO Move user configuration to a separate class
-        val userConfig = try {
+        val userConfig = try
+        {
             repository.getUserConfiguration()
-        } catch (_: Exception) {
+        }
+        catch (_: Exception)
+        {
             null
         }
         return repository
             .getEpisodes(
                 seriesId = item.seriesId,
                 seasonId = item.seasonId,
-                fields = listOf(ItemFields.MEDIA_SOURCES, ItemFields.CHAPTERS, ItemFields.TRICKPLAY),
+                fields = listOf(
+                    ItemFields.MEDIA_SOURCES,
+                    ItemFields.CHAPTERS,
+                    ItemFields.TRICKPLAY
+                               ),
                 startItemId = item.id,
                 limit = if (userConfig?.enableNextEpisodeAutoPlay != false) null else 1,
-            )
+                        )
             .filter { it.sources.isNotEmpty() }
             .filter { !it.missing }
             .map { episode -> episode.toPlayerItem(mediaSourceIndex, playbackPosition) }
@@ -130,11 +151,15 @@ class PlayerViewModel @Inject internal constructor(
     private suspend fun FindroidItem.toPlayerItem(
         mediaSourceIndex: Int?,
         playbackPosition: Long,
-    ): PlayerItem {
+                                                 ): PlayerItem
+    {
         val mediaSources = repository.getMediaSources(id, true)
-        val mediaSource = if (mediaSourceIndex == null) {
+        val mediaSource = if (mediaSourceIndex == null)
+        {
             mediaSources.firstOrNull { it.type == FindroidSourceType.LOCAL } ?: mediaSources[0]
-        } else {
+        }
+        else
+        {
             mediaSources[mediaSourceIndex]
         }
         val externalSubtitles = mediaSource.mediaStreams
@@ -146,16 +171,19 @@ class PlayerViewModel @Inject internal constructor(
                     mediaStream.title,
                     mediaStream.language,
                     Uri.parse(mediaStream.path!!),
-                    when (mediaStream.codec) {
+                    when (mediaStream.codec)
+                    {
                         "subrip" -> MimeTypes.APPLICATION_SUBRIP
                         "webvtt" -> MimeTypes.APPLICATION_SUBRIP
-                        "ass" -> MimeTypes.TEXT_SSA
-                        else -> MimeTypes.TEXT_UNKNOWN
+                        "ass"    -> MimeTypes.TEXT_SSA
+                        else     -> MimeTypes.TEXT_UNKNOWN
                     },
-                )
+                                )
             }
-        val trickplayInfo = when (this) {
-            is FindroidSources -> {
+        val trickplayInfo = when (this)
+        {
+            is FindroidSources ->
+            {
                 this.trickplayInfo?.get(mediaSource.id)?.let {
                     TrickplayInfo(
                         width = it.width,
@@ -165,10 +193,11 @@ class PlayerViewModel @Inject internal constructor(
                         thumbnailCount = it.thumbnailCount,
                         interval = it.interval,
                         bandwidth = it.bandwidth,
-                    )
+                                 )
                 }
             }
-            else -> null
+
+            else               -> null
         }
         return PlayerItem(
             name = name,
@@ -182,20 +211,22 @@ class PlayerViewModel @Inject internal constructor(
             externalSubtitles = externalSubtitles,
             chapters = chapters.toPlayerChapters(),
             trickplayInfo = trickplayInfo,
-        )
+                         )
     }
 
-    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter>? {
+    private fun List<FindroidChapter>?.toPlayerChapters(): List<PlayerChapter>?
+    {
         return this?.map { chapter ->
             PlayerChapter(
                 startPosition = chapter.startPosition,
                 name = chapter.name,
-            )
+                         )
         }
     }
 }
 
-sealed interface PlayerItemsEvent {
+sealed interface PlayerItemsEvent
+{
     data class PlayerItemsReady(val items: List<PlayerItem>) : PlayerItemsEvent
     data class PlayerItemsError(val error: Exception) : PlayerItemsEvent
 }

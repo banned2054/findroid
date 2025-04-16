@@ -55,7 +55,8 @@ import dev.jdtech.jellyfin.player.video.R as VideoR
 var isControlsLocked: Boolean = false
 
 @AndroidEntryPoint
-class PlayerActivity : BasePlayerActivity() {
+class PlayerActivity : BasePlayerActivity()
+{
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -71,35 +72,48 @@ class PlayerActivity : BasePlayerActivity() {
 
     private val isPipSupported by lazy {
         // Check if device has PiP feature
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE))
+        {
             return@lazy false
         }
 
         // Check if PiP is enabled for the app
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            appOps?.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        {
+            appOps?.unsafeCheckOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName
+                                        ) == AppOpsManager.MODE_ALLOWED
+        }
+        else
+        {
             @Suppress("DEPRECATION")
-            appOps?.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
+            appOps?.checkOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE, Process.myUid(), packageName
+                                  ) == AppOpsManager.MODE_ALLOWED
         }
     }
 
     private val handler = Handler(Looper.getMainLooper())
     private val skipButtonTimeout = Runnable {
-        if (!binding.playerView.isControllerFullyVisible) {
+        if (!binding.playerView.isControllerFullyVisible)
+        {
             skipSegmentButton.isVisible = false
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
-        val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
             intent.extras!!.getParcelableArrayList("items", PlayerItem::class.java)!!.toTypedArray()
-        } else {
-            @Suppress("DEPRECATION")
-            intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!.toTypedArray()
+        }
+        else
+        {
+            @Suppress("DEPRECATION") intent.extras!!.getParcelableArrayList<PlayerItem>("items")!!
+                .toTypedArray()
         }
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -109,11 +123,12 @@ class PlayerActivity : BasePlayerActivity() {
         binding.playerView.player = viewModel.player
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (visibility == View.GONE) {
+                if (visibility == View.GONE)
+                {
                     hideSystemUI()
                 }
             },
-        )
+                                                          )
 
         val playerControls = binding.playerView.findViewById<View>(R.id.player_controls)
         val lockedControls = binding.playerView.findViewById<View>(R.id.locked_player_view)
@@ -123,13 +138,14 @@ class PlayerActivity : BasePlayerActivity() {
         configureInsets(playerControls)
         configureInsets(lockedControls)
 
-        if (appPreferences.getValue(appPreferences.playerGestures)) {
+        if (appPreferences.getValue(appPreferences.playerGestures))
+        {
             playerGestureHelper = PlayerGestureHelper(
                 appPreferences,
                 this,
                 binding.playerView,
                 getSystemService(AUDIO_SERVICE) as AudioManager,
-            )
+                                                     )
         }
 
         binding.playerView.findViewById<View>(R.id.back_button).setOnClickListener {
@@ -159,14 +175,17 @@ class PlayerActivity : BasePlayerActivity() {
                             segment = currentSegment
                             currentSegment?.let { segment ->
                                 // Button text
-                                skipSegmentButton.text = when (segment.type) {
-                                    FindroidSegmentType.INTRO -> getString(VideoR.string.player_controls_skip_intro)
+                                skipSegmentButton.text = when (segment.type)
+                                {
+                                    FindroidSegmentType.INTRO   -> getString(VideoR.string.player_controls_skip_intro)
                                     FindroidSegmentType.CREDITS -> getString(VideoR.string.player_controls_skip_credits)
-                                    else -> ""
+                                    else                        -> ""
                                 }
                                 // Buttons visibility
-                                skipSegmentButton.isVisible = segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
-                                if (skipSegmentButton.isVisible) {
+                                skipSegmentButton.isVisible =
+                                    segment.type != FindroidSegmentType.UNKNOWN && !isInPictureInPictureMode
+                                if (skipSegmentButton.isVisible)
+                                {
                                     handler.removeCallbacks(skipButtonTimeout)
                                     handler.postDelayed(skipButtonTimeout, 5000)
                                 }
@@ -190,19 +209,22 @@ class PlayerActivity : BasePlayerActivity() {
                             }
 
                             // Chapters
-                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters != null) {
+                            if (appPreferences.getValue(appPreferences.playerChapterMarkers) && currentChapters != null)
+                            {
                                 currentChapters?.let { chapters ->
-                                    val playerControlView = findViewById<PlayerControlView>(R.id.exo_controller)
+                                    val playerControlView =
+                                        findViewById<PlayerControlView>(R.id.exo_controller)
                                     val numOfChapters = chapters.size
                                     playerControlView.setExtraAdGroupMarkers(
                                         LongArray(numOfChapters) { index -> chapters[index].startPosition },
                                         BooleanArray(numOfChapters) { false },
-                                    )
+                                                                            )
                                 }
                             }
 
                             // File Loaded
-                            if (fileLoaded) {
+                            if (fileLoaded)
+                            {
                                 audioButton.isEnabled = true
                                 audioButton.imageAlpha = 255
                                 lockButton.isEnabled = true
@@ -220,13 +242,20 @@ class PlayerActivity : BasePlayerActivity() {
 
                 launch {
                     viewModel.eventsChannelFlow.collect { event ->
-                        when (event) {
-                            is PlayerEvents.NavigateBack -> finishPlayback()
-                            is PlayerEvents.IsPlayingChanged -> {
-                                if (appPreferences.getValue(appPreferences.playerPipGesture)) {
-                                    try {
+                        when (event)
+                        {
+                            is PlayerEvents.NavigateBack     -> finishPlayback()
+                            is PlayerEvents.IsPlayingChanged ->
+                            {
+                                if (appPreferences.getValue(appPreferences.playerPipGesture))
+                                {
+                                    try
+                                    {
                                         setPictureInPictureParams(pipParams(event.isPlaying))
-                                    } catch (_: IllegalArgumentException) { }
+                                    }
+                                    catch (_: IllegalArgumentException)
+                                    {
+                                    }
                                 }
                             }
                         }
@@ -247,10 +276,13 @@ class PlayerActivity : BasePlayerActivity() {
         speedButton.isEnabled = false
         speedButton.imageAlpha = 75
 
-        if (isPipSupported) {
+        if (isPipSupported)
+        {
             pipButton.isEnabled = false
             pipButton.imageAlpha = 75
-        } else {
+        }
+        else
+        {
             val pipSpace = binding.playerView.findViewById<Space>(R.id.space_pip)
             pipButton.isVisible = false
             pipSpace.isVisible = false
@@ -260,7 +292,7 @@ class PlayerActivity : BasePlayerActivity() {
             TrackSelectionDialogFragment(C.TRACK_TYPE_AUDIO, viewModel).show(
                 supportFragmentManager,
                 "trackselectiondialog",
-            )
+                                                                            )
         }
 
         val exoPlayerControlView = findViewById<FrameLayout>(R.id.player_controls)
@@ -284,14 +316,14 @@ class PlayerActivity : BasePlayerActivity() {
             TrackSelectionDialogFragment(C.TRACK_TYPE_TEXT, viewModel).show(
                 supportFragmentManager,
                 "trackselectiondialog",
-            )
+                                                                           )
         }
 
         speedButton.setOnClickListener {
             SpeedSelectionDialogFragment(viewModel).show(
                 supportFragmentManager,
                 "speedselectiondialog",
-            )
+                                                        )
         }
 
         pipButton.setOnClickListener {
@@ -302,30 +334,33 @@ class PlayerActivity : BasePlayerActivity() {
         val timeBar = binding.playerView.findViewById<DefaultTimeBar>(R.id.exo_progress)
         timeBar.setAdMarkerColor(Color.WHITE)
 
-        if (appPreferences.getValue(appPreferences.playerTrickplay)) {
+        if (appPreferences.getValue(appPreferences.playerTrickplay))
+        {
             val imagePreview = binding.playerView.findViewById<ImageView>(R.id.image_preview)
             previewScrubListener = PreviewScrubListener(
                 imagePreview,
                 timeBar,
                 viewModel.player,
-            )
+                                                       )
 
             timeBar.addListener(previewScrubListener!!)
         }
 
         binding.playerView.setControllerVisibilityListener(
             PlayerView.ControllerVisibilityListener { visibility ->
-                if (segment != null) {
+                if (segment != null)
+                {
                     skipSegmentButton.visibility = visibility
                 }
             },
-        )
+                                                          )
 
         viewModel.initializePlayer(items)
         hideSystemUI()
     }
 
-    override fun onNewIntent(intent: Intent) {
+    override fun onNewIntent(intent: Intent)
+    {
         super.onNewIntent(intent)
         setIntent(intent)
 
@@ -333,82 +368,99 @@ class PlayerActivity : BasePlayerActivity() {
         viewModel.initializePlayer(args.items)
     }
 
-    override fun onUserLeaveHint() {
+    override fun onUserLeaveHint()
+    {
         super.onUserLeaveHint()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
-            appPreferences.getValue(appPreferences.playerPipGesture) &&
-            viewModel.player.isPlaying &&
-            !isControlsLocked
-        ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && appPreferences.getValue(appPreferences.playerPipGesture) && viewModel.player.isPlaying && !isControlsLocked)
+        {
             pictureInPicture()
         }
     }
 
-    private fun finishPlayback() {
-        try {
+    private fun finishPlayback()
+    {
+        try
+        {
             viewModel.player.clearVideoSurfaceView(binding.playerView.videoSurfaceView as SurfaceView)
-        } catch (e: Exception) {
+        }
+        catch (e: Exception)
+        {
             Timber.e(e)
         }
         finish()
     }
 
-    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams {
+    private fun pipParams(enableAutoEnter: Boolean = viewModel.player.isPlaying): PictureInPictureParams
+    {
         val displayAspectRatio = Rational(binding.playerView.width, binding.playerView.height)
 
         val aspectRatio = binding.playerView.player?.videoSize?.let {
             Rational(
                 it.width.coerceAtMost((it.height * 2.39f).toInt()),
                 it.height.coerceAtMost((it.width * 2.39f).toInt()),
-            )
+                    )
         }
 
-        val sourceRectHint = if (displayAspectRatio < aspectRatio!!) {
-            val space = ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
+        val sourceRectHint = if (displayAspectRatio < aspectRatio!!)
+        {
+            val space =
+                ((binding.playerView.height - (binding.playerView.width.toFloat() / aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 0,
                 space,
                 binding.playerView.width,
                 (binding.playerView.width.toFloat() / aspectRatio.toFloat()).toInt() + space,
-            )
-        } else {
-            val space = ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
+                )
+        }
+        else
+        {
+            val space =
+                ((binding.playerView.width - (binding.playerView.height.toFloat() * aspectRatio.toFloat())) / 2).toInt()
             Rect(
                 space,
                 0,
                 (binding.playerView.height.toFloat() * aspectRatio.toFloat()).toInt() + space,
                 binding.playerView.height,
-            )
+                )
         }
 
-        val builder = PictureInPictureParams.Builder()
-            .setAspectRatio(aspectRatio)
+        val builder = PictureInPictureParams.Builder().setAspectRatio(aspectRatio)
             .setSourceRectHint(sourceRectHint)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
             builder.setAutoEnterEnabled(enableAutoEnter)
         }
 
         return builder.build()
     }
 
-    private fun pictureInPicture() {
-        if (!isPipSupported) {
+    private fun pictureInPicture()
+    {
+        if (!isPipSupported)
+        {
             return
         }
 
-        try {
+        try
+        {
             enterPictureInPictureMode(pipParams())
-        } catch (_: IllegalArgumentException) { }
+        }
+        catch (_: IllegalArgumentException)
+        {
+        }
     }
 
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
         newConfig: Configuration,
-    ) {
+                                              )
+    {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        when (isInPictureInPictureMode) {
-            true -> {
+        when (isInPictureInPictureMode)
+        {
+            true  ->
+            {
                 binding.playerView.useController = false
                 skipSegmentButton.isVisible = false
 
@@ -420,20 +472,26 @@ class PlayerActivity : BasePlayerActivity() {
                     screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
                 }
             }
-            false -> {
+
+            false ->
+            {
                 binding.playerView.useController = true
                 playerGestureHelper?.updateZoomMode(wasZoom)
 
                 // Override auto brightness
                 window.attributes = window.attributes.apply {
-                    screenBrightness = if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember)) {
-                        appPreferences.getValue(appPreferences.playerBrightness)
-                    } else {
-                        Settings.System.getInt(
-                            contentResolver,
-                            Settings.System.SCREEN_BRIGHTNESS,
-                        ).toFloat() / 255
-                    }
+                    screenBrightness =
+                        if (appPreferences.getValue(appPreferences.playerGesturesBrightnessRemember))
+                        {
+                            appPreferences.getValue(appPreferences.playerBrightness)
+                        }
+                        else
+                        {
+                            Settings.System.getInt(
+                                contentResolver,
+                                Settings.System.SCREEN_BRIGHTNESS,
+                                                  ).toFloat() / 255
+                        }
                 }
             }
         }

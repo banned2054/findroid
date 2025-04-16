@@ -12,4 +12,4 @@ data class TrickplayInfo(
     val thumbnailCount: Int,
     val interval: Int,
     val bandwidth: Int,
-) : Parcelable
+                        ) : Parcelable

@@ -55,7 +55,7 @@ data object UsersRoute
 @Serializable
 data class LoginRoute(
     val username: String? = null,
-)
+                     )
 
 @Serializable
 data object FilmGraphRoute
@@ -71,23 +71,23 @@ data class LibraryRoute(
     val libraryId: String,
     val libraryName: String,
     val libraryType: CollectionType,
-)
+                       )
 
 @Serializable
 data class EpisodeRoute(
     val episodeId: String,
-)
+                       )
 
 @Serializable
 data class SettingsRoute(
     val indexes: IntArray,
-)
+                        )
 
 data class TabBarItem(
     val title: String,
     @DrawableRes val icon: Int,
     val route: Any,
-)
+                     )
 
 val homeTab = TabBarItem(title = "Home", icon = CoreR.drawable.ic_home, route = HomeRoute)
 val mediaTab = TabBarItem(title = "Media", icon = CoreR.drawable.ic_library, route = MediaRoute)
@@ -101,12 +101,14 @@ fun NavigationRoot(
     hasServers: Boolean,
     hasCurrentServer: Boolean,
     hasCurrentUser: Boolean,
-) {
-    val startDestination = when {
+                  )
+{
+    val startDestination = when
+    {
         hasServers && hasCurrentServer && hasCurrentUser -> FilmGraphRoute
-        hasServers && hasCurrentServer -> UsersRoute
-        hasServers -> ServersRoute
-        else -> WelcomeRoute
+        hasServers && hasCurrentServer                   -> UsersRoute
+        hasServers                                       -> ServersRoute
+        else                                             -> WelcomeRoute
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -115,11 +117,16 @@ fun NavigationRoot(
 
     val adaptiveInfo = currentWindowAdaptiveInfo()
     val customNavSuiteType = with(adaptiveInfo) {
-        if (!showBottomBar) {
+        if (!showBottomBar)
+        {
             NavigationSuiteType.None
-        } else if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+        }
+        else if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED)
+        {
             NavigationSuiteType.NavigationRail
-        } else {
+        }
+        else
+        {
             NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
         }
     }
@@ -142,17 +149,17 @@ fun NavigationRoot(
                         Icon(
                             painter = painterResource(item.icon),
                             contentDescription = item.title,
-                        )
+                            )
                     },
                     label = {
                         Text(text = item.title)
                     },
                     alwaysShowLabel = false,
-                )
+                    )
             }
         },
         layoutType = customNavSuiteType,
-    ) {
+                           ) {
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -162,13 +169,13 @@ fun NavigationRoot(
             exitTransition = {
                 fadeOut(tween(300))
             },
-        ) {
+               ) {
             composable<WelcomeRoute> {
                 WelcomeScreen(
                     onContinueClick = {
                         navController.safeNavigate(ServersRoute)
                     },
-                )
+                             )
             }
             composable<ServersRoute> { backStackEntry ->
                 ServersScreen(
@@ -185,7 +192,7 @@ fun NavigationRoot(
                         navController.safePopBackStack()
                     },
                     showBack = navController.previousBackStackEntry != null,
-                )
+                             )
             }
             composable<AddServerRoute> {
                 AddServerScreen(
@@ -195,7 +202,7 @@ fun NavigationRoot(
                     onBackClick = {
                         navController.safePopBackStack()
                     },
-                )
+                               )
             }
             composable<UsersRoute> { backStackEntry ->
                 UsersScreen(
@@ -223,7 +230,7 @@ fun NavigationRoot(
                         navController.safeNavigate(LoginRoute(username = username))
                     },
                     showBack = navController.previousBackStackEntry != null,
-                )
+                           )
             }
             composable<LoginRoute> { backStackEntry ->
                 val route: LoginRoute = backStackEntry.toRoute()
@@ -246,36 +253,54 @@ fun NavigationRoot(
                         navController.safePopBackStack()
                     },
                     prefilledUsername = route.username,
-                )
+                           )
             }
             navigation<FilmGraphRoute>(
                 startDestination = HomeRoute,
-            ) {
+                                      ) {
                 composable<HomeRoute> {
                     HomeScreen(
                         onLibraryClick = {
-                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                            navController.safeNavigate(
+                                LibraryRoute(
+                                    libraryId = it.id.toString(),
+                                    libraryName = it.name,
+                                    libraryType = it.type
+                                            )
+                                                      )
                         },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
                         onItemClick = {
-                            when (it) {
-                                is FindroidEpisode -> navController.safeNavigate(EpisodeRoute(episodeId = it.id.toString()))
-                                else -> Unit
+                            when (it)
+                            {
+                                is FindroidEpisode -> navController.safeNavigate(
+                                    EpisodeRoute(
+                                        episodeId = it.id.toString()
+                                                )
+                                                                                )
+
+                                else               -> Unit
                             }
                         },
-                    )
+                              )
                 }
                 composable<MediaRoute> {
                     MediaScreen(
                         onItemClick = {
-                            navController.safeNavigate(LibraryRoute(libraryId = it.id.toString(), libraryName = it.name, libraryType = it.type))
+                            navController.safeNavigate(
+                                LibraryRoute(
+                                    libraryId = it.id.toString(),
+                                    libraryName = it.name,
+                                    libraryType = it.type
+                                            )
+                                                      )
                         },
                         onSettingsClick = {
                             navController.safeNavigate(SettingsRoute(indexes = intArrayOf(CoreR.string.title_settings)))
                         },
-                    )
+                               )
                 }
                 composable<LibraryRoute> { backStackEntry ->
                     val route: LibraryRoute = backStackEntry.toRoute()
@@ -286,7 +311,7 @@ fun NavigationRoot(
                         navigateBack = {
                             navController.safePopBackStack()
                         },
-                    )
+                                 )
                 }
                 composable<EpisodeRoute> { backStackEntry ->
                     val route: EpisodeRoute = backStackEntry.toRoute()
@@ -295,7 +320,7 @@ fun NavigationRoot(
                         navigateBack = {
                             navController.safePopBackStack()
                         },
-                    )
+                                 )
                 }
             }
             composable<SettingsRoute> { backStackEntry ->
@@ -314,28 +339,43 @@ fun NavigationRoot(
                     navigateBack = {
                         navController.safePopBackStack()
                     },
-                )
+                              )
             }
         }
     }
 }
 
-private fun <T : Any> NavHostController.safeNavigate(route: T, navOptions: NavOptions? = null, navigatorExtras: Navigator.Extras? = null) {
-    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+private fun <T : Any> NavHostController.safeNavigate(
+    route: T,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+                                                    )
+{
+    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+    {
         this.navigate(route, navOptions, navigatorExtras)
     }
 }
 
-private fun <T : Any> NavHostController.safeNavigate(route: T, builder: NavOptionsBuilder.() -> Unit) {
-    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+private fun <T : Any> NavHostController.safeNavigate(
+    route: T,
+    builder: NavOptionsBuilder.() -> Unit
+                                                    )
+{
+    if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+    {
         this.navigate(route, builder)
     }
 }
 
-private fun NavHostController.safePopBackStack(): Boolean {
-    return if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+private fun NavHostController.safePopBackStack(): Boolean
+{
+    return if (this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+    {
         this.popBackStack()
-    } else {
+    }
+    else
+    {
         false
     }
 }

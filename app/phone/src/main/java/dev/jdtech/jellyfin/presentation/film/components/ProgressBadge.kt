@@ -28,17 +28,21 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun ProgressBadge(
     item: FindroidItem,
     modifier: Modifier = Modifier,
-) {
-    if (!(!item.played && item.unplayedItemCount == null)) {
+                 )
+{
+    if (!(!item.played && item.unplayedItemCount == null))
+    {
         Box(
             modifier = modifier
                 .height(24.dp)
                 .defaultMinSize(24.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.primary),
-        ) {
-            when (item.played) {
-                true -> {
+           ) {
+            when (item.played)
+            {
+                true  ->
+                {
                     Icon(
                         painter = painterResource(id = CoreR.drawable.ic_check),
                         contentDescription = "",
@@ -46,10 +50,11 @@ fun ProgressBadge(
                         modifier = Modifier
                             .size(16.dp)
                             .align(Alignment.Center),
-                    )
+                        )
                 }
 
-                false -> {
+                false ->
+                {
                     Text(
                         text = item.unplayedItemCount.toString(),
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -57,7 +62,7 @@ fun ProgressBadge(
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(horizontal = MaterialTheme.spacings.extraSmall),
-                    )
+                        )
                 }
             }
         }
@@ -66,20 +71,22 @@ fun ProgressBadge(
 
 @Preview
 @Composable
-private fun ProgressBadgePreviewWatched() {
+private fun ProgressBadgePreviewWatched()
+{
     FindroidTheme {
         ProgressBadge(
             item = dummyEpisode,
-        )
+                     )
     }
 }
 
 @Preview
 @Composable
-private fun ProgressBadgePreviewItemRemaining() {
+private fun ProgressBadgePreviewItemRemaining()
+{
     FindroidTheme {
         ProgressBadge(
             item = dummyShow,
-        )
+                     )
     }
 }

@@ -26,15 +26,16 @@ fun ErrorCard(
     onShowStacktrace: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+             )
+{
     OutlinedCard(
         modifier = modifier,
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        ),
+                                                ),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.error),
-    ) {
+                ) {
         Row {
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
             Icon(
@@ -42,29 +43,29 @@ fun ErrorCard(
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.CenterVertically),
-            )
+                )
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.small))
             Text(
                 text = stringResource(CoreR.string.error_loading_data),
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),
-            )
+                )
             IconButton(
                 onClick = onShowStacktrace,
-            ) {
+                      ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_logs),
                     contentDescription = stringResource(CoreR.string.show_stacktrace),
-                )
+                    )
             }
             IconButton(
                 onClick = onRetryClick,
-            ) {
+                      ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                     contentDescription = stringResource(CoreR.string.retry),
-                )
+                    )
             }
         }
     }
@@ -72,11 +73,12 @@ fun ErrorCard(
 
 @Preview
 @Composable
-private fun ErrorCardPreview() {
+private fun ErrorCardPreview()
+{
     FindroidTheme {
         ErrorCard(
             onShowStacktrace = {},
             onRetryClick = {},
-        )
+                 )
     }
 }

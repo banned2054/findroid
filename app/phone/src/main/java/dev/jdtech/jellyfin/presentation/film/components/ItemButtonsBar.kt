@@ -28,10 +28,11 @@ fun ItemButtonsBar(
     modifier: Modifier = Modifier,
     isLoadingPlayer: Boolean = false,
     isLoadingRestartPlayer: Boolean = false,
-) {
+                  )
+{
     Row(
         modifier = modifier,
-    ) {
+       ) {
         PlayButton(
             item = item,
             onClick = {
@@ -39,67 +40,77 @@ fun ItemButtonsBar(
             },
             enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
             isLoading = isLoadingPlayer,
-        )
-        if (item.playbackPositionTicks.div(600000000) > 0) {
+                  )
+        if (item.playbackPositionTicks.div(600000000) > 0)
+        {
             FilledTonalIconButton(
                 onClick = {
                     onPlayClick(true)
                 },
                 enabled = !isLoadingPlayer && !isLoadingRestartPlayer,
-            ) {
-                when (isLoadingRestartPlayer) {
-                    true -> {
+                                 ) {
+                when (isLoadingRestartPlayer)
+                {
+                    true  ->
+                    {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             color = LocalContentColor.current,
-                        )
+                                                 )
                     }
-                    false -> {
+
+                    false ->
+                    {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_rotate_ccw),
                             contentDescription = null,
-                        )
+                            )
                     }
                 }
             }
         }
         FilledTonalIconButton(
             onClick = onMarkAsPlayedClick,
-        ) {
+                             ) {
             Icon(
                 painter = painterResource(CoreR.drawable.ic_check),
                 contentDescription = null,
                 tint = if (item.played) Color.Red else LocalContentColor.current,
-            )
+                )
         }
         FilledTonalIconButton(
             onClick = onMarkAsFavoriteClick,
-        ) {
-            when (item.favorite) {
-                true -> {
+                             ) {
+            when (item.favorite)
+            {
+                true  ->
+                {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_heart_filled),
                         contentDescription = null,
                         tint = Color.Red,
-                    )
+                        )
                 }
-                false -> {
+
+                false ->
+                {
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_heart),
                         contentDescription = null,
-                    )
+                        )
                 }
             }
         }
-        if (item.canDownload) {
+        if (item.canDownload)
+        {
             FilledTonalIconButton(
                 onClick = onDownloadClick,
                 enabled = false,
-            ) {
+                                 ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_download),
                     contentDescription = null,
-                )
+                    )
             }
         }
     }
@@ -107,7 +118,8 @@ fun ItemButtonsBar(
 
 @Preview(showBackground = true)
 @Composable
-private fun ItemButtonsBarPreview() {
+private fun ItemButtonsBarPreview()
+{
     FindroidTheme {
         ItemButtonsBar(
             item = dummyEpisode,
@@ -116,6 +128,6 @@ private fun ItemButtonsBarPreview() {
             onMarkAsFavoriteClick = {},
             onDownloadClick = {},
             onTrailerClick = {},
-        )
+                      )
     }
 }

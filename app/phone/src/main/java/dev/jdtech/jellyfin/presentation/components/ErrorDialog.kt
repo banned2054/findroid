@@ -34,18 +34,19 @@ import dev.jdtech.jellyfin.core.R as CoreR
 fun ErrorDialog(
     exception: Throwable,
     onDismissRequest: () -> Unit,
-) {
+               )
+{
     val context = LocalContext.current
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
-    ) {
+          ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(200.dp, max = 540.dp),
             shape = RoundedCornerShape(28.dp),
-        ) {
+            ) {
             Column {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.default))
                 Text(
@@ -54,7 +55,7 @@ fun ErrorDialog(
                         .fillMaxWidth()
                         .padding(horizontal = MaterialTheme.spacings.default),
                     style = MaterialTheme.typography.headlineSmall,
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.medium))
                 HorizontalDivider()
                 Column(
@@ -62,13 +63,13 @@ fun ErrorDialog(
                         .weight(1f)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .verticalScroll(rememberScrollState()),
-                ) {
+                      ) {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
                     Text(
                         text = exception.stackTraceToString(),
                         fontFamily = FontFamily.Monospace,
                         style = MaterialTheme.typography.bodySmall,
-                    )
+                        )
                 }
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.small))
@@ -80,25 +81,28 @@ fun ErrorDialog(
                             top = MaterialTheme.spacings.extraSmall,
                             end = MaterialTheme.spacings.medium,
                             bottom = MaterialTheme.spacings.small,
-                        ),
+                                ),
                     horizontalArrangement = Arrangement.End,
-                ) {
+                   ) {
                     TextButton(
                         onClick = {
                             val sendIntent = Intent().apply {
                                 action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, "${exception.message}\n ${exception.stackTraceToString()}")
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    "${exception.message}\n ${exception.stackTraceToString()}"
+                                        )
                                 type = "text/plain"
                             }
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
                         },
-                    ) {
+                              ) {
                         Text(stringResource(CoreR.string.share))
                     }
                     TextButton(
                         onClick = { onDismissRequest() },
-                    ) {
+                              ) {
                         Text(stringResource(CoreR.string.close))
                     }
                 }
@@ -109,11 +113,12 @@ fun ErrorDialog(
 
 @Preview
 @Composable
-private fun ErrorDialogPreview() {
+private fun ErrorDialogPreview()
+{
     FindroidTheme {
         ErrorDialog(
             exception = Exception("Error loading data"),
             onDismissRequest = {},
-        )
+                   )
     }
 }

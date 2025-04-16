@@ -23,7 +23,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class BaseApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory {
+class BaseApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory
+{
     @Inject
     lateinit var appPreferences: AppPreferences
 
@@ -35,37 +36,43 @@ class BaseApplication : Application(), Configuration.Provider, SingletonImageLoa
             .setWorkerFactory(workerFactory)
             .build()
 
-    override fun onCreate() {
+    override fun onCreate()
+    {
         super.onCreate()
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG)
+        {
             Timber.plant(Timber.DebugTree())
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            val mode = when (appPreferences.getValue(appPreferences.theme)) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+        {
+            val mode = when (appPreferences.getValue(appPreferences.theme))
+            {
                 "system" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                "light" -> AppCompatDelegate.MODE_NIGHT_NO
-                "dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                "light"  -> AppCompatDelegate.MODE_NIGHT_NO
+                "dark"   -> AppCompatDelegate.MODE_NIGHT_YES
+                else     -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             }
             AppCompatDelegate.setDefaultNightMode(mode)
         }
 
-        if (appPreferences.getValue(appPreferences.dynamicColors)) {
+        if (appPreferences.getValue(appPreferences.dynamicColors))
+        {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
     }
 
     @OptIn(ExperimentalCoilApi::class)
-    override fun newImageLoader(context: PlatformContext): ImageLoader {
+    override fun newImageLoader(context: PlatformContext): ImageLoader
+    {
         return ImageLoader.Builder(context)
             .components {
                 add(
                     OkHttpNetworkFetcherFactory(
                         cacheStrategy = { CacheControlCacheStrategy() },
-                    ),
-                )
+                                               ),
+                   )
                 add(SvgDecoder.Factory())
             }
             .diskCachePolicy(if (appPreferences.getValue(appPreferences.imageCache)) CachePolicy.ENABLED else CachePolicy.DISABLED)

@@ -11,7 +11,8 @@ fun getVideoVersionDialog(
     item: FindroidItem,
     onItemSelected: (which: Int) -> Unit,
     onCancel: () -> Unit,
-): AlertDialog {
+                         ): AlertDialog
+{
     val items = item.sources.map { "${it.name} - ${it.type}" }.toTypedArray()
     val dialog = MaterialAlertDialogBuilder(context)
         .setTitle(R.string.select_a_version)

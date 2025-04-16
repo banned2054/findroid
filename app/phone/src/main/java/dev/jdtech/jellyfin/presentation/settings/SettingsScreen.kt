@@ -64,7 +64,8 @@ fun SettingsScreen(
     navigateToUsers: () -> Unit,
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
-) {
+                  )
+{
     val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -74,29 +75,40 @@ fun SettingsScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is SettingsEvent.NavigateToSettings -> navigateToSettings(event.indexes)
-            is SettingsEvent.NavigateToUsers -> navigateToUsers()
-            is SettingsEvent.NavigateToServers -> navigateToServers()
-            is SettingsEvent.UpdateTheme -> {
+            is SettingsEvent.NavigateToUsers    -> navigateToUsers()
+            is SettingsEvent.NavigateToServers  -> navigateToServers()
+            is SettingsEvent.UpdateTheme        ->
+            {
                 val uiModeManager = context.getSystemService(UiModeManager::class.java)
-                val nightMode = when (event.theme) {
+                val nightMode = when (event.theme)
+                {
                     "system" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    "light" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_NO
-                    "dark" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_YES
-                    else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    "light"  -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_NO
+                    "dark"   -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_YES
+                    else     -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) UiModeManager.MODE_NIGHT_AUTO else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                {
                     uiModeManager.setApplicationNightMode(nightMode)
-                } else {
+                }
+                else
+                {
                     AppCompatDelegate.setDefaultNightMode(nightMode)
                 }
             }
-            is SettingsEvent.LaunchIntent -> {
-                try {
+
+            is SettingsEvent.LaunchIntent       ->
+            {
+                try
+                {
                     context.startActivity(event.intent)
-                } catch (e: Exception) {
+                }
+                catch (e: Exception)
+                {
                     Timber.e(e)
                 }
             }
@@ -107,15 +119,17 @@ fun SettingsScreen(
         title = indexes.last(),
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is SettingsAction.OnBackClick -> navigateBack()
-                is SettingsAction.OnUpdate -> {
+                is SettingsAction.OnUpdate    ->
+                {
                     viewModel.onAction(action)
                     viewModel.loadPreferences(indexes, DeviceType.PHONE)
                 }
             }
         },
-    )
+                        )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,12 +138,15 @@ private fun SettingsScreenLayout(
     @StringRes title: Int,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
-) {
+                                )
+{
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
@@ -153,18 +170,18 @@ private fun SettingsScreenLayout(
                         onClick = {
                             onAction(SettingsAction.OnBackClick)
                         },
-                    ) {
+                              ) {
                         Icon(
                             painter = painterResource(CoreR.drawable.ic_arrow_left),
                             contentDescription = null,
-                        )
+                            )
                     }
                 },
                 windowInsets = WindowInsets.statusBars.union(WindowInsets.displayCutout),
                 scrollBehavior = scrollBehavior,
-            )
+                     )
         },
-    ) { innerPadding ->
+            ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -173,17 +190,17 @@ private fun SettingsScreenLayout(
                 top = paddingTop + innerPadding.calculateTopPadding(),
                 end = paddingEnd + innerPadding.calculateEndPadding(layoutDirection),
                 bottom = paddingBottom + innerPadding.calculateBottomPadding(),
-            ),
+                                          ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+                  ) {
             items(state.preferenceGroups) { group ->
                 SettingsGroupCard(
                     group = group,
                     onAction = onAction,
                     modifier = Modifier
                         .widthIn(max = 640.dp),
-                )
+                                 )
             }
         }
     }
@@ -191,7 +208,8 @@ private fun SettingsScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun SettingsScreenLayoutPreview() {
+private fun SettingsScreenLayoutPreview()
+{
     FindroidTheme {
         SettingsScreenLayout(
             title = CoreR.string.title_settings,
@@ -203,21 +221,21 @@ private fun SettingsScreenLayoutPreview() {
                             PreferenceCategory(
                                 nameStringResource = SettingsR.string.settings_category_language,
                                 iconDrawableId = SettingsR.drawable.ic_languages,
-                            ),
-                        ),
-                    ),
+                                              ),
+                                            ),
+                                   ),
                     PreferenceGroup(
                         nameStringResource = null,
                         preferences = listOf(
                             PreferenceCategory(
                                 nameStringResource = SettingsR.string.settings_category_appearance,
                                 iconDrawableId = SettingsR.drawable.ic_palette,
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+                                              ),
+                                            ),
+                                   ),
+                                         ),
+                                 ),
             onAction = {},
-        )
+                            )
     }
 }

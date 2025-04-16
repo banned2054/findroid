@@ -32,7 +32,8 @@ fun SettingsSelectCard(
     preference: PreferenceSelect,
     onUpdate: (value: String?) -> Unit,
     modifier: Modifier = Modifier,
-) {
+                      )
+{
     val optionValues = stringArrayResource(preference.optionValues)
     val optionNames = stringArrayResource(preference.options)
     val notSetString = stringResource(CoreR.string.not_set)
@@ -40,7 +41,8 @@ fun SettingsSelectCard(
     val options = remember(preference.nameStringResource) {
         val options = mutableListOf<Pair<String?, String>>()
 
-        if (preference.optionsIncludeNull) {
+        if (preference.optionsIncludeNull)
+        {
             options.add(Pair(null, notSetString))
         }
         options.addAll(optionValues.zip(optionNames))
@@ -62,35 +64,37 @@ fun SettingsSelectCard(
             showDialog = true
         },
         modifier = modifier,
-    ) {
+                    ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(preference.iconDrawableId!!),
                     contentDescription = null,
-                )
+                    )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                 Text(
                     text = optionsMap.getOrDefault(preference.value, notSetString),
                     style = MaterialTheme.typography.bodyMedium,
-                )
+                    )
             }
         }
     }
 
-    if (showDialog) {
+    if (showDialog)
+    {
         SettingsSelectDialog(
             preference = preference,
             options = options,
@@ -101,13 +105,14 @@ fun SettingsSelectCard(
             onDismissRequest = {
                 showDialog = false
             },
-        )
+                            )
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSelectCardPreview() {
+private fun SettingsSelectCardPreview()
+{
     FindroidTheme {
         SettingsSelectCard(
             preference = PreferenceSelect(
@@ -116,8 +121,8 @@ private fun SettingsSelectCardPreview() {
                 backendPreference = Preference("", ""),
                 options = SettingsR.array.languages,
                 optionValues = SettingsR.array.languages_values,
-            ),
+                                         ),
             onUpdate = {},
-        )
+                          )
     }
 }

@@ -25,11 +25,12 @@ import dev.jdtech.jellyfin.presentation.theme.spacings
 fun PersonItem(
     person: FindroidPerson,
     modifier: Modifier = Modifier,
-) {
+              )
+{
     Column(
         modifier = modifier
             .width(110.dp),
-    ) {
+          ) {
         AsyncImage(
             model = person.image.uri,
             contentDescription = null,
@@ -37,33 +38,34 @@ fun PersonItem(
                 .clip(MaterialTheme.shapes.small)
                 .background(
                     MaterialTheme.colorScheme.surfaceContainer,
-                )
+                           )
                 .fillMaxWidth()
                 .height(160.dp),
             contentScale = ContentScale.Crop,
-        )
+                  )
         Spacer(Modifier.height(MaterialTheme.spacings.extraSmall))
         Text(
             text = person.name,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.bodyMedium,
-        )
+            )
         Text(
             text = person.role,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.bodySmall,
-        )
+            )
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-private fun PersonItemPreview() {
+private fun PersonItemPreview()
+{
     FindroidTheme {
         PersonItem(
             person = dummyPerson,
-        )
+                  )
     }
 }

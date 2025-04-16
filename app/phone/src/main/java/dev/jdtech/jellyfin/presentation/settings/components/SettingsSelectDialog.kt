@@ -105,7 +105,7 @@ private fun SettingsSelectDialogItem(
             }
             .padding(
                 horizontal = MaterialTheme.spacings.default,
-            ),
+                    ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(

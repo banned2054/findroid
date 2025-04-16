@@ -48,7 +48,8 @@ fun MediaScreen(
     onItemClick: (FindroidCollection) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
-) {
+               )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -58,27 +59,31 @@ fun MediaScreen(
     MediaScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
-                is MediaAction.OnItemClick -> onItemClick(action.item)
+            when (action)
+            {
+                is MediaAction.OnItemClick     -> onItemClick(action.item)
                 is MediaAction.OnSettingsClick -> onSettingsClick()
-                else -> Unit
+                else                           -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                     )
 }
 
 @Composable
 private fun MediaScreenLayout(
     state: MediaState,
     onAction: (MediaAction) -> Unit,
-) {
+                             )
+{
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 
-    val safePaddingStart = with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
+    val safePaddingStart =
+        with(density) { WindowInsets.safeDrawing.getLeft(this, layoutDirection).toDp() }
     val safePaddingTop = with(density) { WindowInsets.safeDrawing.getTop(this).toDp() }
-    val safePaddingEnd = with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
+    val safePaddingEnd =
+        with(density) { WindowInsets.safeDrawing.getRight(this, layoutDirection).toDp() }
     val safePaddingBottom = with(density) { WindowInsets.safeDrawing.getBottom(this).toDp() }
 
     val paddingStart = safePaddingStart + MaterialTheme.spacings.default
@@ -86,27 +91,31 @@ private fun MediaScreenLayout(
     val paddingBottom = safePaddingBottom + MaterialTheme.spacings.default
 
     val contentPaddingTop by animateDpAsState(
-        targetValue = if (state.error != null) {
+        targetValue = if (state.error != null)
+        {
             safePaddingTop + 142.dp
-        } else {
+        }
+        else
+        {
             safePaddingTop + 88.dp
         },
         label = "content_padding",
-    )
+                                             )
 
     var showErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val minColumnSize = when (windowSizeClass.windowWidthSizeClass) {
+    val minColumnSize = when (windowSizeClass.windowWidthSizeClass)
+    {
         WindowWidthSizeClass.EXPANDED -> 320.dp
-        WindowWidthSizeClass.MEDIUM -> 240.dp
-        else -> 160.dp
+        WindowWidthSizeClass.MEDIUM   -> 240.dp
+        else                          -> 160.dp
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
-    ) {
+       ) {
         FilmSearchBar(
             onSettingsClick = {
                 onAction(MediaAction.OnSettingsClick)
@@ -116,7 +125,7 @@ private fun MediaScreenLayout(
             paddingEnd = paddingEnd,
             inputPaddingStart = safePaddingStart,
             inputPaddingEnd = safePaddingEnd,
-        )
+                     )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = minColumnSize),
             modifier = Modifier.fillMaxSize(),
@@ -125,16 +134,16 @@ private fun MediaScreenLayout(
                 top = contentPaddingTop,
                 end = paddingEnd,
                 bottom = paddingBottom,
-            ),
+                                          ),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacings.default),
-        ) {
+                        ) {
             item(
                 span = { GridItemSpan(maxLineSpan) },
-            ) {
+                ) {
                 FavoritesCard(
                     onClick = {},
-                )
+                             )
             }
             items(state.libraries, key = { it.id }) { library ->
                 ItemCard(
@@ -145,10 +154,11 @@ private fun MediaScreenLayout(
                     },
                     modifier = Modifier
                         .animateItem(),
-                )
+                        )
             }
         }
-        if (state.error != null) {
+        if (state.error != null)
+        {
             ErrorCard(
                 onShowStacktrace = {
                     showErrorDialog = true
@@ -162,13 +172,14 @@ private fun MediaScreenLayout(
                         start = paddingStart,
                         top = safePaddingTop + 80.dp,
                         end = paddingEnd,
-                    ),
-            )
-            if (showErrorDialog) {
+                            ),
+                     )
+            if (showErrorDialog)
+            {
                 ErrorDialog(
                     exception = state.error!!,
                     onDismissRequest = { showErrorDialog = false },
-                )
+                           )
             }
         }
     }
@@ -176,14 +187,15 @@ private fun MediaScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun MediaScreenLayoutPreview() {
+private fun MediaScreenLayoutPreview()
+{
     FindroidTheme {
         MediaScreenLayout(
             state = MediaState(
                 libraries = dummyCollections,
                 error = Exception("Failed to load data"),
-            ),
+                              ),
             onAction = {},
-        )
+                         )
     }
 }

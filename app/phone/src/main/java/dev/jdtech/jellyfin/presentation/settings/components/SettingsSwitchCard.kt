@@ -27,36 +27,38 @@ fun SettingsSwitchCard(
     preference: PreferenceSwitch,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+                      )
+{
     SettingsBaseCard(
         preference = preference,
         onClick = onClick,
         modifier = modifier,
-    ) {
+                    ) {
         Row(
             modifier = Modifier.padding(MaterialTheme.spacings.medium),
             verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (preference.iconDrawableId != null) {
+           ) {
+            if (preference.iconDrawableId != null)
+            {
                 Icon(
                     painter = painterResource(preference.iconDrawableId!!),
                     contentDescription = null,
-                )
+                    )
                 Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
             }
             Column(
                 modifier = Modifier.weight(1f),
-            ) {
+                  ) {
                 Text(
                     text = stringResource(preference.nameStringResource),
                     style = MaterialTheme.typography.titleMedium,
-                )
+                    )
                 preference.descriptionStringRes?.let {
                     Spacer(modifier = Modifier.height(MaterialTheme.spacings.extraSmall))
                     Text(
                         text = stringResource(id = it),
                         style = MaterialTheme.typography.bodyMedium,
-                    )
+                        )
                 }
             }
             Spacer(modifier = Modifier.width(MaterialTheme.spacings.default))
@@ -66,37 +68,39 @@ fun SettingsSwitchCard(
                     onClick()
                 },
                 enabled = preference.enabled,
-            )
+                  )
         }
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardPreview() {
+private fun SettingsSwitchCardPreview()
+{
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = SettingsR.string.settings_use_cache_title,
                 backendPreference = Preference("", true),
                 value = false,
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }
 
 @Preview
 @Composable
-private fun SettingsSwitchCardDisabledPreview() {
+private fun SettingsSwitchCardDisabledPreview()
+{
     FindroidTheme {
         SettingsSwitchCard(
             preference = PreferenceSwitch(
                 nameStringResource = SettingsR.string.settings_use_cache_title,
                 backendPreference = Preference("", true),
                 enabled = false,
-            ),
+                                         ),
             onClick = {},
-        )
+                          )
     }
 }
