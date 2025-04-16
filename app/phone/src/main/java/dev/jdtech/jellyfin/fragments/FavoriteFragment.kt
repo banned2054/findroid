@@ -25,7 +25,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : Fragment()
+{
 
     private lateinit var binding: FragmentFavoriteBinding
     private val viewModel: FavoriteViewModel by viewModels()
@@ -36,7 +37,8 @@ class FavoriteFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
         binding.favoritesRecyclerView.adapter = FavoritesListAdapter { item ->
@@ -47,10 +49,11 @@ class FavoriteFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when (uiState) {
-                        is FavoriteViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                    when (uiState)
+                    {
+                        is FavoriteViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                         is FavoriteViewModel.UiState.Loading -> bindUiStateLoading()
-                        is FavoriteViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is FavoriteViewModel.UiState.Error   -> bindUiStateError(uiState)
                     }
                 }
             }
@@ -67,7 +70,8 @@ class FavoriteFragment : Fragment() {
         return binding.root
     }
 
-    private fun bindUiStateNormal(uiState: FavoriteViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: FavoriteViewModel.UiState.Normal)
+    {
         uiState.apply {
             binding.noFavoritesText.isVisible = favoriteSections.isEmpty()
 
@@ -79,12 +83,14 @@ class FavoriteFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: FavoriteViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: FavoriteViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.favoritesRecyclerView.isVisible = false
@@ -92,23 +98,28 @@ class FavoriteFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
+    private fun navigateToMediaItem(item: FindroidItem)
+    {
+        when (item)
+        {
+            is FindroidMovie ->
+            {
                 findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToMovieFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                    ),
+                                                )
             }
-            is FindroidShow -> {
+
+            is FindroidShow  ->
+            {
                 findNavController().safeNavigate(
                     FavoriteFragmentDirections.actionFavoriteFragmentToShowFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                   ),
+                                                )
             }
         }
     }

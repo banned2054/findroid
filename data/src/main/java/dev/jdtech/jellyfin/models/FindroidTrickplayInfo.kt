@@ -10,9 +10,10 @@ data class FindroidTrickplayInfo(
     val thumbnailCount: Int,
     val interval: Int,
     val bandwidth: Int,
-)
+                                )
 
-fun TrickplayInfo.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
+fun TrickplayInfo.toFindroidTrickplayInfo(): FindroidTrickplayInfo
+{
     return FindroidTrickplayInfo(
         width = width,
         height = height,
@@ -21,10 +22,11 @@ fun TrickplayInfo.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
         thumbnailCount = thumbnailCount,
         interval = interval,
         bandwidth = bandwidth,
-    )
+                                )
 }
 
-fun FindroidTrickplayInfoDto.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
+fun FindroidTrickplayInfoDto.toFindroidTrickplayInfo(): FindroidTrickplayInfo
+{
     return FindroidTrickplayInfo(
         width = width,
         height = height,
@@ -33,5 +35,5 @@ fun FindroidTrickplayInfoDto.toFindroidTrickplayInfo(): FindroidTrickplayInfo {
         thumbnailCount = thumbnailCount,
         interval = interval,
         bandwidth = bandwidth,
-    )
+                                )
 }

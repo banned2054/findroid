@@ -29,7 +29,8 @@ import javax.inject.Inject
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
-class DownloadsFragment : Fragment() {
+class DownloadsFragment : Fragment()
+{
     private lateinit var binding: FragmentDownloadsBinding
     private val viewModel: DownloadsViewModel by viewModels()
 
@@ -40,7 +41,8 @@ class DownloadsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentDownloadsBinding.inflate(inflater, container, false)
 
         binding.downloadsRecyclerView.adapter = FavoritesListAdapter { item ->
@@ -51,9 +53,15 @@ class DownloadsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.eventsChannelFlow.collect { event ->
-                        when (event) {
-                            is DownloadsEvent.ConnectionError -> {
-                                Snackbar.make(binding.root, CoreR.string.no_server_connection, Snackbar.LENGTH_INDEFINITE)
+                        when (event)
+                        {
+                            is DownloadsEvent.ConnectionError ->
+                            {
+                                Snackbar.make(
+                                    binding.root,
+                                    CoreR.string.no_server_connection,
+                                    Snackbar.LENGTH_INDEFINITE
+                                             )
                                     .setTextMaxLines(2)
                                     .setAction(CoreR.string.offline_mode) {
                                         appPreferences.setValue(appPreferences.offlineMode, true)
@@ -67,7 +75,8 @@ class DownloadsFragment : Fragment() {
                 launch {
                     viewModel.uiState.collect { uiState ->
                         Timber.d("$uiState")
-                        when (uiState) {
+                        when (uiState)
+                        {
                             is DownloadsViewModel.UiState.Normal -> bindUiStateNormal(uiState)
                             is DownloadsViewModel.UiState.Loading -> bindUiStateLoading()
                             is DownloadsViewModel.UiState.Error -> Unit
@@ -80,13 +89,15 @@ class DownloadsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
 
         viewModel.loadData()
     }
 
-    private fun bindUiStateNormal(uiState: DownloadsViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: DownloadsViewModel.UiState.Normal)
+    {
         binding.loadingIndicator.isVisible = false
         binding.downloadsRecyclerView.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
@@ -95,29 +106,35 @@ class DownloadsFragment : Fragment() {
         adapter.submitList(uiState.sections)
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
+    private fun navigateToMediaItem(item: FindroidItem)
+    {
+        when (item)
+        {
+            is FindroidMovie ->
+            {
                 findNavController().safeNavigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToMovieFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                      ),
+                                                )
             }
-            is FindroidShow -> {
+
+            is FindroidShow  ->
+            {
                 findNavController().safeNavigate(
                     DownloadsFragmentDirections.actionDownloadsFragmentToShowFragment(
                         item.id,
                         item.name,
                         true,
-                    ),
-                )
+                                                                                     ),
+                                                )
             }
         }
     }

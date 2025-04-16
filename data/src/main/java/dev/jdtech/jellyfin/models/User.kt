@@ -14,9 +14,9 @@ import java.util.UUID
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("serverId"),
             onDelete = ForeignKey.CASCADE,
-        ),
+                  ),
     ],
-)
+       )
 data class User(
     @PrimaryKey
     val id: UUID,
@@ -24,4 +24,4 @@ data class User(
     @ColumnInfo(index = true)
     val serverId: String,
     val accessToken: String? = null,
-)
+               )

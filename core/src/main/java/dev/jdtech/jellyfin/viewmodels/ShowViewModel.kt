@@ -24,14 +24,16 @@ class ShowViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val eventsChannel = Channel<ShowEvent>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(
             val item: FindroidShow,
             val actors: List<BaseItemPerson>,
@@ -43,7 +45,7 @@ constructor(
             val dateString: String,
             val nextUp: FindroidEpisode?,
             val seasons: List<FindroidSeason>,
-        ) : UiState()
+                         ) : UiState()
 
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
@@ -62,10 +64,12 @@ constructor(
 
     private var currentUiState: UiState = UiState.Loading
 
-    fun loadData(itemId: UUID, offline: Boolean) {
+    fun loadData(itemId: UUID, offline: Boolean)
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 item = jellyfinRepository.getShow(itemId)
                 actors = getActors(item)
                 director = getDirector(item)
@@ -87,18 +91,23 @@ constructor(
                     dateString,
                     nextUp,
                     seasons,
-                )
+                                               )
                 _uiState.emit(currentUiState)
-            } catch (_: NullPointerException) {
+            }
+            catch (_: NullPointerException)
+            {
                 // Navigate back because item does not exist (probably because it's been deleted)
                 eventsChannel.send(ShowEvent.NavigateBack)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }
     }
 
-    private suspend fun getActors(item: FindroidShow): List<BaseItemPerson> {
+    private suspend fun getActors(item: FindroidShow): List<BaseItemPerson>
+    {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             actors = item.people.filter { it.type == PersonKind.ACTOR }
@@ -106,7 +115,8 @@ constructor(
         return actors
     }
 
-    private suspend fun getDirector(item: FindroidShow): BaseItemPerson? {
+    private suspend fun getDirector(item: FindroidShow): BaseItemPerson?
+    {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
             director = item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
@@ -114,7 +124,8 @@ constructor(
         return director
     }
 
-    private suspend fun getWriters(item: FindroidShow): List<BaseItemPerson> {
+    private suspend fun getWriters(item: FindroidShow): List<BaseItemPerson>
+    {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             writers = item.people.filter { it.type == PersonKind.WRITER }
@@ -122,21 +133,28 @@ constructor(
         return writers
     }
 
-    private suspend fun getNextUp(seriesId: UUID): FindroidEpisode? {
+    private suspend fun getNextUp(seriesId: UUID): FindroidEpisode?
+    {
         val nextUpItems = jellyfinRepository.getNextUp(seriesId)
         return nextUpItems.getOrNull(0)
     }
 
-    fun togglePlayed() {
-        suspend fun updateUiPlayedState(played: Boolean) {
+    fun togglePlayed()
+    {
+        suspend fun updateUiPlayedState(played: Boolean)
+        {
             item = item.copy(played = played)
-            when (currentUiState) {
-                is UiState.Normal -> {
+            when (currentUiState)
+            {
+                is UiState.Normal ->
+                {
                     currentUiState = (currentUiState as UiState.Normal).copy(item = item)
                     _uiState.emit(currentUiState)
                 }
 
-                else -> {}
+                else              ->
+                {
+                }
             }
         }
 
@@ -144,18 +162,28 @@ constructor(
             val originalPlayedState = item.played
             updateUiPlayedState(!item.played)
 
-            when (item.played) {
-                false -> {
-                    try {
+            when (item.played)
+            {
+                false ->
+                {
+                    try
+                    {
                         jellyfinRepository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiPlayedState(originalPlayedState)
                     }
                 }
-                true -> {
-                    try {
+
+                true  ->
+                {
+                    try
+                    {
                         jellyfinRepository.markAsPlayed(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiPlayedState(originalPlayedState)
                     }
                 }
@@ -163,16 +191,22 @@ constructor(
         }
     }
 
-    fun toggleFavorite() {
-        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+    fun toggleFavorite()
+    {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean)
+        {
             item = item.copy(favorite = isFavorite)
-            when (currentUiState) {
-                is UiState.Normal -> {
+            when (currentUiState)
+            {
+                is UiState.Normal ->
+                {
                     currentUiState = (currentUiState as UiState.Normal).copy(item = item)
                     _uiState.emit(currentUiState)
                 }
 
-                else -> {}
+                else              ->
+                {
+                }
             }
         }
 
@@ -180,18 +214,28 @@ constructor(
             val originalFavoriteState = item.favorite
             updateUiFavoriteState(!item.favorite)
 
-            when (item.favorite) {
-                false -> {
-                    try {
+            when (item.favorite)
+            {
+                false ->
+                {
+                    try
+                    {
                         jellyfinRepository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiFavoriteState(originalFavoriteState)
                     }
                 }
-                true -> {
-                    try {
+
+                true  ->
+                {
+                    try
+                    {
                         jellyfinRepository.markAsFavorite(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiFavoriteState(originalFavoriteState)
                     }
                 }
@@ -199,15 +243,19 @@ constructor(
         }
     }
 
-    private fun getDateString(item: FindroidShow): String {
+    private fun getDateString(item: FindroidShow): String
+    {
         val dateRange: MutableList<String> = mutableListOf()
         item.productionYear?.let { dateRange.add(it.toString()) }
-        when (item.status) {
-            "Continuing" -> {
+        when (item.status)
+        {
+            "Continuing" ->
+            {
                 dateRange.add("Present")
             }
 
-            "Ended" -> {
+            "Ended"      ->
+            {
                 item.endDate?.let { dateRange.add(it.year.toString()) }
             }
         }
@@ -216,6 +264,7 @@ constructor(
     }
 }
 
-sealed interface ShowEvent {
+sealed interface ShowEvent
+{
     data object NavigateBack : ShowEvent
 }

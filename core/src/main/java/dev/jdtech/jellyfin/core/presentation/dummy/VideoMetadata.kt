@@ -14,4 +14,4 @@ val dummyVideoMetadata = VideoMetadata(
     audioChannels = listOf(AudioChannel.CH_5_1),
     audioCodecs = listOf(AudioCodec.OPUS),
     isAtmos = listOf(false),
-)
+                                      )

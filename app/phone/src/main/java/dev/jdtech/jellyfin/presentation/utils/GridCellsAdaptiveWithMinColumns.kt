@@ -9,8 +9,11 @@ import androidx.compose.ui.unit.dp
  * Based on [GridCells.Adaptive] with the added [minColumns] variable.
  * [minColumns] takes precedence over [minSize].
  */
-class GridCellsAdaptiveWithMinColumns(private val minSize: Dp, private val minColumns: Int) : GridCells {
-    init {
+class GridCellsAdaptiveWithMinColumns(private val minSize: Dp, private val minColumns: Int) :
+    GridCells
+{
+    init
+    {
         require(minSize > 0.dp) { "Provided min size $minSize should be larger than zero." }
         require(minColumns > 0) { "Provided min columns $minColumns should be larger than zero." }
     }
@@ -18,7 +21,8 @@ class GridCellsAdaptiveWithMinColumns(private val minSize: Dp, private val minCo
     override fun Density.calculateCrossAxisCellSizes(
         availableSize: Int,
         spacing: Int,
-    ): List<Int> {
+                                                    ): List<Int>
+    {
         val count = maxOf((availableSize + spacing) / (minSize.roundToPx() + spacing), minColumns)
         return calculateCellsCrossAxisSizeImpl(availableSize, count, spacing)
     }
@@ -27,7 +31,8 @@ class GridCellsAdaptiveWithMinColumns(private val minSize: Dp, private val minCo
         gridSize: Int,
         slotCount: Int,
         spacing: Int,
-    ): List<Int> {
+                                               ): List<Int>
+    {
         val gridSizeWithoutSpacing = gridSize - spacing * (slotCount - 1)
         val slotSize = gridSizeWithoutSpacing / slotCount
         val remainingPixels = gridSizeWithoutSpacing % slotCount
@@ -36,11 +41,13 @@ class GridCellsAdaptiveWithMinColumns(private val minSize: Dp, private val minCo
         }
     }
 
-    override fun hashCode(): Int {
+    override fun hashCode(): Int
+    {
         return minSize.hashCode()
     }
 
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean
+    {
         return other is GridCellsAdaptiveWithMinColumns && minSize == other.minSize && minColumns == other.minColumns
     }
 }

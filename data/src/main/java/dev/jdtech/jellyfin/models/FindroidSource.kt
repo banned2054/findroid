@@ -15,23 +15,30 @@ data class FindroidSource(
     val size: Long,
     val mediaStreams: List<FindroidMediaStream>,
     val downloadId: Long? = null,
-)
+                         )
 
 suspend fun MediaSourceInfo.toFindroidSource(
     jellyfinRepository: JellyfinRepository,
     itemId: UUID,
     includePath: Boolean = false,
-): FindroidSource {
-    val path = when (protocol) {
-        MediaProtocol.FILE -> {
-            try {
+                                            ): FindroidSource
+{
+    val path = when (protocol)
+    {
+        MediaProtocol.FILE ->
+        {
+            try
+            {
                 if (includePath) jellyfinRepository.getStreamUrl(itemId, id.orEmpty()) else ""
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 ""
             }
         }
+
         MediaProtocol.HTTP -> this.path.orEmpty()
-        else -> ""
+        else               -> ""
     }
     return FindroidSource(
         id = id.orEmpty(),
@@ -39,25 +46,29 @@ suspend fun MediaSourceInfo.toFindroidSource(
         type = FindroidSourceType.REMOTE,
         path = path,
         size = size ?: 0,
-        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) } ?: emptyList(),
-    )
+        mediaStreams = mediaStreams?.map { it.toFindroidMediaStream(jellyfinRepository) }
+            ?: emptyList(),
+                         )
 }
 
 fun FindroidSourceDto.toFindroidSource(
     serverDatabaseDao: ServerDatabaseDao,
-): FindroidSource {
+                                      ): FindroidSource
+{
     return FindroidSource(
         id = id,
         name = name,
         type = type,
         path = path,
         size = File(path).length(),
-        mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id).map { it.toFindroidMediaStream() },
+        mediaStreams = serverDatabaseDao.getMediaStreamsBySourceId(id)
+            .map { it.toFindroidMediaStream() },
         downloadId = downloadId,
-    )
+                         )
 }
 
-enum class FindroidSourceType {
+enum class FindroidSourceType
+{
     REMOTE,
     LOCAL,
 }

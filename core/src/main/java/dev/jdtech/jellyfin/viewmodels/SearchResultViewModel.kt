@@ -23,23 +23,28 @@ class SearchResultViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    fun loadData(query: String) {
+    fun loadData(query: String)
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 val items = jellyfinRepository.getSearchItems(query)
 
-                if (items.isEmpty()) {
+                if (items.isEmpty())
+                {
                     _uiState.emit(UiState.Normal(emptyList()))
                     return@launch
                 }
@@ -51,39 +56,44 @@ constructor(
                         Constants.FAVORITE_TYPE_MOVIES,
                         UiText.StringResource(R.string.movies_label),
                         items.filterIsInstance<FindroidMovie>(),
-                    ).let {
-                        if (it.items.isNotEmpty()) {
+                                   ).let {
+                        if (it.items.isNotEmpty())
+                        {
                             sections.add(
                                 it,
-                            )
+                                        )
                         }
                     }
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_SHOWS,
                         UiText.StringResource(R.string.shows_label),
                         items.filterIsInstance<FindroidShow>(),
-                    ).let {
-                        if (it.items.isNotEmpty()) {
+                                   ).let {
+                        if (it.items.isNotEmpty())
+                        {
                             sections.add(
                                 it,
-                            )
+                                        )
                         }
                     }
                     FavoriteSection(
                         Constants.FAVORITE_TYPE_EPISODES,
                         UiText.StringResource(R.string.episodes_label),
                         items.filterIsInstance<FindroidEpisode>(),
-                    ).let {
-                        if (it.items.isNotEmpty()) {
+                                   ).let {
+                        if (it.items.isNotEmpty())
+                        {
                             sections.add(
                                 it,
-                            )
+                                        )
                         }
                     }
                 }
 
                 _uiState.emit(UiState.Normal(sections))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }

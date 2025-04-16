@@ -12,8 +12,10 @@ import java.lang.IllegalStateException
 
 class AddServerAddressDialog(
     private val viewModel: ServerAddressesViewModel,
-) : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+                            ) : DialogFragment()
+{
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
+    {
         val editText = EditText(this.context)
         editText.hint = "http://<server_ip>:8096"
         editText.inputType = InputType.TYPE_TEXT_VARIATION_URI

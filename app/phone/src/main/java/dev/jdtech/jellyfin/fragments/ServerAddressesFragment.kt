@@ -21,7 +21,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ServerAddressesFragment : Fragment() {
+class ServerAddressesFragment : Fragment()
+{
 
     private lateinit var binding: FragmentServerAddressesBinding
     private val viewModel: ServerAddressesViewModel by viewModels()
@@ -31,7 +32,8 @@ class ServerAddressesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentServerAddressesBinding.inflate(inflater)
 
         binding.addressesRecyclerView.adapter =
@@ -43,22 +45,23 @@ class ServerAddressesFragment : Fragment() {
                     DeleteServerAddressDialog(viewModel, address).show(
                         parentFragmentManager,
                         "deleteServerAddress",
-                    )
+                                                                      )
                     true
                 },
-            )
+                                )
 
         binding.buttonAddAddress.setOnClickListener {
             AddServerAddressDialog(viewModel).show(
                 parentFragmentManager,
                 "addServerAddress",
-            )
+                                                  )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.eventsChannelFlow.collect { event ->
-                    when (event) {
+                    when (event)
+                    {
                         is ServerAddressesEvent.NavigateToHome -> navigateToMainActivity()
                     }
                 }
@@ -68,17 +71,19 @@ class ServerAddressesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when (uiState) {
-                        is ServerAddressesViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                    when (uiState)
+                    {
+                        is ServerAddressesViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                         is ServerAddressesViewModel.UiState.Loading -> Unit
-                        is ServerAddressesViewModel.UiState.Error -> Unit
+                        is ServerAddressesViewModel.UiState.Error   -> Unit
                     }
                 }
             }
@@ -87,11 +92,13 @@ class ServerAddressesFragment : Fragment() {
         viewModel.loadAddresses(args.serverId)
     }
 
-    fun bindUiStateNormal(uiState: ServerAddressesViewModel.UiState.Normal) {
+    fun bindUiStateNormal(uiState: ServerAddressesViewModel.UiState.Normal)
+    {
         (binding.addressesRecyclerView.adapter as ServerAddressAdapter).submitList(uiState.addresses)
     }
 
-    private fun navigateToMainActivity() {
+    private fun navigateToMainActivity()
+    {
         // findNavController().safeNavigate(ServerAddressesFragmentDirections.actionUsersFragmentToHomeFragment())
     }
 }

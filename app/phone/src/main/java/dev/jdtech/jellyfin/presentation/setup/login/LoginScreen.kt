@@ -64,7 +64,8 @@ fun LoginScreen(
     onBackClick: () -> Unit,
     prefilledUsername: String? = null,
     viewModel: LoginViewModel = hiltViewModel(),
-) {
+               )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -74,7 +75,8 @@ fun LoginScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is LoginEvent.Success -> onSuccess()
         }
     }
@@ -82,15 +84,16 @@ fun LoginScreen(
     LoginScreenLayout(
         state = state,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is LoginAction.OnChangeServerClick -> onChangeServerClick()
-                is LoginAction.OnBackClick -> onBackClick()
-                else -> Unit
+                is LoginAction.OnBackClick         -> onBackClick()
+                else                               -> Unit
             }
             viewModel.onAction(action)
         },
         prefilledUsername = prefilledUsername,
-    )
+                     )
 }
 
 @Composable
@@ -98,7 +101,8 @@ private fun LoginScreenLayout(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
     prefilledUsername: String? = null,
-) {
+                             )
+{
     val scrollState = rememberScrollState()
     var username by rememberSaveable {
         mutableStateOf(prefilledUsername ?: "")
@@ -121,24 +125,24 @@ private fun LoginScreenLayout(
                 .widthIn(max = 480.dp)
                 .align(Alignment.Center)
                 .verticalScroll(scrollState),
-        ) {
+              ) {
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),
-            )
+                 )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(SetupR.string.login),
                 style = MaterialTheme.typography.headlineMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
                 style = MaterialTheme.typography.titleMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(24.dp))
             OutlinedTextField(
                 value = username,
@@ -146,23 +150,23 @@ private fun LoginScreenLayout(
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_user),
                         contentDescription = null,
-                    )
+                        )
                 },
                 onValueChange = { username = it },
                 label = {
                     Text(
                         text = stringResource(SetupR.string.edit_text_username_hint),
-                    )
+                        )
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     imeAction = ImeAction.Next,
-                ),
+                                                 ),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
-            )
+                             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
@@ -170,87 +174,106 @@ private fun LoginScreenLayout(
                     Icon(
                         painter = painterResource(CoreR.drawable.ic_lock),
                         contentDescription = null,
-                    )
+                        )
                 },
                 trailingIcon = {
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible },
-                    ) {
+                              ) {
                         Icon(
-                            painter = if (passwordVisible) painterResource(CoreR.drawable.ic_eye_off) else painterResource(CoreR.drawable.ic_eye),
+                            painter = if (passwordVisible) painterResource(CoreR.drawable.ic_eye_off)
+                            else painterResource(
+                                CoreR.drawable.ic_eye
+                                                ),
                             contentDescription = null,
-                        )
+                            )
                     }
                 },
                 onValueChange = { password = it },
                 label = {
                     Text(
                         text = stringResource(SetupR.string.edit_text_password_hint),
-                    )
+                        )
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Go,
-                ),
+                                                 ),
                 keyboardActions = KeyboardActions(
                     onGo = { doLogin() },
-                ),
+                                                 ),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 isError = state.error != null,
                 enabled = !state.isLoading,
                 supportingText = {
-                    if (state.error != null) {
+                    if (state.error != null)
+                    {
                         Text(
                             text = state.error!!.asString(),
                             color = MaterialTheme.colorScheme.error,
-                        )
+                            )
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-            )
+                             )
             LoadingButton(
                 text = stringResource(SetupR.string.login_btn_login),
                 onClick = { doLogin() },
                 isLoading = state.isLoading,
                 modifier = Modifier.fillMaxWidth(),
-            )
+                         )
             AnimatedVisibility(state.quickConnectEnabled) {
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                       ) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp)
+                                         )
                         Text(
                             text = stringResource(SetupR.string.or),
                             color = DividerDefaults.color,
                             style = MaterialTheme.typography.bodySmall,
-                        )
-                        HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 12.dp))
+                            )
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp)
+                                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Box {
-                        if (state.quickConnectCode != null) {
+                        if (state.quickConnectCode != null)
+                        {
                             CircularProgressIndicator(
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(24.dp)
                                     .align(Alignment.CenterStart)
                                     .offset(x = 8.dp),
-                            )
+                                                     )
                         }
                         OutlinedButton(
                             onClick = { onAction(LoginAction.OnQuickConnectClick) },
                             modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(text = if (state.quickConnectCode != null) state.quickConnectCode!! else stringResource(SetupR.string.login_btn_quick_connect))
+                                      ) {
+                            Text(
+                                text = if (state.quickConnectCode != null) state.quickConnectCode!!
+                                else stringResource(
+                                    SetupR.string.login_btn_quick_connect
+                                                   )
+                                )
                         }
                     }
                 }
             }
-            if (state.disclaimer != null) {
+            if (state.disclaimer != null)
+            {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = state.disclaimer!!)
             }
@@ -258,7 +281,7 @@ private fun LoginScreenLayout(
         IconButton(
             onClick = { onAction(LoginAction.OnBackClick) },
             modifier = Modifier.padding(start = 8.dp),
-        ) {
+                  ) {
             Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
         }
         IconButton(
@@ -266,7 +289,7 @@ private fun LoginScreenLayout(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(end = 8.dp),
-        ) {
+                  ) {
             Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
         }
     }
@@ -274,15 +297,16 @@ private fun LoginScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun AddServerScreenLayoutPreview() {
+private fun AddServerScreenLayoutPreview()
+{
     FindroidTheme {
         LoginScreenLayout(
             state = LoginState(
                 serverName = "Demo Server",
                 quickConnectEnabled = true,
                 disclaimer = "Sample disclaimer",
-            ),
+                              ),
             onAction = {},
-        )
+                         )
     }
 }

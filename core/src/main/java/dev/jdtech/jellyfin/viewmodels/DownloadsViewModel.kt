@@ -25,37 +25,45 @@ class DownloadsViewModel
 constructor(
     private val appPreferences: AppPreferences,
     private val repository: JellyfinRepository,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val eventsChannel = Channel<DownloadsEvent>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(val sections: List<FavoriteSection>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    init {
+    init
+    {
         testServerConnection()
     }
 
-    private fun testServerConnection() {
+    private fun testServerConnection()
+    {
         viewModelScope.launch {
-            try {
+            try
+            {
                 if (appPreferences.getValue(appPreferences.offlineMode)) return@launch
                 repository.getPublicSystemInfo()
                 // Give the UI a chance to load
                 delay(100)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 eventsChannel.send(DownloadsEvent.ConnectionError(e))
             }
         }
     }
 
-    fun loadData() {
+    fun loadData()
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
 
@@ -67,22 +75,24 @@ constructor(
                 Constants.FAVORITE_TYPE_MOVIES,
                 UiText.StringResource(R.string.movies_label),
                 items.filterIsInstance<FindroidMovie>(),
-            ).let {
-                if (it.items.isNotEmpty()) {
+                           ).let {
+                if (it.items.isNotEmpty())
+                {
                     sections.add(
                         it,
-                    )
+                                )
                 }
             }
             FavoriteSection(
                 Constants.FAVORITE_TYPE_SHOWS,
                 UiText.StringResource(R.string.shows_label),
                 items.filterIsInstance<FindroidShow>(),
-            ).let {
-                if (it.items.isNotEmpty()) {
+                           ).let {
+                if (it.items.isNotEmpty())
+                {
                     sections.add(
                         it,
-                    )
+                                )
                 }
             }
             _uiState.emit(UiState.Normal(sections))
@@ -90,6 +100,7 @@ constructor(
     }
 }
 
-sealed interface DownloadsEvent {
+sealed interface DownloadsEvent
+{
     data class ConnectionError(val error: Exception) : DownloadsEvent
 }

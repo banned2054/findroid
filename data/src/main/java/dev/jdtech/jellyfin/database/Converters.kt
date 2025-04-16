@@ -9,44 +9,53 @@ import org.jellyfin.sdk.model.DateTime
 import java.time.ZoneOffset
 import java.util.UUID
 
-class Converters {
+class Converters
+{
     @TypeConverter
-    fun fromStringToUUID(value: String?): UUID? {
+    fun fromStringToUUID(value: String?): UUID?
+    {
         return value?.let { UUID.fromString(it) }
     }
 
     @TypeConverter
-    fun fromUUIDToString(value: UUID?): String? {
+    fun fromUUIDToString(value: UUID?): String?
+    {
         return value?.toString()
     }
 
     @TypeConverter
-    fun fromDateTimeToLong(value: DateTime?): Long? {
+    fun fromDateTimeToLong(value: DateTime?): Long?
+    {
         return value?.toEpochSecond(ZoneOffset.UTC)
     }
 
     @TypeConverter
-    fun fromLongToDatetime(value: Long?): DateTime? {
+    fun fromLongToDatetime(value: Long?): DateTime?
+    {
         return value?.let { DateTime.ofEpochSecond(it, 0, ZoneOffset.UTC) }
     }
 
     @TypeConverter
-    fun fromFindroidChaptersToString(value: List<FindroidChapter>?): String? {
+    fun fromFindroidChaptersToString(value: List<FindroidChapter>?): String?
+    {
         return value?.let { Json.encodeToString(value) }
     }
 
     @TypeConverter
-    fun fromStringToFindroidChapters(value: String?): List<FindroidChapter>? {
+    fun fromStringToFindroidChapters(value: String?): List<FindroidChapter>?
+    {
         return value?.let { Json.decodeFromString(value) }
     }
 
     @TypeConverter
-    fun fromFindroidSegmentTypeToString(value: FindroidSegmentType): String {
+    fun fromFindroidSegmentTypeToString(value: FindroidSegmentType): String
+    {
         return value.name
     }
 
     @TypeConverter
-    fun fromStringToFindroidSegmentType(value: String): FindroidSegmentType {
+    fun fromStringToFindroidSegmentType(value: String): FindroidSegmentType
+    {
         return FindroidSegmentType.valueOf(value)
     }
 }

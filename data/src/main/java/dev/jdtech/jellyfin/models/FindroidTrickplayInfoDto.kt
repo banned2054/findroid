@@ -12,9 +12,9 @@ import androidx.room.PrimaryKey
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("sourceId"),
             onDelete = ForeignKey.CASCADE,
-        ),
+                  ),
     ],
-)
+       )
 data class FindroidTrickplayInfoDto(
     @PrimaryKey
     val sourceId: String,
@@ -25,9 +25,10 @@ data class FindroidTrickplayInfoDto(
     val thumbnailCount: Int,
     val interval: Int,
     val bandwidth: Int,
-)
+                                   )
 
-fun FindroidTrickplayInfo.toFindroidTrickplayInfoDto(sourceId: String): FindroidTrickplayInfoDto {
+fun FindroidTrickplayInfo.toFindroidTrickplayInfoDto(sourceId: String): FindroidTrickplayInfoDto
+{
     return FindroidTrickplayInfoDto(
         sourceId = sourceId,
         width = width,
@@ -37,5 +38,5 @@ fun FindroidTrickplayInfo.toFindroidTrickplayInfoDto(sourceId: String): Findroid
         thumbnailCount = thumbnailCount,
         interval = interval,
         bandwidth = bandwidth,
-    )
+                                   )
 }

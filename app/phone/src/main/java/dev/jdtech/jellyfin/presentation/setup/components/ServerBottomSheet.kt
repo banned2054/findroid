@@ -34,22 +34,23 @@ fun ServerBottomSheet(
     onRemoveServer: () -> Unit,
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
-) {
+                     )
+{
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
-    ) {
+                    ) {
         ServerBottomSheetItem(
             icon = painterResource(CoreR.drawable.ic_globe),
             text = stringResource(CoreR.string.addresses),
             onClick = onAddresses,
             modifier = Modifier.alpha(0.7f),
-        )
+                             )
         ServerBottomSheetItem(
             icon = painterResource(CoreR.drawable.ic_trash),
             text = stringResource(SetupR.string.remove_server_dialog),
             onClick = onRemoveServer,
-        )
+                             )
     }
 }
 
@@ -59,15 +60,16 @@ private fun ServerBottomSheetItem(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+                                 )
+{
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable(
                 onClick = onClick,
-            )
+                      )
             .padding(MaterialTheme.spacings.medium),
-    ) {
+       ) {
         Icon(painter = icon, contentDescription = null)
         Spacer(Modifier.width(MaterialTheme.spacings.medium))
         Text(text = text)
@@ -77,25 +79,27 @@ private fun ServerBottomSheetItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun ServerBottomSheetPreview() {
+private fun ServerBottomSheetPreview()
+{
     FindroidTheme {
         ServerBottomSheet(
             onAddresses = {},
             onRemoveServer = {},
             onDismissRequest = {},
             sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.Expanded),
-        )
+                         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun ServerBottomSheetItemPreview() {
+private fun ServerBottomSheetItemPreview()
+{
     FindroidTheme {
         ServerBottomSheetItem(
             icon = painterResource(CoreR.drawable.ic_globe),
             text = stringResource(CoreR.string.addresses),
             onClick = {},
-        )
+                             )
     }
 }

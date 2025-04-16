@@ -44,7 +44,8 @@ constructor(
     private val repository: JellyfinRepository,
     private val database: ServerDatabaseDao,
     private val downloader: Downloader,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -56,7 +57,8 @@ constructor(
 
     private val handler = Handler(Looper.getMainLooper())
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(
             val item: FindroidMovie,
             val actors: List<BaseItemPerson>,
@@ -70,7 +72,7 @@ constructor(
             val subtitleString: String,
             val runTime: String,
             val dateString: String,
-        ) : UiState()
+                         ) : UiState()
 
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
@@ -83,15 +85,18 @@ constructor(
 
     private var currentUiState: UiState = UiState.Loading
 
-    fun loadData(itemId: UUID) {
+    fun loadData(itemId: UUID)
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 item = repository.getMovie(itemId)
                 writers = getWriters(item)
                 writersString = writers.joinToString(separator = ", ") { it.name.toString() }
                 runTime = "${item.runtimeTicks.div(600000000)} min"
-                if (item.isDownloading()) {
+                if (item.isDownloading())
+                {
                     pollDownloadProgress()
                 }
                 currentUiState = UiState.Normal(
@@ -107,18 +112,23 @@ constructor(
                     getMediaString(item, MediaStreamType.SUBTITLE),
                     runTime,
                     getDateString(item),
-                )
+                                               )
                 _uiState.emit(currentUiState)
-            } catch (_: NullPointerException) {
+            }
+            catch (_: NullPointerException)
+            {
                 // Navigate back because item does not exist (probably because it's been deleted)
                 eventsChannel.send(MovieEvent.NavigateBack)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }
     }
 
-    private suspend fun getActors(item: FindroidMovie): List<BaseItemPerson> {
+    private suspend fun getActors(item: FindroidMovie): List<BaseItemPerson>
+    {
         val actors: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             actors = item.people.filter { it.type == PersonKind.ACTOR }
@@ -126,7 +136,8 @@ constructor(
         return actors
     }
 
-    private suspend fun getDirector(item: FindroidMovie): BaseItemPerson? {
+    private suspend fun getDirector(item: FindroidMovie): BaseItemPerson?
+    {
         val director: BaseItemPerson?
         withContext(Dispatchers.Default) {
             director = item.people.firstOrNull { it.type == PersonKind.DIRECTOR }
@@ -134,7 +145,8 @@ constructor(
         return director
     }
 
-    private suspend fun getWriters(item: FindroidMovie): List<BaseItemPerson> {
+    private suspend fun getWriters(item: FindroidMovie): List<BaseItemPerson>
+    {
         val writers: List<BaseItemPerson>
         withContext(Dispatchers.Default) {
             writers = item.people.filter { it.type == PersonKind.WRITER }
@@ -142,7 +154,8 @@ constructor(
         return writers
     }
 
-    private suspend fun getMediaString(item: FindroidMovie, type: MediaStreamType): String {
+    private suspend fun getMediaString(item: FindroidMovie, type: MediaStreamType): String
+    {
         val streams: List<FindroidMediaStream>
         withContext(Dispatchers.Default) {
             streams =
@@ -151,7 +164,8 @@ constructor(
         return streams.map { it.displayTitle }.joinToString(separator = ", ")
     }
 
-    private suspend fun parseVideoMetadata(item: FindroidMovie): VideoMetadata {
+    private suspend fun parseVideoMetadata(item: FindroidMovie): VideoMetadata
+    {
         val resolution = mutableListOf<Resolution>()
         val audioChannels = mutableListOf<AudioChannel>()
         val displayProfile = mutableListOf<DisplayProfile>()
@@ -160,19 +174,22 @@ constructor(
 
         withContext(Dispatchers.Default) {
             item.sources.getOrNull(0)?.mediaStreams?.filter { stream ->
-                when (stream.type) {
-                    MediaStreamType.AUDIO -> {
+                when (stream.type)
+                {
+                    MediaStreamType.AUDIO ->
+                    {
                         /**
                          * Match audio profile from [MediaStream.channelLayout]
                          */
                         audioChannels.add(
-                            when (stream.channelLayout) {
+                            when (stream.channelLayout)
+                            {
                                 AudioChannel.CH_2_1.raw -> AudioChannel.CH_2_1
                                 AudioChannel.CH_5_1.raw -> AudioChannel.CH_5_1
                                 AudioChannel.CH_7_1.raw -> AudioChannel.CH_7_1
-                                else -> AudioChannel.CH_2_0
+                                else                    -> AudioChannel.CH_2_0
                             },
-                        )
+                                         )
 
                         /**
                          * Match [MediaStream.displayTitle] for Dolby Atmos
@@ -185,22 +202,24 @@ constructor(
                          * Match audio codec from [MediaStream.codec]
                          */
                         audioCodecs.add(
-                            when (stream.codec.lowercase()) {
-                                AudioCodec.FLAC.toString() -> AudioCodec.FLAC
-                                AudioCodec.AAC.toString() -> AudioCodec.AAC
-                                AudioCodec.AC3.toString() -> AudioCodec.AC3
-                                AudioCodec.EAC3.toString() -> AudioCodec.EAC3
+                            when (stream.codec.lowercase())
+                            {
+                                AudioCodec.FLAC.toString()   -> AudioCodec.FLAC
+                                AudioCodec.AAC.toString()    -> AudioCodec.AAC
+                                AudioCodec.AC3.toString()    -> AudioCodec.AC3
+                                AudioCodec.EAC3.toString()   -> AudioCodec.EAC3
                                 AudioCodec.VORBIS.toString() -> AudioCodec.VORBIS
-                                AudioCodec.OPUS.toString() -> AudioCodec.OPUS
+                                AudioCodec.OPUS.toString()   -> AudioCodec.OPUS
                                 AudioCodec.TRUEHD.toString() -> AudioCodec.TRUEHD
-                                AudioCodec.DTS.toString() -> AudioCodec.DTS
-                                else -> AudioCodec.MP3
+                                AudioCodec.DTS.toString()    -> AudioCodec.DTS
+                                else                         -> AudioCodec.MP3
                             },
-                        )
+                                       )
                         true
                     }
 
-                    MediaStreamType.VIDEO -> {
+                    MediaStreamType.VIDEO ->
+                    {
                         with(stream) {
                             /**
                              * Match dynamic range from [MediaStream.videoRangeType]
@@ -211,40 +230,47 @@ constructor(
                                  * Check if [MediaStream.videoDoViTitle] is not null and return
                                  * [DisplayProfile.DOLBY_VISION] accordingly
                                  */
-                                if (stream.videoDoViTitle != null) {
+                                if (stream.videoDoViTitle != null)
+                                {
                                     DisplayProfile.DOLBY_VISION
-                                } else {
-                                    when (videoRangeType) {
-                                        VideoRangeType.HDR10 -> DisplayProfile.HDR10
+                                }
+                                else
+                                {
+                                    when (videoRangeType)
+                                    {
+                                        VideoRangeType.HDR10      -> DisplayProfile.HDR10
                                         VideoRangeType.HDR10_PLUS -> DisplayProfile.HDR10_PLUS
-                                        VideoRangeType.HLG -> DisplayProfile.HLG
-                                        else -> DisplayProfile.SDR
+                                        VideoRangeType.HLG        -> DisplayProfile.HLG
+                                        else                      -> DisplayProfile.SDR
                                     }
                                 },
-                            )
+                                              )
 
                             /**
                              * Force stream [MediaStream.height] and [MediaStream.width] as not null
                              * since we are inside [MediaStreamType.VIDEO] block
                              */
                             resolution.add(
-                                when {
-                                    height!! <= 1080 && width!! <= 1920 -> {
+                                when
+                                {
+                                    height!! <= 1080 && width!! <= 1920 ->
+                                    {
                                         Resolution.HD
                                     }
 
-                                    height!! <= 2160 && width!! <= 3840 -> {
+                                    height!! <= 2160 && width!! <= 3840 ->
+                                    {
                                         Resolution.UHD
                                     }
 
-                                    else -> Resolution.SD
+                                    else                                -> Resolution.SD
                                 },
-                            )
+                                          )
                         }
                         true
                     }
 
-                    else -> false
+                    else                  -> false
                 }
             }
         }
@@ -256,19 +282,25 @@ constructor(
             audioChannels.toSet().toList(),
             audioCodecs.toSet().toList(),
             isAtmosAudio,
-        )
+                            )
     }
 
-    fun togglePlayed() {
-        suspend fun updateUiPlayedState(played: Boolean) {
+    fun togglePlayed()
+    {
+        suspend fun updateUiPlayedState(played: Boolean)
+        {
             item = item.copy(played = played)
-            when (currentUiState) {
-                is UiState.Normal -> {
+            when (currentUiState)
+            {
+                is UiState.Normal ->
+                {
                     currentUiState = (currentUiState as UiState.Normal).copy(item = item)
                     _uiState.emit(currentUiState)
                 }
 
-                else -> {}
+                else              ->
+                {
+                }
             }
         }
 
@@ -276,18 +308,28 @@ constructor(
             val originalPlayedState = item.played
             updateUiPlayedState(!item.played)
 
-            when (item.played) {
-                false -> {
-                    try {
+            when (item.played)
+            {
+                false ->
+                {
+                    try
+                    {
                         repository.markAsUnplayed(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiPlayedState(originalPlayedState)
                     }
                 }
-                true -> {
-                    try {
+
+                true  ->
+                {
+                    try
+                    {
                         repository.markAsPlayed(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiPlayedState(originalPlayedState)
                     }
                 }
@@ -295,16 +337,22 @@ constructor(
         }
     }
 
-    fun toggleFavorite() {
-        suspend fun updateUiFavoriteState(isFavorite: Boolean) {
+    fun toggleFavorite()
+    {
+        suspend fun updateUiFavoriteState(isFavorite: Boolean)
+        {
             item = item.copy(favorite = isFavorite)
-            when (currentUiState) {
-                is UiState.Normal -> {
+            when (currentUiState)
+            {
+                is UiState.Normal ->
+                {
                     currentUiState = (currentUiState as UiState.Normal).copy(item = item)
                     _uiState.emit(currentUiState)
                 }
 
-                else -> {}
+                else              ->
+                {
+                }
             }
         }
 
@@ -312,18 +360,28 @@ constructor(
             val originalFavoriteState = item.favorite
             updateUiFavoriteState(!item.favorite)
 
-            when (item.favorite) {
-                false -> {
-                    try {
+            when (item.favorite)
+            {
+                false ->
+                {
+                    try
+                    {
                         repository.unmarkAsFavorite(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiFavoriteState(originalFavoriteState)
                     }
                 }
-                true -> {
-                    try {
+
+                true  ->
+                {
+                    try
+                    {
                         repository.markAsFavorite(item.id)
-                    } catch (_: Exception) {
+                    }
+                    catch (_: Exception)
+                    {
                         updateUiFavoriteState(originalFavoriteState)
                     }
                 }
@@ -331,15 +389,19 @@ constructor(
         }
     }
 
-    private fun getDateString(item: FindroidMovie): String {
+    private fun getDateString(item: FindroidMovie): String
+    {
         val dateRange: MutableList<String> = mutableListOf()
         item.productionYear?.let { dateRange.add(it.toString()) }
-        when (item.status) {
-            "Continuing" -> {
+        when (item.status)
+        {
+            "Continuing" ->
+            {
                 dateRange.add("Present")
             }
 
-            "Ended" -> {
+            "Ended"      ->
+            {
                 item.endDate?.let { dateRange.add(it.year.toString()) }
             }
         }
@@ -347,14 +409,16 @@ constructor(
         return dateRange.joinToString(separator = " - ")
     }
 
-    fun download(sourceIndex: Int = 0, storageIndex: Int = 0) {
+    fun download(sourceIndex: Int = 0, storageIndex: Int = 0)
+    {
         viewModelScope.launch {
             val result = downloader.downloadItem(item, item.sources[sourceIndex].id, storageIndex)
 
             // Send one time signal to fragment that the download has been initiated
             _downloadStatus.emit(Pair(10, Random.nextInt()))
 
-            if (result.second != null) {
+            if (result.second != null)
+            {
                 eventsChannel.send(MovieEvent.DownloadError(result.second!!))
             }
 
@@ -362,42 +426,52 @@ constructor(
         }
     }
 
-    fun cancelDownload() {
+    fun cancelDownload()
+    {
         viewModelScope.launch {
-            downloader.cancelDownload(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
+            downloader.cancelDownload(
+                item,
+                item.sources.first { it.type == FindroidSourceType.LOCAL })
             loadData(item.id)
         }
     }
 
-    fun deleteItem() {
+    fun deleteItem()
+    {
         viewModelScope.launch {
             downloader.deleteItem(item, item.sources.first { it.type == FindroidSourceType.LOCAL })
             loadData(item.id)
         }
     }
 
-    private fun pollDownloadProgress() {
+    private fun pollDownloadProgress()
+    {
         handler.removeCallbacksAndMessages(null)
-        val downloadProgressRunnable = object : Runnable {
-            override fun run() {
+        val downloadProgressRunnable = object : Runnable
+        {
+            override fun run()
+            {
                 viewModelScope.launch {
                     val source = item.sources.firstOrNull { it.type == FindroidSourceType.LOCAL }
                     val (downloadStatus, progress) = downloader.getProgress(source?.downloadId)
                     _downloadStatus.emit(Pair(downloadStatus, progress))
-                    if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                    if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL)
+                    {
                         if (source == null) return@launch
                         val path = source.path.replace(".download", "")
                         File(source.path).renameTo(File(path))
                         database.setSourcePath(source.id, path)
                         loadData(item.id)
                     }
-                    if (downloadStatus == DownloadManager.STATUS_FAILED) {
+                    if (downloadStatus == DownloadManager.STATUS_FAILED)
+                    {
                         if (source == null) return@launch
                         downloader.deleteItem(item, source)
                         loadData(item.id)
                     }
                 }
-                if (item.isDownloading()) {
+                if (item.isDownloading())
+                {
                     handler.postDelayed(this, 2000L)
                 }
             }
@@ -405,13 +479,15 @@ constructor(
         handler.post(downloadProgressRunnable)
     }
 
-    override fun onCleared() {
+    override fun onCleared()
+    {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
 }
 
-sealed interface MovieEvent {
+sealed interface MovieEvent
+{
     data object NavigateBack : MovieEvent
     data class DownloadError(val uiText: UiText) : MovieEvent
 }

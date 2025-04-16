@@ -19,14 +19,15 @@ data class FindroidBoxSet(
     override val unplayedItemCount: Int? = null,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>? = null,
-) : FindroidItem
+                         ) : FindroidItem
 
 fun BaseItemDto.toFindroidBoxSet(
     jellyfinRepository: JellyfinRepository,
-): FindroidBoxSet {
+                                ): FindroidBoxSet
+{
     return FindroidBoxSet(
         id = id,
         name = name.orEmpty(),
         images = toFindroidImages(jellyfinRepository),
-    )
+                         )
 }

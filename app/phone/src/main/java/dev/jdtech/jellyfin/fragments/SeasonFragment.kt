@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SeasonFragment : Fragment() {
+class SeasonFragment : Fragment()
+{
 
     private lateinit var binding: FragmentSeasonBinding
     private val viewModel: SeasonViewModel by viewModels()
@@ -35,12 +36,14 @@ class SeasonFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentSeasonBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -48,17 +51,19 @@ class SeasonFragment : Fragment() {
                 launch {
                     viewModel.uiState.collect { uiState ->
                         Timber.d("$uiState")
-                        when (uiState) {
-                            is SeasonViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        when (uiState)
+                        {
+                            is SeasonViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                             is SeasonViewModel.UiState.Loading -> bindUiStateLoading()
-                            is SeasonViewModel.UiState.Error -> bindUiStateError(uiState)
+                            is SeasonViewModel.UiState.Error   -> bindUiStateError(uiState)
                         }
                     }
                 }
 
                 launch {
                     viewModel.eventsChannelFlow.collect { event ->
-                        when (event) {
+                        when (event)
+                        {
                             is SeasonEvent.NavigateBack -> findNavController().navigateUp()
                         }
                     }
@@ -79,13 +84,15 @@ class SeasonFragment : Fragment() {
             }
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
 
         viewModel.loadEpisodes(args.seriesId, args.seasonId, args.offline)
     }
 
-    private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: SeasonViewModel.UiState.Normal)
+    {
         uiState.apply {
             val adapter = binding.episodesRecyclerView.adapter as EpisodeListAdapter
             adapter.submitList(uiState.episodes)
@@ -95,12 +102,14 @@ class SeasonFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: SeasonViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: SeasonViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.episodesRecyclerView.isVisible = false

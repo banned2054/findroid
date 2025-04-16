@@ -28,7 +28,14 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ServerItem(name: String, address: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}, onLongClick: () -> Unit = {}) {
+fun ServerItem(
+    name: String,
+    address: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
+              )
+{
     val haptics = LocalHapticFeedback.current
 
     OutlinedCard(
@@ -40,21 +47,25 @@ fun ServerItem(name: String, address: String, modifier: Modifier = Modifier, onC
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                 },
-            ),
-    ) {
+                              ),
+                ) {
         Row(
             modifier = Modifier.padding(start = 24.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
-        ) {
+           ) {
             Icon(
                 painter = painterResource(CoreR.drawable.ic_server),
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.CenterVertically),
-            )
+                )
             Spacer(modifier = Modifier.width(24.dp))
             Column {
                 Text(text = name, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = address, style = MaterialTheme.typography.bodyMedium, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = address,
+                    style = MaterialTheme.typography.bodyMedium,
+                    overflow = TextOverflow.Ellipsis
+                    )
             }
         }
     }
@@ -62,11 +73,12 @@ fun ServerItem(name: String, address: String, modifier: Modifier = Modifier, onC
 
 @Composable
 @Preview
-private fun ServerItemPreview() {
+private fun ServerItemPreview()
+{
     FindroidTheme {
         ServerItem(
             name = "Jellyfin Server",
             address = "http://192.168.0.10:8096",
-        )
+                  )
     }
 }

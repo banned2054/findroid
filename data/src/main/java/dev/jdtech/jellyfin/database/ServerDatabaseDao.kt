@@ -25,7 +25,8 @@ import dev.jdtech.jellyfin.models.User
 import java.util.UUID
 
 @Dao
-interface ServerDatabaseDao {
+interface ServerDatabaseDao
+{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertServer(server: Server)
 
@@ -227,18 +228,20 @@ interface ServerDatabaseDao {
     fun getUserData(itemId: UUID, userId: UUID): FindroidUserDataDto?
 
     @Transaction
-    fun getUserDataOrCreateNew(itemId: UUID, userId: UUID): FindroidUserDataDto {
+    fun getUserDataOrCreateNew(itemId: UUID, userId: UUID): FindroidUserDataDto
+    {
         var userData = getUserData(itemId, userId)
 
         // Create user data when there is none
-        if (userData == null) {
+        if (userData == null)
+        {
             userData = FindroidUserDataDto(
                 userId = userId,
                 itemId = itemId,
                 played = false,
                 favorite = false,
                 playbackPositionTicks = 0L,
-            )
+                                          )
             insertUserData(userData)
         }
 

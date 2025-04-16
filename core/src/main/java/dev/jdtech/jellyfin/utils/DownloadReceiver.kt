@@ -20,7 +20,8 @@ import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DownloadReceiver : BroadcastReceiver() {
+class DownloadReceiver : BroadcastReceiver()
+{
 
     @Inject
     lateinit var database: ServerDatabaseDao
@@ -31,30 +32,41 @@ class DownloadReceiver : BroadcastReceiver() {
     @Inject
     lateinit var repository: JellyfinRepository
 
-    override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == "android.intent.action.DOWNLOAD_COMPLETE") {
+    override fun onReceive(context: Context, intent: Intent)
+    {
+        if (intent.action == "android.intent.action.DOWNLOAD_COMPLETE")
+        {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            if (id != -1L) {
+            if (id != -1L)
+            {
                 val source = database.getSourceByDownloadId(id)
-                if (source != null) {
+                if (source != null)
+                {
                     val path = source.path.replace(".download", "")
                     val successfulRename = File(source.path).renameTo(File(path))
-                    if (successfulRename) {
+                    if (successfulRename)
+                    {
                         database.setSourcePath(source.id, path)
-                    } else {
+                    }
+                    else
+                    {
                         val items = mutableListOf<FindroidItem>()
                         items.addAll(
-                            database.getMovies().map { it.toFindroidMovie(database, repository.getUserId()) },
-                        )
+                            database.getMovies()
+                                .map { it.toFindroidMovie(database, repository.getUserId()) },
+                                    )
                         items.addAll(
-                            database.getShows().map { it.toFindroidShow(database, repository.getUserId()) },
-                        )
+                            database.getShows()
+                                .map { it.toFindroidShow(database, repository.getUserId()) },
+                                    )
                         items.addAll(
-                            database.getSeasons().map { it.toFindroidSeason(database, repository.getUserId()) },
-                        )
+                            database.getSeasons()
+                                .map { it.toFindroidSeason(database, repository.getUserId()) },
+                                    )
                         items.addAll(
-                            database.getEpisodes().map { it.toFindroidEpisode(database, repository.getUserId()) },
-                        )
+                            database.getEpisodes()
+                                .map { it.toFindroidEpisode(database, repository.getUserId()) },
+                                    )
 
                         items.firstOrNull { it.id == source.itemId }?.let {
                             CoroutineScope(Dispatchers.IO).launch {
@@ -62,14 +74,20 @@ class DownloadReceiver : BroadcastReceiver() {
                             }
                         }
                     }
-                } else {
+                }
+                else
+                {
                     val mediaStream = database.getMediaStreamByDownloadId(id)
-                    if (mediaStream != null) {
+                    if (mediaStream != null)
+                    {
                         val path = mediaStream.path.replace(".download", "")
                         val successfulRename = File(mediaStream.path).renameTo(File(path))
-                        if (successfulRename) {
+                        if (successfulRename)
+                        {
                             database.setMediaStreamPath(mediaStream.id, path)
-                        } else {
+                        }
+                        else
+                        {
                             database.deleteMediaStream(mediaStream.id)
                         }
                     }

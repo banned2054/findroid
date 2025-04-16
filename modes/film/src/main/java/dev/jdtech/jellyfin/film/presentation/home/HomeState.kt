@@ -8,4 +8,4 @@ data class HomeState(
     val views: List<HomeItem.ViewItem> = emptyList(),
     val isLoading: Boolean = false,
     val error: Exception? = null,
-)
+                    )

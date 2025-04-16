@@ -9,11 +9,12 @@ import java.util.UUID
 data class FindroidPersonImage(
     val uri: Uri?,
     val blurHash: String?,
-)
+                              )
 
 fun BaseItemPerson.toFindroidImage(
     repository: JellyfinRepository,
-): FindroidPersonImage {
+                                  ): FindroidPersonImage
+{
     val baseUrl = Uri.parse(repository.getBaseUrl())
     return FindroidPersonImage(
         uri = primaryImageTag?.let { tag ->
@@ -23,7 +24,7 @@ fun BaseItemPerson.toFindroidImage(
                 .build()
         },
         blurHash = imageBlurHashes?.get(ImageType.PRIMARY)?.get(primaryImageTag),
-    )
+                              )
 }
 
 data class FindroidPerson(
@@ -31,15 +32,16 @@ data class FindroidPerson(
     val name: String,
     val role: String,
     val image: FindroidPersonImage,
-)
+                         )
 
 fun BaseItemPerson.toFindroidPerson(
     repository: JellyfinRepository,
-): FindroidPerson {
+                                   ): FindroidPerson
+{
     return FindroidPerson(
         id = id,
         name = name.orEmpty(),
         role = role.orEmpty(),
         image = toFindroidImage(repository),
-    )
+                         )
 }

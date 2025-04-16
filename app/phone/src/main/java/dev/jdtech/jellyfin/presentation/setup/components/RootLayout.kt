@@ -10,12 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun RootLayout(padding: PaddingValues = PaddingValues(), content: @Composable BoxScope.() -> Unit) {
+fun RootLayout(padding: PaddingValues = PaddingValues(), content: @Composable BoxScope.() -> Unit)
+{
     Box(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding()
             .padding(padding),
         content = content,
-    )
+       )
 }

@@ -11,20 +11,27 @@ import dev.jdtech.jellyfin.models.ServerAddress
 class ServerAddressAdapter(
     private val clickListener: (address: ServerAddress) -> Unit,
     private val longClickListener: (address: ServerAddress) -> Boolean,
-) : ListAdapter<ServerAddress, ServerAddressAdapter.ServerAddressViewHolder>(DiffCallback) {
+                          ) :
+    ListAdapter<ServerAddress, ServerAddressAdapter.ServerAddressViewHolder>(DiffCallback)
+{
     class ServerAddressViewHolder(private var binding: ServerAddressListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(address: ServerAddress) {
+        RecyclerView.ViewHolder(binding.root)
+    {
+        fun bind(address: ServerAddress)
+        {
             binding.serverAddress.text = address.address
         }
     }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<ServerAddress>() {
-        override fun areItemsTheSame(oldItem: ServerAddress, newItem: ServerAddress): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<ServerAddress>()
+    {
+        override fun areItemsTheSame(oldItem: ServerAddress, newItem: ServerAddress): Boolean
+        {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: ServerAddress, newItem: ServerAddress): Boolean {
+        override fun areContentsTheSame(oldItem: ServerAddress, newItem: ServerAddress): Boolean
+        {
             return oldItem == newItem
         }
     }
@@ -32,17 +39,19 @@ class ServerAddressAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
-    ): ServerAddressViewHolder {
+                                   ): ServerAddressViewHolder
+    {
         return ServerAddressViewHolder(
             ServerAddressListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
-            ),
-        )
+                                                ),
+                                      )
     }
 
-    override fun onBindViewHolder(holder: ServerAddressViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ServerAddressViewHolder, position: Int)
+    {
         val address = getItem(position)
         holder.itemView.setOnClickListener { clickListener(address) }
         holder.itemView.setOnLongClickListener { longClickListener(address) }

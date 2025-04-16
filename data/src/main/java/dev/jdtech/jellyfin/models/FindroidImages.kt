@@ -11,11 +11,12 @@ data class FindroidImages(
     val logo: Uri? = null,
     val showPrimary: Uri? = null,
     val showLogo: Uri? = null,
-)
+                         )
 
 fun BaseItemDto.toFindroidImages(
     jellyfinRepository: JellyfinRepository,
-): FindroidImages {
+                                ): FindroidImages
+{
     val baseUrl = Uri.parse(jellyfinRepository.getBaseUrl())
     val primary = imageTags?.get(ImageType.PRIMARY)?.let { tag ->
         baseUrl.buildUpon()
@@ -54,5 +55,5 @@ fun BaseItemDto.toFindroidImages(
         logo = logo,
         showPrimary = showPrimary,
         showLogo = showLogo,
-    )
+                         )
 }

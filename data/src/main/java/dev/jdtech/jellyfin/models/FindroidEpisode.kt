@@ -34,18 +34,21 @@ data class FindroidEpisode(
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>?,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
-) : FindroidItem, FindroidSources
+                          ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidEpisode(
     jellyfinRepository: JellyfinRepository,
     database: ServerDatabaseDao? = null,
-): FindroidEpisode? {
+                                         ): FindroidEpisode?
+{
     val sources = mutableListOf<FindroidSource>()
     sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
-    if (database != null) {
+    if (database != null)
+    {
         sources.addAll(database.getSources(id).map { it.toFindroidSource(database) })
     }
-    return try {
+    return try
+    {
         FindroidEpisode(
             id = id,
             name = name.orEmpty(),
@@ -71,17 +74,21 @@ suspend fun BaseItemDto.toFindroidEpisode(
             images = toFindroidImages(jellyfinRepository),
             chapters = toFindroidChapters(),
             trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
-        )
-    } catch (_: NullPointerException) {
+                       )
+    }
+    catch (_: NullPointerException)
+    {
         null
     }
 }
 
-fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID): FindroidEpisode {
+fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UUID): FindroidEpisode
+{
     val userData = database.getUserDataOrCreateNew(id, userId)
     val sources = database.getSources(id).map { it.toFindroidSource(database) }
     val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
-    for (source in sources) {
+    for (source in sources)
+    {
         database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
             trickplayInfos[source.id] = it
         }
@@ -110,5 +117,5 @@ fun FindroidEpisodeDto.toFindroidEpisode(database: ServerDatabaseDao, userId: UU
         images = FindroidImages(),
         chapters = chapters,
         trickplayInfo = trickplayInfos,
-    )
+                          )
 }

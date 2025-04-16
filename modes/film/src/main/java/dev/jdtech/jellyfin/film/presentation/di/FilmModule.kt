@@ -9,10 +9,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FilmModule {
+object FilmModule
+{
     @Singleton
     @Provides
-    fun provideVideoMetadataParser(): VideoMetadataParser {
+    fun provideVideoMetadataParser(): VideoMetadataParser
+    {
         return VideoMetadataParser()
     }
 }

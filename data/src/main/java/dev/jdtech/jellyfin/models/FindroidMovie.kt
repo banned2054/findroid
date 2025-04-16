@@ -33,15 +33,17 @@ data class FindroidMovie(
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>?,
     override val trickplayInfo: Map<String, FindroidTrickplayInfo>?,
-) : FindroidItem, FindroidSources
+                        ) : FindroidItem, FindroidSources
 
 suspend fun BaseItemDto.toFindroidMovie(
     jellyfinRepository: JellyfinRepository,
     serverDatabase: ServerDatabaseDao? = null,
-): FindroidMovie {
+                                       ): FindroidMovie
+{
     val sources = mutableListOf<FindroidSource>()
     sources.addAll(mediaSources?.map { it.toFindroidSource(jellyfinRepository, id) } ?: emptyList())
-    if (serverDatabase != null) {
+    if (serverDatabase != null)
+    {
         sources.addAll(serverDatabase.getSources(id).map { it.toFindroidSource(serverDatabase) })
     }
     return FindroidMovie(
@@ -68,14 +70,16 @@ suspend fun BaseItemDto.toFindroidMovie(
         images = toFindroidImages(jellyfinRepository),
         chapters = toFindroidChapters(),
         trickplayInfo = trickplay?.mapValues { it.value[it.value.keys.max()]!!.toFindroidTrickplayInfo() },
-    )
+                        )
 }
 
-fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie {
+fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID): FindroidMovie
+{
     val userData = database.getUserDataOrCreateNew(id, userId)
     val sources = database.getSources(id).map { it.toFindroidSource(database) }
     val trickplayInfos = mutableMapOf<String, FindroidTrickplayInfo>()
-    for (source in sources) {
+    for (source in sources)
+    {
         database.getTrickplayInfo(source.id)?.toFindroidTrickplayInfo()?.let {
             trickplayInfos[source.id] = it
         }
@@ -104,5 +108,5 @@ fun FindroidMovieDto.toFindroidMovie(database: ServerDatabaseDao, userId: UUID):
         images = FindroidImages(),
         chapters = chapters,
         trickplayInfo = trickplayInfos,
-    )
+                        )
 }

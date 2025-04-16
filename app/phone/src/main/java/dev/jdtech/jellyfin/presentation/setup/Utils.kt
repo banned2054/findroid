@@ -13,6 +13,6 @@ fun Modifier.backgroundGradient(colors: List<Color>) =
                 colors = colors,
                 center = Offset(size.width / 2, size.width / -1.2f),
                 radius = size.width,
-            ),
-        )
+                                        ),
+                )
     }

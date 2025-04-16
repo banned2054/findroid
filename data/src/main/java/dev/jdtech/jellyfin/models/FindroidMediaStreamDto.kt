@@ -7,7 +7,7 @@ import java.util.UUID
 
 @Entity(
     tableName = "mediastreams",
-)
+       )
 data class FindroidMediaStreamDto(
     @PrimaryKey
     val id: UUID,
@@ -25,9 +25,14 @@ data class FindroidMediaStreamDto(
     val width: Int?,
     val videoDoViTitle: String?,
     val downloadId: Long? = null,
-)
+                                 )
 
-fun FindroidMediaStream.toFindroidMediaStreamDto(id: UUID, sourceId: String, path: String): FindroidMediaStreamDto {
+fun FindroidMediaStream.toFindroidMediaStreamDto(
+    id: UUID,
+    sourceId: String,
+    path: String
+                                                ): FindroidMediaStreamDto
+{
     return FindroidMediaStreamDto(
         id = id,
         sourceId = sourceId,
@@ -43,5 +48,5 @@ fun FindroidMediaStream.toFindroidMediaStreamDto(id: UUID, sourceId: String, pat
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,
-    )
+                                 )
 }

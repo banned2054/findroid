@@ -36,10 +36,14 @@ class JellyfinApi(
     requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
     connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
     socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT,
-) {
+                 )
+{
     val jellyfin = createJellyfin {
         clientInfo =
-            ClientInfo(name = androidContext.applicationInfo.loadLabel(androidContext.packageManager).toString(), version = BuildConfig.VERSION_NAME)
+            ClientInfo(
+                name = androidContext.applicationInfo.loadLabel(androidContext.packageManager)
+                    .toString(), version = BuildConfig.VERSION_NAME
+                      )
         context = androidContext
     }
     val api = jellyfin.createApi(
@@ -47,8 +51,8 @@ class JellyfinApi(
             requestTimeout = requestTimeout.toDuration(DurationUnit.MILLISECONDS),
             connectTimeout = connectTimeout.toDuration(DurationUnit.MILLISECONDS),
             socketTimeout = socketTimeout.toDuration(DurationUnit.MILLISECONDS),
-        ),
-    )
+                                             ),
+                                )
     var userId: UUID? = null
 
     val brandingApi = api.brandingApi
@@ -66,7 +70,8 @@ class JellyfinApi(
     val videosApi = api.videosApi
     val viewsApi = api.userViewsApi
 
-    companion object {
+    companion object
+    {
         @Volatile
         private var INSTANCE: JellyfinApi? = null
 
@@ -75,16 +80,18 @@ class JellyfinApi(
             requestTimeout: Long = Constants.NETWORK_DEFAULT_REQUEST_TIMEOUT,
             connectTimeout: Long = Constants.NETWORK_DEFAULT_CONNECT_TIMEOUT,
             socketTimeout: Long = Constants.NETWORK_DEFAULT_SOCKET_TIMEOUT,
-        ): JellyfinApi {
+                       ): JellyfinApi
+        {
             synchronized(this) {
                 var instance = INSTANCE
-                if (instance == null) {
+                if (instance == null)
+                {
                     instance = JellyfinApi(
                         androidContext = context.applicationContext,
                         requestTimeout = requestTimeout,
                         connectTimeout = connectTimeout,
                         socketTimeout = socketTimeout,
-                    )
+                                          )
                     INSTANCE = instance
                 }
                 return instance

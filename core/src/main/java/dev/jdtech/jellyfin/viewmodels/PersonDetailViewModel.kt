@@ -17,34 +17,38 @@ import javax.inject.Inject
 @HiltViewModel
 class PersonDetailViewModel @Inject internal constructor(
     private val jellyfinRepository: JellyfinRepository,
-) : ViewModel() {
+                                                        ) : ViewModel()
+{
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(val data: PersonOverview, val starredIn: StarredIn) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
     }
 
-    fun loadData(personId: UUID) {
+    fun loadData(personId: UUID)
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 val personDetail = jellyfinRepository.getItem(personId)
 
                 val data = PersonOverview(
                     name = personDetail.name.orEmpty(),
                     overview = personDetail.overview.orEmpty(),
                     dto = personDetail,
-                )
+                                         )
 
                 val items = jellyfinRepository.getPersonItems(
                     personIds = listOf(personId),
                     includeTypes = listOf(BaseItemKind.MOVIE, BaseItemKind.SERIES),
                     recursive = true,
-                )
+                                                             )
 
                 val movies = items.filterIsInstance<FindroidMovie>()
                 val shows = items.filterIsInstance<FindroidShow>()
@@ -52,7 +56,9 @@ class PersonDetailViewModel @Inject internal constructor(
                 val starredIn = StarredIn(movies, shows)
 
                 _uiState.emit(UiState.Normal(data, starredIn))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }
@@ -62,10 +68,10 @@ class PersonDetailViewModel @Inject internal constructor(
         val name: String,
         val overview: String,
         val dto: BaseItemDto,
-    )
+                             )
 
     data class StarredIn(
         val movies: List<FindroidMovie>,
         val shows: List<FindroidShow>,
-    )
+                        )
 }

@@ -20,14 +20,16 @@ class SeasonViewModel
 @Inject
 constructor(
     private val jellyfinRepository: JellyfinRepository,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val eventsChannel = Channel<SeasonEvent>()
     val eventsChannelFlow = eventsChannel.receiveAsFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(val episodes: List<EpisodeItem>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
@@ -35,35 +37,58 @@ constructor(
 
     private lateinit var season: FindroidSeason
 
-    fun loadEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean) {
+    fun loadEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean)
+    {
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 season = getSeason(seasonId)
                 val episodes = getEpisodes(seriesId, seasonId, offline)
                 _uiState.emit(UiState.Normal(episodes))
-            } catch (_: NullPointerException) {
+            }
+            catch (_: NullPointerException)
+            {
                 // Navigate back because item does not exist (probably because it's been deleted)
                 eventsChannel.send(SeasonEvent.NavigateBack)
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }
     }
 
-    private suspend fun getSeason(seasonId: UUID): FindroidSeason {
+    private suspend fun getSeason(seasonId: UUID): FindroidSeason
+    {
         return jellyfinRepository.getSeason(seasonId)
     }
 
-    private suspend fun getEpisodes(seriesId: UUID, seasonId: UUID, offline: Boolean): List<EpisodeItem> {
-        val header = EpisodeItem.Header(seriesId = season.seriesId, seasonId = season.id, seriesName = season.seriesName, seasonName = season.name)
+    private suspend fun getEpisodes(
+        seriesId: UUID,
+        seasonId: UUID,
+        offline: Boolean
+                                   ): List<EpisodeItem>
+    {
+        val header = EpisodeItem.Header(
+            seriesId = season.seriesId,
+            seasonId = season.id,
+            seriesName = season.seriesName,
+            seasonName = season.name
+                                       )
         val episodes =
-            jellyfinRepository.getEpisodes(seriesId, seasonId, fields = listOf(ItemFields.OVERVIEW), offline = offline)
+            jellyfinRepository.getEpisodes(
+                seriesId,
+                seasonId,
+                fields = listOf(ItemFields.OVERVIEW),
+                offline = offline
+                                          )
 
         return listOf(header) + episodes.map { EpisodeItem.Episode(it) }
     }
 }
 
-sealed interface SeasonEvent {
+sealed interface SeasonEvent
+{
     data object NavigateBack : SeasonEvent
 }

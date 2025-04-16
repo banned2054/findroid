@@ -9,11 +9,11 @@ data class ServerWithAddressAndUser(
     @Relation(
         parentColumn = "currentServerAddressId",
         entityColumn = "id",
-    )
+             )
     val address: ServerAddress?,
     @Relation(
         parentColumn = "currentUserId",
         entityColumn = "id",
-    )
+             )
     val user: User?,
-)
+                                   )

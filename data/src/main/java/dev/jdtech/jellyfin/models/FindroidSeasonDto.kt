@@ -14,12 +14,12 @@ import java.util.UUID
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
             onDelete = ForeignKey.CASCADE,
-        ),
+                  ),
     ],
     indices = [
         Index("seriesId"),
     ],
-)
+       )
 data class FindroidSeasonDto(
     @PrimaryKey
     val id: UUID,
@@ -28,9 +28,10 @@ data class FindroidSeasonDto(
     val seriesName: String,
     val overview: String,
     val indexNumber: Int,
-)
+                            )
 
-fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
+fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto
+{
     return FindroidSeasonDto(
         id = id,
         seriesId = seriesId,
@@ -38,5 +39,5 @@ fun FindroidSeason.toFindroidSeasonDto(): FindroidSeasonDto {
         seriesName = seriesName,
         overview = overview,
         indexNumber = indexNumber,
-    )
+                            )
 }

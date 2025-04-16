@@ -60,7 +60,8 @@ fun ServersScreen(
     onBackClick: () -> Unit,
     showBack: Boolean = true,
     viewModel: ServersViewModel = hiltViewModel(),
-) {
+                 )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -68,7 +69,8 @@ fun ServersScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is ServersEvent.NavigateToLogin -> navigateToLogin()
             is ServersEvent.NavigateToUsers -> navigateToUsers()
         }
@@ -78,14 +80,15 @@ fun ServersScreen(
         state = state,
         showBack = showBack,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is ServersAction.OnAddClick -> onAddClick()
                 is ServersAction.OnBackClick -> onBackClick()
                 else -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                       )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +97,8 @@ private fun ServersScreenLayout(
     state: ServersState,
     showBack: Boolean = true,
     onAction: (ServersAction) -> Unit,
-) {
+                               )
+{
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
     var openDeleteDialog by remember { mutableStateOf(false) }
@@ -108,7 +112,7 @@ private fun ServersScreenLayout(
                 .widthIn(max = 480.dp)
                 .fillMaxWidth()
                 .align(Alignment.Center),
-        ) {
+              ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
@@ -116,23 +120,29 @@ private fun ServersScreenLayout(
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),
-            )
+                 )
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = stringResource(SetupR.string.servers), style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(SetupR.string.servers),
+                style = MaterialTheme.typography.headlineMedium
+                )
             Spacer(modifier = Modifier.height(32.dp))
-            if (state.servers.isEmpty()) {
+            if (state.servers.isEmpty())
+            {
                 Text(
                     text = stringResource(SetupR.string.servers_no_servers),
                     style = MaterialTheme.typography.bodyMedium,
-                )
+                    )
                 Spacer(modifier = Modifier.weight(1f))
-            } else {
+            }
+            else
+            {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                ) {
+                          ) {
                     items(state.servers) { server ->
                         ServerItem(
                             name = server.server.name,
@@ -141,23 +151,27 @@ private fun ServersScreenLayout(
                             onClick = {
                                 onAction(
                                     ServersAction.OnServerClick(serverId = server.server.id),
-                                )
+                                        )
                             },
                             onLongClick = {
                                 selectedServer = server.server
                                 showBottomSheet = true
                             },
-                        )
+                                  )
                     }
                 }
             }
         }
-        if (showBack) {
+        if (showBack)
+        {
             IconButton(
                 onClick = { onAction(ServersAction.OnBackClick) },
                 modifier = Modifier.padding(start = 8.dp),
-            ) {
-                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+                      ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_left),
+                    contentDescription = null
+                    )
             }
         }
         ExtendedFloatingActionButton(
@@ -167,16 +181,22 @@ private fun ServersScreenLayout(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
-        )
+                                    )
     }
 
-    if (openDeleteDialog && selectedServer != null) {
+    if (openDeleteDialog && selectedServer != null)
+    {
         AlertDialog(
             title = {
                 Text(text = stringResource(SetupR.string.remove_server_dialog))
             },
             text = {
-                Text(text = stringResource(SetupR.string.remove_server_dialog_text, selectedServer!!.name))
+                Text(
+                    text = stringResource(
+                        SetupR.string.remove_server_dialog_text,
+                        selectedServer!!.name
+                                         )
+                    )
             },
             onDismissRequest = {
                 openDeleteDialog = false
@@ -186,13 +206,14 @@ private fun ServersScreenLayout(
                     onClick = {
                         openDeleteDialog = false
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
+                            if (!sheetState.isVisible)
+                            {
                                 showBottomSheet = false
                             }
                         }
                         onAction(ServersAction.DeleteServer(selectedServer!!.id))
                     },
-                ) {
+                          ) {
                     Text(text = stringResource(SetupR.string.confirm))
                 }
             },
@@ -201,14 +222,15 @@ private fun ServersScreenLayout(
                     onClick = {
                         openDeleteDialog = false
                     },
-                ) {
+                          ) {
                     Text(text = stringResource(SetupR.string.cancel))
                 }
             },
-        )
+                   )
     }
 
-    if (showBottomSheet) {
+    if (showBottomSheet)
+    {
         ServerBottomSheet(
             onAddresses = {},
             onRemoveServer = {
@@ -218,13 +240,14 @@ private fun ServersScreenLayout(
                 showBottomSheet = false
             },
             sheetState = sheetState,
-        )
+                         )
     }
 }
 
 @PreviewScreenSizes
 @Composable
-private fun ServersScreenLayoutPreview() {
+private fun ServersScreenLayoutPreview()
+{
     FindroidTheme {
         ServersScreenLayout(
             state = ServersState(
@@ -235,19 +258,19 @@ private fun ServersScreenLayoutPreview() {
                             name = "Jellyfin Server",
                             currentServerAddressId = null,
                             currentUserId = null,
-                        ),
+                                       ),
                         addresses = listOf(
                             ServerAddress(
                                 id = UUID.randomUUID(),
                                 address = "http://192.168.0.10:8096",
                                 serverId = "",
-                            ),
-                        ),
+                                         ),
+                                          ),
                         user = null,
-                    ),
-                ),
-            ),
+                                       ),
+                                ),
+                                ),
             onAction = {},
-        )
+                           )
     }
 }

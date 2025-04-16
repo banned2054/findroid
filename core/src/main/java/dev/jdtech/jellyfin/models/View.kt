@@ -7,4 +7,4 @@ data class View(
     val name: String,
     val items: List<FindroidItem>,
     val type: CollectionType,
-)
+               )

@@ -2,7 +2,8 @@ package dev.jdtech.jellyfin.core.presentation.theme
 
 import androidx.compose.ui.unit.dp
 
-object Spacings {
+object Spacings
+{
     val default = 24.dp
     val extraSmall = 4.dp
     val small = 8.dp

@@ -10,10 +10,12 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppPreferencesModule {
+object AppPreferencesModule
+{
     @Singleton
     @Provides
-    fun provideAppPreferences(sp: SharedPreferences): AppPreferences {
+    fun provideAppPreferences(sp: SharedPreferences): AppPreferences
+    {
         return AppPreferences(sp)
     }
 }

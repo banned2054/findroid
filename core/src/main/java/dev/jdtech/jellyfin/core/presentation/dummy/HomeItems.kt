@@ -12,8 +12,8 @@ val dummyHomeSection = HomeItem.Section(
         id = UUID.randomUUID(),
         name = UiText.DynamicString("Continue watching"),
         items = dummyMovies + dummyEpisodes,
-    ),
-)
+               ),
+                                       )
 
 val dummyHomeView = HomeItem.ViewItem(
     View(
@@ -21,7 +21,7 @@ val dummyHomeView = HomeItem.ViewItem(
         name = "Movies",
         items = dummyMovies,
         type = CollectionType.Movies,
-    ),
-)
+        ),
+                                     )
 
 val dummyHomeItems = listOf(dummyHomeSection, dummyHomeView)

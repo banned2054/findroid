@@ -3,7 +3,8 @@ package dev.jdtech.jellyfin.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-enum class FindroidSegmentType {
+enum class FindroidSegmentType
+{
     INTRO, CREDITS, UNKNOWN
 }
 
@@ -18,14 +19,15 @@ data class FindroidSegment(
     val showAt: Double,
     @SerialName("HideSkipPromptAt")
     val hideAt: Double,
-)
+                          )
 
-fun FindroidSegmentDto.toFindroidSegment(): FindroidSegment {
+fun FindroidSegmentDto.toFindroidSegment(): FindroidSegment
+{
     return FindroidSegment(
         type = type,
         startTime = startTime,
         endTime = endTime,
         showAt = showAt,
         hideAt = hideAt,
-    )
+                          )
 }

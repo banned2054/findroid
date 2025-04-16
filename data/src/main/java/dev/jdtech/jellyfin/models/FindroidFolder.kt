@@ -19,11 +19,12 @@ data class FindroidFolder(
     override val unplayedItemCount: Int?,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>? = null,
-) : FindroidItem
+                         ) : FindroidItem
 
 fun BaseItemDto.toFindroidFolder(
     jellyfinRepository: JellyfinRepository,
-): FindroidFolder {
+                                ): FindroidFolder
+{
     return FindroidFolder(
         id = id,
         name = name.orEmpty(),
@@ -31,5 +32,5 @@ fun BaseItemDto.toFindroidFolder(
         favorite = userData?.isFavorite == true,
         unplayedItemCount = userData?.unplayedItemCount,
         images = toFindroidImages(jellyfinRepository),
-    )
+                         )
 }

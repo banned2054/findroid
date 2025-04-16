@@ -27,4 +27,4 @@ val dummyShow = FindroidShow(
     status = "Ended",
     trailer = null,
     unplayedItemCount = 20,
-)
+                            )

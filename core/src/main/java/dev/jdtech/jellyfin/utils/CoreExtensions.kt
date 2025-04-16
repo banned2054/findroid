@@ -17,46 +17,52 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import java.io.Serializable
 import java.nio.charset.StandardCharsets
 
-fun BaseItemDto.toView(items: List<FindroidItem>): View {
+fun BaseItemDto.toView(items: List<FindroidItem>): View
+{
     return View(
         id = id,
         name = name ?: "",
         items = items,
         type = CollectionType.fromString(collectionType?.serialName),
-    )
+               )
 }
 
 fun Resources.dip(px: Int) = (px * displayMetrics.density).toInt()
 
-fun MaterialButton.setIconTintColorAttribute(@AttrRes attributeId: Int, theme: Resources.Theme) {
+fun MaterialButton.setIconTintColorAttribute(@AttrRes attributeId: Int, theme: Resources.Theme)
+{
     val typedValue = TypedValue()
     theme.resolveAttribute(attributeId, typedValue, true)
     this.iconTint = ColorStateList.valueOf(
         resources.getColor(
             typedValue.resourceId,
             theme,
-        ),
-    )
+                          ),
+                                          )
 }
 
-inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when {
+inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when
+{
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(key, T::class.java)
-    else ->
+    else                                                  ->
         @Suppress("DEPRECATION")
         getSerializable(key)
-            as? T
+                as? T
 }
 
-fun Activity.restart() {
+fun Activity.restart()
+{
     val intent = Intent(this, this::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     startActivity(intent)
 }
 
-fun String.base64ToByteArray(): ByteArray {
+fun String.base64ToByteArray(): ByteArray
+{
     return Base64.decode(toByteArray(StandardCharsets.UTF_8), Base64.URL_SAFE or Base64.NO_WRAP)
 }
 
-fun ByteArray.toBase64Str(): String {
+fun ByteArray.toBase64Str(): String
+{
     return Base64.encodeToString(this, Base64.URL_SAFE or Base64.NO_WRAP)
 }

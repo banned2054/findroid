@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.film.presentation.episode
 
-sealed interface EpisodeAction {
+sealed interface EpisodeAction
+{
     data class Play(val startFromBeginning: Boolean = false) : EpisodeAction
     data object MarkAsPlayed : EpisodeAction
     data object UnmarkAsPlayed : EpisodeAction

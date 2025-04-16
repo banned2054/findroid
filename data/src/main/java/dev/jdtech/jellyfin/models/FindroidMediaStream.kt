@@ -18,9 +18,10 @@ data class FindroidMediaStream(
     val height: Int?,
     val width: Int?,
     val videoDoViTitle: String?,
-)
+                              )
 
-fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream {
+fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): FindroidMediaStream
+{
     return FindroidMediaStream(
         title = title.orEmpty(),
         displayTitle = displayTitle,
@@ -34,10 +35,11 @@ fun MediaStream.toFindroidMediaStream(jellyfinRepository: JellyfinRepository): F
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,
-    )
+                              )
 }
 
-fun FindroidMediaStreamDto.toFindroidMediaStream(): FindroidMediaStream {
+fun FindroidMediaStreamDto.toFindroidMediaStream(): FindroidMediaStream
+{
     return FindroidMediaStream(
         title = title,
         displayTitle = displayTitle,
@@ -51,5 +53,5 @@ fun FindroidMediaStreamDto.toFindroidMediaStream(): FindroidMediaStream {
         height = height,
         width = width,
         videoDoViTitle = videoDoViTitle,
-    )
+                              )
 }

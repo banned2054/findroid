@@ -13,16 +13,18 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object DatabaseModule
+{
     @Singleton
     @Provides
-    fun provideServerDatabaseDao(@ApplicationContext app: Context): ServerDatabaseDao {
+    fun provideServerDatabaseDao(@ApplicationContext app: Context): ServerDatabaseDao
+    {
         return Room.databaseBuilder(
             app.applicationContext,
             ServerDatabase::class.java,
             "servers",
-        )
-            .fallbackToDestructiveMigration()
+                                   )
+            .fallbackToDestructiveMigration(false)
             .allowMainThreadQueries()
             .build()
             .getServerDatabaseDao()

@@ -17,52 +17,67 @@ class EpisodeViewModel
 constructor(
     private val repository: JellyfinRepository,
     private val videoMetadataParser: VideoMetadataParser,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _state = MutableStateFlow(EpisodeState())
     val state = _state.asStateFlow()
 
     lateinit var episodeId: UUID
 
-    fun loadEpisode(episodeId: UUID) {
+    fun loadEpisode(episodeId: UUID)
+    {
         this.episodeId = episodeId
         viewModelScope.launch {
-            try {
+            try
+            {
                 val episode = repository.getEpisode(episodeId)
                 val videoMetadata = videoMetadataParser.parse(episode.sources.first())
                 _state.emit(_state.value.copy(episode = episode, videoMetadata = videoMetadata))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _state.emit(_state.value.copy(error = e))
             }
         }
     }
 
-    fun onAction(action: EpisodeAction) {
-        when (action) {
-            is EpisodeAction.MarkAsPlayed -> {
+    fun onAction(action: EpisodeAction)
+    {
+        when (action)
+        {
+            is EpisodeAction.MarkAsPlayed     ->
+            {
                 viewModelScope.launch {
                     repository.markAsPlayed(episodeId)
                     loadEpisode(episodeId)
                 }
             }
-            is EpisodeAction.UnmarkAsPlayed -> {
+
+            is EpisodeAction.UnmarkAsPlayed   ->
+            {
                 viewModelScope.launch {
                     repository.markAsUnplayed(episodeId)
                     loadEpisode(episodeId)
                 }
             }
-            is EpisodeAction.MarkAsFavorite -> {
+
+            is EpisodeAction.MarkAsFavorite   ->
+            {
                 viewModelScope.launch {
                     repository.markAsFavorite(episodeId)
                     loadEpisode(episodeId)
                 }
             }
-            is EpisodeAction.UnmarkAsFavorite -> {
+
+            is EpisodeAction.UnmarkAsFavorite ->
+            {
                 viewModelScope.launch {
                     repository.unmarkAsFavorite(episodeId)
                     loadEpisode(episodeId)
                 }
             }
-            else -> Unit
+
+            else                              -> Unit
         }
     }
 }

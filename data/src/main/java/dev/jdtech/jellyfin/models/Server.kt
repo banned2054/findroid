@@ -11,4 +11,4 @@ data class Server(
     val name: String,
     var currentServerAddressId: UUID?,
     var currentUserId: UUID?,
-)
+                 )

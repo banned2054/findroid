@@ -11,5 +11,5 @@ val dummyPerson = FindroidPerson(
     image = FindroidPersonImage(
         uri = null,
         blurHash = null,
-    ),
-)
+                               ),
+                                )

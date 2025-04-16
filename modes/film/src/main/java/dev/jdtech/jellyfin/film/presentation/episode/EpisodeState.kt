@@ -7,4 +7,4 @@ data class EpisodeState(
     val episode: FindroidEpisode? = null,
     val videoMetadata: VideoMetadata? = null,
     val error: Exception? = null,
-)
+                       )

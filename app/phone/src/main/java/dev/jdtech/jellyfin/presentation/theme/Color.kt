@@ -41,7 +41,7 @@ val lightScheme = lightColorScheme(
     surfaceContainer = ColorLight.surfaceContainerLight,
     surfaceContainerHigh = ColorLight.surfaceContainerHighLight,
     surfaceContainerHighest = ColorLight.surfaceContainerHighestLight,
-)
+                                  )
 
 val darkScheme = darkColorScheme(
     primary = ColorDark.primaryDark,
@@ -79,4 +79,4 @@ val darkScheme = darkColorScheme(
     surfaceContainer = ColorDark.surfaceContainerDark,
     surfaceContainerHigh = ColorDark.surfaceContainerHighDark,
     surfaceContainerHighest = ColorDark.surfaceContainerHighestDark,
-)
+                                )

@@ -1,6 +1,7 @@
 package dev.jdtech.jellyfin.models
 
-enum class CollectionType(val type: String) {
+enum class CollectionType(val type: String)
+{
     Movies("movies"),
     TvShows("tvshows"),
     HomeVideos("homevideos"),
@@ -13,7 +14,8 @@ enum class CollectionType(val type: String) {
     Unknown("unknown"),
     ;
 
-    companion object {
+    companion object
+    {
         val defaultValue = Unknown
 
         val supported = listOf(
@@ -21,16 +23,21 @@ enum class CollectionType(val type: String) {
             TvShows,
             BoxSets,
             Mixed,
-        )
+                              )
 
-        fun fromString(string: String?): CollectionType {
-            if (string == null) { // TODO jellyfin returns null as the collectiontype for mixed libraries. This is obviously wrong, but probably an upstream issue. Should be fixed whenever upstream fixes this
+        fun fromString(string: String?): CollectionType
+        {
+            if (string == null)
+            { // TODO jellyfin returns null as the collectiontype for mixed libraries. This is obviously wrong, but probably an upstream issue. Should be fixed whenever upstream fixes this
                 return Mixed
             }
 
-            return try {
+            return try
+            {
                 entries.first { it.type == string }
-            } catch (e: NoSuchElementException) {
+            }
+            catch (e: NoSuchElementException)
+            {
                 defaultValue
             }
         }

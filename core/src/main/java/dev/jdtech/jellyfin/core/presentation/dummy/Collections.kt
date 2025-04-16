@@ -10,16 +10,16 @@ private val dummyMoviesCollection = FindroidCollection(
     name = "Movies",
     type = CollectionType.Movies,
     images = FindroidImages(),
-)
+                                                      )
 
 private val dummyShowsCollection = FindroidCollection(
     id = UUID.randomUUID(),
     name = "Shows",
     type = CollectionType.TvShows,
     images = FindroidImages(),
-)
+                                                     )
 
 val dummyCollections = listOf(
     dummyMoviesCollection,
     dummyShowsCollection,
-)
+                             )

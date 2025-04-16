@@ -22,7 +22,8 @@ class LibraryViewModel
 constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val appPreferences: AppPreferences,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _state = MutableStateFlow(LibraryState())
     val state = _state.asStateFlow()
 
@@ -35,17 +36,25 @@ constructor(
     fun setup(
         parentId: UUID,
         libraryType: CollectionType,
-    ) {
+             )
+    {
         this.parentId = parentId
         this.libraryType = libraryType
     }
 
-    fun loadItems() {
-        val itemType = when (libraryType) {
+    fun loadItems()
+    {
+        val itemType = when (libraryType)
+        {
             CollectionType.Movies -> listOf(BaseItemKind.MOVIE)
             CollectionType.TvShows -> listOf(BaseItemKind.SERIES)
             CollectionType.BoxSets -> listOf(BaseItemKind.BOX_SET)
-            CollectionType.Mixed -> listOf(BaseItemKind.FOLDER, BaseItemKind.MOVIE, BaseItemKind.SERIES)
+            CollectionType.Mixed -> listOf(
+                BaseItemKind.FOLDER,
+                BaseItemKind.MOVIE,
+                BaseItemKind.SERIES
+                                          )
+
             else -> null
         }
 
@@ -56,30 +65,36 @@ constructor(
 
             initSorting()
 
-            try {
+            try
+            {
                 val items = jellyfinRepository.getItemsPaging(
                     parentId = parentId,
                     includeTypes = itemType,
                     recursive = recursive,
                     sortBy = if (libraryType == CollectionType.TvShows && sortBy == SortBy.DATE_PLAYED) SortBy.SERIES_DATE_PLAYED else sortBy, // Jellyfin uses a different enum for sorting series by data played
                     sortOrder = sortOrder,
-                ).cachedIn(viewModelScope)
+                                                             ).cachedIn(viewModelScope)
                 _state.emit(_state.value.copy(items = items))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _state.emit(_state.value.copy(error = e))
             }
         }
     }
 
-    private suspend fun initSorting() {
-        if (!::sortBy.isInitialized || !::sortOrder.isInitialized) {
+    private suspend fun initSorting()
+    {
+        if (!::sortBy.isInitialized || !::sortOrder.isInitialized)
+        {
             sortBy = SortBy.fromString(appPreferences.getValue(appPreferences.sortBy))
             sortOrder = SortOrder.fromName(appPreferences.getValue(appPreferences.sortOrder))
             _state.emit(_state.value.copy(sortBy = sortBy, sortOrder = sortOrder))
         }
     }
 
-    private fun setSorting(sortBy: SortBy, sortOrder: SortOrder) {
+    private fun setSorting(sortBy: SortBy, sortOrder: SortOrder)
+    {
         this.sortBy = sortBy
         this.sortOrder = sortOrder
         viewModelScope.launch {
@@ -89,15 +104,20 @@ constructor(
         }
     }
 
-    fun onAction(action: LibraryAction) {
-        when (action) {
-            is LibraryAction.ChangeSorting -> {
-                if (action.sortBy != this.sortBy || action.sortOrder != this.sortOrder) {
+    fun onAction(action: LibraryAction)
+    {
+        when (action)
+        {
+            is LibraryAction.ChangeSorting ->
+            {
+                if (action.sortBy != this.sortBy || action.sortOrder != this.sortOrder)
+                {
                     setSorting(sortBy = action.sortBy, sortOrder = action.sortOrder)
                     loadItems()
                 }
             }
-            else -> Unit
+
+            else                           -> Unit
         }
     }
 }

@@ -35,10 +35,10 @@ val dummyMovie = FindroidMovie(
                     height = 1080,
                     width = 1920,
                     videoDoViTitle = null,
-                ),
-            ),
-        ),
-    ),
+                                   ),
+                                 ),
+                      ),
+                    ),
     played = false,
     favorite = true,
     canPlay = true,
@@ -57,8 +57,8 @@ val dummyMovie = FindroidMovie(
     images = FindroidImages(),
     chapters = null,
     trickplayInfo = null,
-)
+                              )
 
 val dummyMovies = listOf(
     dummyMovie,
-)
+                        )

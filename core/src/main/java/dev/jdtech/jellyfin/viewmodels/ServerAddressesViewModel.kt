@@ -23,11 +23,13 @@ class ServerAddressesViewModel
 constructor(
     private val jellyfinApi: JellyfinApi,
     private val database: ServerDatabaseDao,
-) : ViewModel() {
+           ) : ViewModel()
+{
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    sealed class UiState {
+    sealed class UiState
+    {
         data class Normal(val addresses: List<ServerAddress>) : UiState()
         data object Loading : UiState()
         data class Error(val error: Exception) : UiState()
@@ -38,14 +40,18 @@ constructor(
 
     private var currentServerId: String = ""
 
-    fun loadAddresses(serverId: String) {
+    fun loadAddresses(serverId: String)
+    {
         currentServerId = serverId
         viewModelScope.launch {
             _uiState.emit(UiState.Loading)
-            try {
+            try
+            {
                 val serverWithUser = database.getServerWithAddresses(serverId)
                 _uiState.emit(UiState.Normal(serverWithUser.addresses))
-            } catch (e: Exception) {
+            }
+            catch (e: Exception)
+            {
                 _uiState.emit(UiState.Error(e))
             }
         }
@@ -56,10 +62,12 @@ constructor(
      *
      * @param address The server address
      */
-    fun deleteAddress(address: ServerAddress) {
+    fun deleteAddress(address: ServerAddress)
+    {
         viewModelScope.launch(Dispatchers.IO) {
             val currentAddress = database.getServerCurrentAddress(currentServerId)
-            if (address == currentAddress) {
+            if (address == currentAddress)
+            {
                 Timber.e("You cannot delete the current address")
                 return@launch
             }
@@ -68,7 +76,8 @@ constructor(
         }
     }
 
-    fun switchToAddress(address: ServerAddress) {
+    fun switchToAddress(address: ServerAddress)
+    {
         viewModelScope.launch {
             val server = database.get(currentServerId) ?: return@launch
             server.currentServerAddressId = address.id
@@ -76,31 +85,38 @@ constructor(
 
             jellyfinApi.api.update(
                 baseUrl = address.address,
-            )
+                                  )
 
             eventsChannel.send(ServerAddressesEvent.NavigateToHome)
         }
     }
 
-    fun addAddress(context: Context, address: String) {
+    fun addAddress(context: Context, address: String)
+    {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
+            try
+            {
                 val jellyfinApi = JellyfinApi(context)
                 jellyfinApi.api.update(
                     baseUrl = address,
-                )
+                                      )
                 val systemInfo by jellyfinApi.systemApi.getPublicSystemInfo()
-                if (systemInfo.id != currentServerId) {
+                if (systemInfo.id != currentServerId)
+                {
                     return@launch
                 }
                 val serverAddress = ServerAddress(UUID.randomUUID(), currentServerId, address)
                 database.insertServerAddress(serverAddress)
                 loadAddresses(currentServerId)
-            } catch (_: Exception) { }
+            }
+            catch (_: Exception)
+            {
+            }
         }
     }
 }
 
-sealed interface ServerAddressesEvent {
+sealed interface ServerAddressesEvent
+{
     data object NavigateToHome : ServerAddressesEvent
 }

@@ -55,7 +55,8 @@ fun UsersScreen(
     onPublicUserClick: (String) -> Unit,
     showBack: Boolean = true,
     viewModel: UsersViewModel = hiltViewModel(),
-) {
+               )
+{
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
@@ -63,7 +64,8 @@ fun UsersScreen(
     }
 
     ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
+        when (event)
+        {
             is UsersEvent.NavigateToHome -> navigateToHome()
         }
     }
@@ -72,16 +74,17 @@ fun UsersScreen(
         state = state,
         showBack = showBack,
         onAction = { action ->
-            when (action) {
+            when (action)
+            {
                 is UsersAction.OnChangeServerClick -> onChangeServerClick()
-                is UsersAction.OnAddClick -> onAddClick()
-                is UsersAction.OnBackClick -> onBackClick()
-                is UsersAction.OnPublicUserClick -> onPublicUserClick(action.username)
-                else -> Unit
+                is UsersAction.OnAddClick          -> onAddClick()
+                is UsersAction.OnBackClick         -> onBackClick()
+                is UsersAction.OnPublicUserClick   -> onPublicUserClick(action.username)
+                else                               -> Unit
             }
             viewModel.onAction(action)
         },
-    )
+                     )
 }
 
 @Composable
@@ -89,7 +92,8 @@ private fun UsersScreenLayout(
     state: UsersState,
     showBack: Boolean = true,
     onAction: (UsersAction) -> Unit,
-) {
+                             )
+{
     var openDeleteDialog by remember { mutableStateOf(false) }
     var selectedUser by remember { mutableStateOf<User?>(null) }
 
@@ -100,7 +104,7 @@ private fun UsersScreenLayout(
                 .widthIn(max = 480.dp)
                 .fillMaxWidth()
                 .align(Alignment.Center),
-        ) {
+              ) {
             Spacer(modifier = Modifier.weight(0.2f))
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
@@ -108,30 +112,33 @@ private fun UsersScreenLayout(
                 modifier = Modifier
                     .width(250.dp)
                     .align(Alignment.CenterHorizontally),
-            )
+                 )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(SetupR.string.users),
                 style = MaterialTheme.typography.headlineMedium,
-            )
+                )
             Text(
                 text = stringResource(SetupR.string.server_subtitle, state.serverName ?: ""),
                 style = MaterialTheme.typography.titleMedium,
-            )
+                )
             Spacer(modifier = Modifier.height(24.dp))
-            if (state.users.isEmpty() && state.publicUsers.isEmpty()) {
+            if (state.users.isEmpty() && state.publicUsers.isEmpty())
+            {
                 Text(
                     text = stringResource(SetupR.string.users_no_users),
                     style = MaterialTheme.typography.bodyMedium,
-                )
+                    )
                 Spacer(modifier = Modifier.weight(1f))
-            } else {
+            }
+            else
+            {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                ) {
+                          ) {
                     items(state.users) { user ->
                         UserItem(
                             name = user.name,
@@ -143,7 +150,7 @@ private fun UsersScreenLayout(
                                 selectedUser = user
                                 openDeleteDialog = true
                             },
-                        )
+                                )
                     }
                     items(state.publicUsers) { user ->
                         UserItem(
@@ -155,17 +162,21 @@ private fun UsersScreenLayout(
                                 onAction(UsersAction.OnPublicUserClick(username = user.name))
                             },
                             onLongClick = {},
-                        )
+                                )
                     }
                 }
             }
         }
-        if (showBack) {
+        if (showBack)
+        {
             IconButton(
                 onClick = { onAction(UsersAction.OnBackClick) },
                 modifier = Modifier.padding(start = 8.dp),
-            ) {
-                Icon(painter = painterResource(CoreR.drawable.ic_arrow_left), contentDescription = null)
+                      ) {
+                Icon(
+                    painter = painterResource(CoreR.drawable.ic_arrow_left),
+                    contentDescription = null
+                    )
             }
         }
         IconButton(
@@ -173,7 +184,7 @@ private fun UsersScreenLayout(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(end = 8.dp),
-        ) {
+                  ) {
             Icon(painter = painterResource(CoreR.drawable.ic_server), contentDescription = null)
         }
         ExtendedFloatingActionButton(
@@ -183,15 +194,21 @@ private fun UsersScreenLayout(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
-        )
+                                    )
 
-        if (openDeleteDialog && selectedUser != null) {
+        if (openDeleteDialog && selectedUser != null)
+        {
             AlertDialog(
                 title = {
                     Text(text = stringResource(SetupR.string.remove_user_dialog))
                 },
                 text = {
-                    Text(text = stringResource(SetupR.string.remove_user_dialog_text, selectedUser!!.name))
+                    Text(
+                        text = stringResource(
+                            SetupR.string.remove_user_dialog_text,
+                            selectedUser!!.name
+                                             )
+                        )
                 },
                 onDismissRequest = {
                     openDeleteDialog = false
@@ -202,7 +219,7 @@ private fun UsersScreenLayout(
                             openDeleteDialog = false
                             onAction(UsersAction.OnDeleteUser(selectedUser!!.id))
                         },
-                    ) {
+                              ) {
                         Text(text = stringResource(SetupR.string.confirm))
                     }
                 },
@@ -211,18 +228,19 @@ private fun UsersScreenLayout(
                         onClick = {
                             openDeleteDialog = false
                         },
-                    ) {
+                              ) {
                         Text(text = stringResource(SetupR.string.cancel))
                     }
                 },
-            )
+                       )
         }
     }
 }
 
 @PreviewScreenSizes
 @Composable
-private fun UsersScreenLayoutPreview() {
+private fun UsersScreenLayoutPreview()
+{
     FindroidTheme {
         UsersScreenLayout(
             state = UsersState(
@@ -231,17 +249,17 @@ private fun UsersScreenLayoutPreview() {
                         id = UUID.randomUUID(),
                         name = "Bob",
                         serverId = "",
-                    ),
-                ),
+                        ),
+                              ),
                 publicUsers = listOf(
                     User(
                         id = UUID.randomUUID(),
                         name = "Alice",
                         serverId = "",
-                    ),
-                ),
-            ),
+                        ),
+                                    ),
+                              ),
             onAction = {},
-        )
+                         )
     }
 }

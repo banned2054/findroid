@@ -15,7 +15,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+object RepositoryModule
+{
 
     @Singleton
     @Provides
@@ -24,7 +25,8 @@ object RepositoryModule {
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
         appPreferences: AppPreferences,
-    ): JellyfinRepositoryImpl {
+                                     ): JellyfinRepositoryImpl
+    {
         println("Creating new jellyfinRepositoryImpl")
         return JellyfinRepositoryImpl(application, jellyfinApi, serverDatabase, appPreferences)
     }
@@ -36,9 +38,15 @@ object RepositoryModule {
         jellyfinApi: JellyfinApi,
         serverDatabase: ServerDatabaseDao,
         appPreferences: AppPreferences,
-    ): JellyfinRepositoryOfflineImpl {
+                                            ): JellyfinRepositoryOfflineImpl
+    {
         println("Creating new jellyfinRepositoryOfflineImpl")
-        return JellyfinRepositoryOfflineImpl(application, jellyfinApi, serverDatabase, appPreferences)
+        return JellyfinRepositoryOfflineImpl(
+            application,
+            jellyfinApi,
+            serverDatabase,
+            appPreferences
+                                            )
     }
 
     @Provides
@@ -46,9 +54,11 @@ object RepositoryModule {
         jellyfinRepositoryImpl: JellyfinRepositoryImpl,
         jellyfinRepositoryOfflineImpl: JellyfinRepositoryOfflineImpl,
         appPreferences: AppPreferences,
-    ): JellyfinRepository {
+                                 ): JellyfinRepository
+    {
         println("Creating new JellyfinRepository")
-        return when (appPreferences.getValue(appPreferences.offlineMode)) {
+        return when (appPreferences.getValue(appPreferences.offlineMode))
+        {
             true -> jellyfinRepositoryOfflineImpl
             false -> jellyfinRepositoryImpl
         }

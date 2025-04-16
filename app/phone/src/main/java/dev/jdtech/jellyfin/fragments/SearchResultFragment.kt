@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchResultFragment : Fragment() {
+class SearchResultFragment : Fragment()
+{
 
     private lateinit var binding: FragmentSearchResultBinding
     private val viewModel: SearchResultViewModel by viewModels()
@@ -38,7 +39,8 @@ class SearchResultFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentSearchResultBinding.inflate(inflater, container, false)
 
         binding.searchResultsRecyclerView.adapter = FavoritesListAdapter { item ->
@@ -49,10 +51,11 @@ class SearchResultFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when (uiState) {
-                        is SearchResultViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                    when (uiState)
+                    {
+                        is SearchResultViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                         is SearchResultViewModel.UiState.Loading -> bindUiStateLoading()
-                        is SearchResultViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is SearchResultViewModel.UiState.Error   -> bindUiStateError(uiState)
                     }
                 }
             }
@@ -75,7 +78,8 @@ class SearchResultFragment : Fragment() {
         return binding.root
     }
 
-    private fun bindUiStateNormal(uiState: SearchResultViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: SearchResultViewModel.UiState.Normal)
+    {
         uiState.apply {
             binding.noSearchResultsText.isVisible = sections.isEmpty()
 
@@ -87,12 +91,14 @@ class SearchResultFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: SearchResultViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: SearchResultViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
@@ -100,23 +106,28 @@ class SearchResultFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
+    private fun navigateToMediaItem(item: FindroidItem)
+    {
+        when (item)
+        {
+            is FindroidMovie ->
+            {
                 findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToMovieFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                            ),
+                                                )
             }
-            is FindroidShow -> {
+
+            is FindroidShow  ->
+            {
                 findNavController().safeNavigate(
                     SearchResultFragmentDirections.actionSearchResultFragmentToShowFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                           ),
+                                                )
             }
         }
     }

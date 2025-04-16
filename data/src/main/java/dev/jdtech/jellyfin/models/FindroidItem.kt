@@ -6,7 +6,8 @@ import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemKind
 import java.util.UUID
 
-interface FindroidItem {
+interface FindroidItem
+{
     val id: UUID
     val name: String
     val originalTitle: String?
@@ -26,22 +27,28 @@ interface FindroidItem {
 suspend fun BaseItemDto.toFindroidItem(
     jellyfinRepository: JellyfinRepository,
     serverDatabase: ServerDatabaseDao? = null,
-): FindroidItem? {
-    return when (type) {
-        BaseItemKind.MOVIE -> toFindroidMovie(jellyfinRepository, serverDatabase)
+                                      ): FindroidItem?
+{
+    return when (type)
+    {
+        BaseItemKind.MOVIE   -> toFindroidMovie(jellyfinRepository, serverDatabase)
         BaseItemKind.EPISODE -> toFindroidEpisode(jellyfinRepository)
-        BaseItemKind.SEASON -> toFindroidSeason(jellyfinRepository)
-        BaseItemKind.SERIES -> toFindroidShow(jellyfinRepository)
+        BaseItemKind.SEASON  -> toFindroidSeason(jellyfinRepository)
+        BaseItemKind.SERIES  -> toFindroidShow(jellyfinRepository)
         BaseItemKind.BOX_SET -> toFindroidBoxSet(jellyfinRepository)
-        BaseItemKind.FOLDER -> toFindroidFolder(jellyfinRepository)
-        else -> null
+        BaseItemKind.FOLDER  -> toFindroidFolder(jellyfinRepository)
+        else                 -> null
     }
 }
 
-fun FindroidItem.isDownloading(): Boolean {
-    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { it.path.endsWith(".download") }
+fun FindroidItem.isDownloading(): Boolean
+{
+    return sources.filter { it.type == FindroidSourceType.LOCAL }
+        .any { it.path.endsWith(".download") }
 }
 
-fun FindroidItem.isDownloaded(): Boolean {
-    return sources.filter { it.type == FindroidSourceType.LOCAL }.any { !it.path.endsWith(".download") }
+fun FindroidItem.isDownloaded(): Boolean
+{
+    return sources.filter { it.type == FindroidSourceType.LOCAL }
+        .any { !it.path.endsWith(".download") }
 }

@@ -25,11 +25,12 @@ data class FindroidSeason(
     override val unplayedItemCount: Int?,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>? = null,
-) : FindroidItem
+                         ) : FindroidItem
 
 fun BaseItemDto.toFindroidSeason(
     jellyfinRepository: JellyfinRepository,
-): FindroidSeason {
+                                ): FindroidSeason
+{
     return FindroidSeason(
         id = id,
         name = name.orEmpty(),
@@ -46,10 +47,11 @@ fun BaseItemDto.toFindroidSeason(
         seriesId = seriesId!!,
         seriesName = seriesName.orEmpty(),
         images = toFindroidImages(jellyfinRepository),
-    )
+                         )
 }
 
-fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason {
+fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID): FindroidSeason
+{
     val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidSeason(
         id = id,
@@ -67,5 +69,5 @@ fun FindroidSeasonDto.toFindroidSeason(database: ServerDatabaseDao, userId: UUID
         seriesId = seriesId,
         seriesName = seriesName,
         images = FindroidImages(),
-    )
+                         )
 }

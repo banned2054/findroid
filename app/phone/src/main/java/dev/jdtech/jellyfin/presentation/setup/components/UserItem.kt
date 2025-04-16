@@ -27,7 +27,13 @@ import dev.jdtech.jellyfin.core.R as CoreR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserItem(name: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}, onLongClick: () -> Unit = {}) {
+fun UserItem(
+    name: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
+            )
+{
     val haptics = LocalHapticFeedback.current
 
     Row(
@@ -41,36 +47,37 @@ fun UserItem(name: String, modifier: Modifier = Modifier, onClick: () -> Unit = 
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                 },
-            ),
-    ) {
+                              ),
+       ) {
         Surface(
             color = MaterialTheme.colorScheme.surfaceTint,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier
                 .size(48.dp),
-        ) {
+               ) {
             Box {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_user),
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.Center),
-                )
+                    )
             }
         }
         Text(
             text = name,
             style = MaterialTheme.typography.bodyLarge,
-        )
+            )
     }
 }
 
 @Composable
 @Preview(showBackground = true)
-private fun UserItemPreview() {
+private fun UserItemPreview()
+{
     FindroidTheme {
         UserItem(
             name = "Bob",
             modifier = Modifier.width(240.dp),
-        )
+                )
     }
 }

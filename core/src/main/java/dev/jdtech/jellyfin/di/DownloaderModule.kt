@@ -14,7 +14,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DownloaderModule {
+object DownloaderModule
+{
     @Singleton
     @Provides
     fun provideDownloader(
@@ -22,7 +23,8 @@ object DownloaderModule {
         serverDatabase: ServerDatabaseDao,
         jellyfinRepository: JellyfinRepository,
         appPreferences: AppPreferences,
-    ): Downloader {
+                         ): Downloader
+    {
         return DownloaderImpl(application, serverDatabase, jellyfinRepository, appPreferences)
     }
 }

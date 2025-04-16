@@ -30,7 +30,8 @@ import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
-internal class PersonDetailFragment : Fragment() {
+internal class PersonDetailFragment : Fragment()
+{
 
     private lateinit var binding: FragmentPersonDetailBinding
     private val viewModel: PersonDetailViewModel by viewModels()
@@ -43,12 +44,14 @@ internal class PersonDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentPersonDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
 
         binding.moviesList.adapter = adapter()
@@ -58,7 +61,8 @@ internal class PersonDetailFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when (uiState) {
+                    when (uiState)
+                    {
                         is PersonDetailViewModel.UiState.Normal -> bindUiStateNormal(uiState)
                         is PersonDetailViewModel.UiState.Loading -> bindUiStateLoading()
                         is PersonDetailViewModel.UiState.Error -> bindUiStateError(uiState)
@@ -82,19 +86,22 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun bindUiStateNormal(uiState: PersonDetailViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: PersonDetailViewModel.UiState.Normal)
+    {
         uiState.apply {
             binding.name.text = data.name
             binding.overview.text = data.overview
             setupOverviewExpansion()
             bindItemImage(binding.personImage, data.dto)
 
-            if (starredIn.movies.isNotEmpty()) {
+            if (starredIn.movies.isNotEmpty())
+            {
                 binding.movieLabel.isVisible = true
                 val moviesAdapter = binding.moviesList.adapter as ViewItemListAdapter
                 moviesAdapter.submitList(starredIn.movies)
             }
-            if (starredIn.shows.isNotEmpty()) {
+            if (starredIn.shows.isNotEmpty())
+            {
                 binding.showLabel.isVisible = true
                 val showsAdapter = binding.showList.adapter as ViewItemListAdapter
                 showsAdapter.submitList(starredIn.shows)
@@ -106,12 +113,14 @@ internal class PersonDetailFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: PersonDetailViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: PersonDetailViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.fragmentContent.isVisible = false
@@ -122,16 +131,22 @@ internal class PersonDetailFragment : Fragment() {
     private fun adapter() = ViewItemListAdapter(
         fixedWidth = true,
         onClickListener = { navigateToMediaItem(it) },
-    )
+                                               )
 
     private fun setupOverviewExpansion() = binding.overview.post {
         binding.readAll.setOnClickListener {
             with(binding.overview) {
-                if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT) {
-                    updateLayoutParams { height = resources.getDimension(CoreR.dimen.person_detail_overview_height).toInt() }
+                if (layoutParams.height == ConstraintLayout.LayoutParams.WRAP_CONTENT)
+                {
+                    updateLayoutParams {
+                        height = resources.getDimension(CoreR.dimen.person_detail_overview_height)
+                            .toInt()
+                    }
                     binding.readAll.text = getString(CoreR.string.view_all)
                     binding.overviewGradient.isVisible = true
-                } else {
+                }
+                else
+                {
                     updateLayoutParams { height = ConstraintLayout.LayoutParams.WRAP_CONTENT }
                     binding.readAll.text = getString(CoreR.string.hide)
                     binding.overviewGradient.isVisible = false
@@ -140,23 +155,28 @@ internal class PersonDetailFragment : Fragment() {
         }
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
+    private fun navigateToMediaItem(item: FindroidItem)
+    {
+        when (item)
+        {
+            is FindroidMovie ->
+            {
                 findNavController().safeNavigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToMovieFragment(
                         itemId = item.id,
                         itemName = item.name,
-                    ),
-                )
+                                                                                            ),
+                                                )
             }
-            is FindroidShow -> {
+
+            is FindroidShow  ->
+            {
                 findNavController().safeNavigate(
                     PersonDetailFragmentDirections.actionPersonDetailFragmentToShowFragment(
                         itemId = item.id,
                         itemName = item.name,
-                    ),
-                )
+                                                                                           ),
+                                                )
             }
         }
     }

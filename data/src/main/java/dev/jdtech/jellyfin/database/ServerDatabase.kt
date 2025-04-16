@@ -28,9 +28,10 @@ import dev.jdtech.jellyfin.models.User
         AutoMigration(from = 4, to = 5, spec = ServerDatabase.TrickplayMigration::class),
         AutoMigration(from = 5, to = 6, spec = ServerDatabase.IntrosMigration::class),
     ],
-)
+         )
 @TypeConverters(Converters::class)
-abstract class ServerDatabase : RoomDatabase() {
+abstract class ServerDatabase : RoomDatabase()
+{
     abstract fun getServerDatabaseDao(): ServerDatabaseDao
 
     @DeleteTable(tableName = "trickPlayManifests")

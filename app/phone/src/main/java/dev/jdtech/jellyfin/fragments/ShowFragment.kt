@@ -39,9 +39,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
 import dev.jdtech.jellyfin.core.R as CoreR
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
-class ShowFragment : Fragment() {
+class ShowFragment : Fragment()
+{
 
     private lateinit var binding: FragmentShowBinding
     private val viewModel: ShowViewModel by viewModels()
@@ -54,13 +56,15 @@ class ShowFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentShowBinding.inflate(inflater, container, false)
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -68,17 +72,19 @@ class ShowFragment : Fragment() {
                 launch {
                     viewModel.uiState.collect { uiState ->
                         Timber.d("$uiState")
-                        when (uiState) {
-                            is ShowViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                        when (uiState)
+                        {
+                            is ShowViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                             is ShowViewModel.UiState.Loading -> bindUiStateLoading()
-                            is ShowViewModel.UiState.Error -> bindUiStateError(uiState)
+                            is ShowViewModel.UiState.Error   -> bindUiStateError(uiState)
                         }
                     }
                 }
 
                 launch {
                     viewModel.eventsChannelFlow.collect { event ->
-                        when (event) {
+                        when (event)
+                        {
                             is ShowEvent.NavigateBack -> findNavController().navigateUp()
                         }
                     }
@@ -86,7 +92,8 @@ class ShowFragment : Fragment() {
 
                 launch {
                     playerViewModel.eventsChannelFlow.collect { event ->
-                        when (event) {
+                        when (event)
+                        {
                             is PlayerItemsEvent.PlayerItemsReady -> bindPlayerItems(event.items)
                             is PlayerItemsEvent.PlayerItemsError -> bindPlayerItemsError(event.error)
                         }
@@ -103,14 +110,17 @@ class ShowFragment : Fragment() {
         }
 
         binding.itemActions.trailerButton.setOnClickListener {
-            viewModel.item.trailer.let { trailerUri ->
+            viewModel.item.trailer?.let { trailerUri ->
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(trailerUri),
-                )
-                try {
+                    trailerUri.toUri(),
+                                   )
+                try
+                {
                     startActivity(intent)
-                } catch (e: Exception) {
+                }
+                catch (e: Exception)
+                {
                     Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -122,7 +132,7 @@ class ShowFragment : Fragment() {
                     if (season is FindroidSeason) navigateToSeasonFragment(season)
                 },
                 fixedWidth = true,
-            )
+                               )
         binding.peopleRecyclerView.adapter = PersonListAdapter { person ->
             navigateToPersonDetail(person.id)
         }
@@ -147,19 +157,23 @@ class ShowFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
 
         viewModel.loadData(args.itemId, args.offline)
     }
 
-    private fun bindUiStateNormal(uiState: ShowViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: ShowViewModel.UiState.Normal)
+    {
         uiState.apply {
             val downloaded = item.isDownloaded()
-            val canDownload = item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
+            val canDownload =
+                item.canDownload && item.sources.any { it.type == FindroidSourceType.REMOTE }
 
             binding.originalTitle.isVisible = item.originalTitle != item.name
-            if (item.trailer != null) {
+            if (item.trailer != null)
+            {
                 binding.itemActions.trailerButton.isVisible = true
             }
             binding.actors.isVisible = actors.isNotEmpty()
@@ -173,38 +187,49 @@ class ShowFragment : Fragment() {
 
             bindFavoriteButtonState(item.favorite)
 
-            when (canDownload) {
-                true -> {
+            when (canDownload)
+            {
+                true  ->
+                {
                     binding.itemActions.downloadButton.isVisible = true
                     binding.itemActions.downloadButton.isEnabled = !downloaded
 
-                    if (downloaded) {
+                    if (downloaded)
+                    {
                         binding.itemActions.downloadButton.setIconTintResource(
                             CoreR.color.red,
-                        )
+                                                                              )
                     }
                 }
 
-                false -> {
+                false ->
+                {
                     binding.itemActions.downloadButton.isVisible = false
                 }
             }
 
             binding.name.text = item.name
             binding.originalTitle.text = item.originalTitle
-            if (dateString.isEmpty()) {
+            if (dateString.isEmpty())
+            {
                 binding.year.isVisible = false
-            } else {
+            }
+            else
+            {
                 binding.year.text = dateString
             }
-            if (runTime.isEmpty()) {
+            if (runTime.isEmpty())
+            {
                 binding.playtime.isVisible = false
-            } else {
+            }
+            else
+            {
                 binding.playtime.text = runTime
             }
             binding.officialRating.text = item.officialRating
             item.communityRating?.also {
-                binding.communityRating.text = String.format(resources.configuration.locales.get(0), "%.1f", it)
+                binding.communityRating.text =
+                    String.format(resources.configuration.locales.get(0), "%.1f", it)
                 binding.communityRating.isVisible = true
             }
 
@@ -217,21 +242,24 @@ class ShowFragment : Fragment() {
             binding.info.writersGroup.isVisible = writers.isNotEmpty()
 
             binding.nextUpLayout.isVisible = nextUp != null
-            if (nextUp?.indexNumberEnd == null) {
+            if (nextUp?.indexNumberEnd == null)
+            {
                 binding.nextUpName.text = getString(
                     CoreR.string.episode_name_extended,
                     nextUp?.parentIndexNumber,
                     nextUp?.indexNumber,
                     nextUp?.name,
-                )
-            } else {
+                                                   )
+            }
+            else
+            {
                 binding.nextUpName.text = getString(
                     CoreR.string.episode_name_extended_with_end,
                     nextUp?.parentIndexNumber,
                     nextUp?.indexNumber,
                     nextUp?.indexNumberEnd,
                     nextUp?.name,
-                )
+                                                   )
             }
 
             binding.seasonsLayout.isVisible = seasons.isNotEmpty()
@@ -247,12 +275,14 @@ class ShowFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: ShowViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: ShowViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.mediaInfoScrollview.isVisible = false
@@ -260,38 +290,45 @@ class ShowFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun bindCheckButtonState(played: Boolean) {
-        when (played) {
-            true -> binding.itemActions.checkButton.setIconTintResource(CoreR.color.red)
+    private fun bindCheckButtonState(played: Boolean)
+    {
+        when (played)
+        {
+            true  -> binding.itemActions.checkButton.setIconTintResource(CoreR.color.red)
             false -> binding.itemActions.checkButton.setIconTintColorAttribute(
                 R.attr.colorOnSecondaryContainer,
                 requireActivity().theme,
-            )
+                                                                              )
         }
     }
 
-    private fun bindFavoriteButtonState(favorite: Boolean) {
-        val favoriteDrawable = when (favorite) {
-            true -> CoreR.drawable.ic_heart_filled
+    private fun bindFavoriteButtonState(favorite: Boolean)
+    {
+        val favoriteDrawable = when (favorite)
+        {
+            true  -> CoreR.drawable.ic_heart_filled
             false -> CoreR.drawable.ic_heart
         }
         binding.itemActions.favoriteButton.setIconResource(favoriteDrawable)
-        when (favorite) {
-            true -> binding.itemActions.favoriteButton.setIconTintResource(CoreR.color.red)
+        when (favorite)
+        {
+            true  -> binding.itemActions.favoriteButton.setIconTintResource(CoreR.color.red)
             false -> binding.itemActions.favoriteButton.setIconTintColorAttribute(
                 R.attr.colorOnSecondaryContainer,
                 requireActivity().theme,
-            )
+                                                                                 )
         }
     }
 
-    private fun bindPlayerItems(items: List<PlayerItem>) {
+    private fun bindPlayerItems(items: List<PlayerItem>)
+    {
         navigateToPlayerActivity(items.toTypedArray())
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
-    private fun bindPlayerItemsError(error: Exception) {
+    private fun bindPlayerItemsError(error: Exception)
+    {
         Timber.e(error)
         binding.playerItemsError.visibility = View.VISIBLE
         playButtonNormal()
@@ -301,13 +338,15 @@ class ShowFragment : Fragment() {
         }
     }
 
-    private fun playButtonNormal() {
+    private fun playButtonNormal()
+    {
         binding.itemActions.playButton.isEnabled = true
         binding.itemActions.playButton.setIconResource(CoreR.drawable.ic_play)
         binding.itemActions.progressPlay.visibility = View.INVISIBLE
     }
 
-    private fun navigateToSeasonFragment(season: FindroidSeason) {
+    private fun navigateToSeasonFragment(season: FindroidSeason)
+    {
         findNavController().safeNavigate(
             ShowFragmentDirections.actionShowFragmentToSeasonFragment(
                 season.seriesId,
@@ -315,23 +354,25 @@ class ShowFragment : Fragment() {
                 season.seriesName,
                 season.name,
                 args.offline,
-            ),
-        )
+                                                                     ),
+                                        )
     }
 
     private fun navigateToPlayerActivity(
         playerItems: Array<PlayerItem>,
-    ) {
+                                        )
+    {
         findNavController().safeNavigate(
             ShowFragmentDirections.actionShowFragmentToPlayerActivity(
                 playerItems,
-            ),
-        )
+                                                                     ),
+                                        )
     }
 
-    private fun navigateToPersonDetail(personId: UUID) {
+    private fun navigateToPersonDetail(personId: UUID)
+    {
         findNavController().safeNavigate(
             ShowFragmentDirections.actionShowFragmentToPersonDetailFragment(personId),
-        )
+                                        )
     }
 }

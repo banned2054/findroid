@@ -15,19 +15,19 @@ import java.util.UUID
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seasonId"),
             onDelete = ForeignKey.CASCADE,
-        ),
+                  ),
         ForeignKey(
             entity = FindroidShowDto::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("seriesId"),
             onDelete = ForeignKey.CASCADE,
-        ),
+                  ),
     ],
     indices = [
         Index("seasonId"),
         Index("seriesId"),
     ],
-)
+       )
 data class FindroidEpisodeDto(
     @PrimaryKey
     val id: UUID,
@@ -44,9 +44,10 @@ data class FindroidEpisodeDto(
     val premiereDate: LocalDateTime?,
     val communityRating: Float?,
     val chapters: List<FindroidChapter>?,
-)
+                             )
 
-fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpisodeDto {
+fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpisodeDto
+{
     return FindroidEpisodeDto(
         id = id,
         serverId = serverId,
@@ -62,5 +63,5 @@ fun FindroidEpisode.toFindroidEpisodeDto(serverId: String? = null): FindroidEpis
         premiereDate = premiereDate,
         communityRating = communityRating,
         chapters = chapters,
-    )
+                             )
 }

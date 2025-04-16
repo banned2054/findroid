@@ -32,65 +32,69 @@ import dev.jdtech.jellyfin.setup.R as SetupR
 @Composable
 fun WelcomeScreen(
     onContinueClick: () -> Unit,
-) {
+                 )
+{
     val uriHandler = LocalUriHandler.current
 
     WelcomeScreenLayout(
         onAction = { action ->
-            when (action) {
-                is WelcomeAction.OnContinueClick -> onContinueClick()
-                is WelcomeAction.OnLearnMoreClick -> {
+            when (action)
+            {
+                is WelcomeAction.OnContinueClick  -> onContinueClick()
+                is WelcomeAction.OnLearnMoreClick ->
+                {
                     uriHandler.openUri("https://jellyfin.org/")
                 }
             }
         },
-    )
+                       )
 }
 
 @Composable
 private fun WelcomeScreenLayout(
     onAction: (WelcomeAction) -> Unit,
-) {
+                               )
+{
     RootLayout(
         padding = PaddingValues(horizontal = 24.dp),
-    ) {
+              ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .align(Alignment.Center)
                 .verticalScroll(rememberScrollState()),
-        ) {
+              ) {
             Image(
                 painter = painterResource(id = CoreR.drawable.ic_banner),
                 contentDescription = null,
                 modifier = Modifier.width(250.dp),
-            )
+                 )
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = stringResource(SetupR.string.welcome),
                 style = MaterialTheme.typography.headlineSmall,
-            )
+                )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(SetupR.string.welcome_text),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
-            )
+                )
             Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = Modifier.widthIn(max = 480.dp),
-            ) {
+                  ) {
                 OutlinedButton(
                     onClick = { onAction(WelcomeAction.OnLearnMoreClick) },
                     modifier = Modifier.fillMaxWidth(),
-                ) {
+                              ) {
                     Text(text = stringResource(SetupR.string.welcome_btn_learn_more))
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = { onAction(WelcomeAction.OnContinueClick) },
                     modifier = Modifier.fillMaxWidth(),
-                ) {
+                      ) {
                     Text(text = stringResource(SetupR.string.welcome_btn_continue))
                 }
             }
@@ -100,10 +104,11 @@ private fun WelcomeScreenLayout(
 
 @PreviewScreenSizes
 @Composable
-private fun WelcomeScreenLayoutPreview() {
+private fun WelcomeScreenLayoutPreview()
+{
     FindroidTheme {
         WelcomeScreenLayout(
             onAction = {},
-        )
+                           )
     }
 }

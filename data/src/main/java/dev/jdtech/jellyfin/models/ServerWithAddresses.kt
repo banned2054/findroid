@@ -9,11 +9,11 @@ data class ServerWithAddresses(
     @Relation(
         parentColumn = "id",
         entityColumn = "serverId",
-    )
+             )
     val addresses: List<ServerAddress>,
     @Relation(
         parentColumn = "currentUserId",
         entityColumn = "id",
-    )
+             )
     val user: User?,
-)
+                              )

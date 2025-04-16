@@ -2,7 +2,8 @@ package dev.jdtech.jellyfin.core.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-data object ColorLight {
+data object ColorLight
+{
     val primaryLight = Color(0xFF3A608F)
     val onPrimaryLight = Color(0xFFFFFFFF)
     val primaryContainerLight = Color(0xFFD3E3FF)
@@ -40,7 +41,8 @@ data object ColorLight {
     val surfaceContainerHighestLight = Color(0xFFE1E2E8)
 }
 
-data object ColorDark {
+data object ColorDark
+{
     val primaryDark = Color(0xFFA4C9FE)
     val onPrimaryDark = Color(0xFF00315C)
     val primaryContainerDark = Color(0xFF1F4876)

@@ -27,7 +27,8 @@ import timber.log.Timber
 import dev.jdtech.jellyfin.core.R as CoreR
 
 @AndroidEntryPoint
-class CollectionFragment : Fragment() {
+class CollectionFragment : Fragment()
+{
     private lateinit var binding: FragmentFavoriteBinding
     private val viewModel: CollectionViewModel by viewModels()
     private val args: CollectionFragmentArgs by navArgs()
@@ -38,7 +39,8 @@ class CollectionFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View {
+                             ): View
+    {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
         binding.noFavoritesText.text = getString(CoreR.string.collection_no_media)
@@ -51,10 +53,11 @@ class CollectionFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     Timber.d("$uiState")
-                    when (uiState) {
-                        is CollectionViewModel.UiState.Normal -> bindUiStateNormal(uiState)
+                    when (uiState)
+                    {
+                        is CollectionViewModel.UiState.Normal  -> bindUiStateNormal(uiState)
                         is CollectionViewModel.UiState.Loading -> bindUiStateLoading()
-                        is CollectionViewModel.UiState.Error -> bindUiStateError(uiState)
+                        is CollectionViewModel.UiState.Error   -> bindUiStateError(uiState)
                     }
                 }
             }
@@ -77,7 +80,8 @@ class CollectionFragment : Fragment() {
         return binding.root
     }
 
-    private fun bindUiStateNormal(uiState: CollectionViewModel.UiState.Normal) {
+    private fun bindUiStateNormal(uiState: CollectionViewModel.UiState.Normal)
+    {
         uiState.apply {
             binding.noFavoritesText.isVisible = collectionSections.isEmpty()
 
@@ -89,12 +93,14 @@ class CollectionFragment : Fragment() {
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateLoading() {
+    private fun bindUiStateLoading()
+    {
         binding.loadingIndicator.isVisible = true
         binding.errorLayout.errorPanel.isVisible = false
     }
 
-    private fun bindUiStateError(uiState: CollectionViewModel.UiState.Error) {
+    private fun bindUiStateError(uiState: CollectionViewModel.UiState.Error)
+    {
         errorDialog = ErrorDialogFragment.newInstance(uiState.error)
         binding.loadingIndicator.isVisible = false
         binding.favoritesRecyclerView.isVisible = false
@@ -102,23 +108,28 @@ class CollectionFragment : Fragment() {
         checkIfLoginRequired(uiState.error.message)
     }
 
-    private fun navigateToMediaItem(item: FindroidItem) {
-        when (item) {
-            is FindroidMovie -> {
+    private fun navigateToMediaItem(item: FindroidItem)
+    {
+        when (item)
+        {
+            is FindroidMovie ->
+            {
                 findNavController().safeNavigate(
                     CollectionFragmentDirections.actionCollectionFragmentToMovieFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                        ),
+                                                )
             }
-            is FindroidShow -> {
+
+            is FindroidShow  ->
+            {
                 findNavController().safeNavigate(
                     CollectionFragmentDirections.actionCollectionFragmentToShowFragment(
                         item.id,
                         item.name,
-                    ),
-                )
+                                                                                       ),
+                                                )
             }
         }
     }

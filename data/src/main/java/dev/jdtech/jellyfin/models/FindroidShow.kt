@@ -32,11 +32,12 @@ data class FindroidShow(
     val trailer: String?,
     override val images: FindroidImages,
     override val chapters: List<FindroidChapter>? = null,
-) : FindroidItem
+                       ) : FindroidItem
 
 fun BaseItemDto.toFindroidShow(
     jellyfinRepository: JellyfinRepository,
-): FindroidShow {
+                              ): FindroidShow
+{
     return FindroidShow(
         id = id,
         name = name.orEmpty(),
@@ -59,10 +60,11 @@ fun BaseItemDto.toFindroidShow(
         endDate = endDate,
         trailer = remoteTrailers?.getOrNull(0)?.url,
         images = toFindroidImages(jellyfinRepository),
-    )
+                       )
 }
 
-fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): FindroidShow {
+fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): FindroidShow
+{
     val userData = database.getUserDataOrCreateNew(id, userId)
     return FindroidShow(
         id = id,
@@ -86,5 +88,5 @@ fun FindroidShowDto.toFindroidShow(database: ServerDatabaseDao, userId: UUID): F
         endDate = endDate,
         trailer = null,
         images = FindroidImages(),
-    )
+                       )
 }

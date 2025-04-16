@@ -28,23 +28,24 @@ fun DiscoveredServerItem(
     name: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-) {
+                        )
+{
     Column(
         modifier = modifier.width(64.dp),
-    ) {
+          ) {
         Card(
             onClick = onClick,
             modifier = Modifier.size(64.dp),
-        ) {
+            ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
-            ) {
+               ) {
                 Icon(
                     painter = painterResource(CoreR.drawable.ic_server),
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.Center),
-                )
+                    )
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -55,16 +56,17 @@ fun DiscoveredServerItem(
             maxLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
-        )
+            )
     }
 }
 
 @Composable
 @Preview
-private fun DiscoveredServerItemPreview() {
+private fun DiscoveredServerItemPreview()
+{
     FindroidTheme {
         DiscoveredServerItem(
             name = "Jellyfin Server",
-        )
+                            )
     }
 }

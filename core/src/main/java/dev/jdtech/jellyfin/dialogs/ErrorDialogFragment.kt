@@ -10,8 +10,10 @@ import dev.jdtech.jellyfin.utils.serializable
 import java.io.Serializable
 import java.lang.IllegalStateException
 
-class ErrorDialogFragment : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+class ErrorDialogFragment : DialogFragment()
+{
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
+    {
         val error = requireArguments().serializable<Exception>("error")!!
         return activity?.let {
             val builder = MaterialAlertDialogBuilder(it, R.style.ErrorDialogStyle)
@@ -23,7 +25,10 @@ class ErrorDialogFragment : DialogFragment() {
                 .setNeutralButton(getString(R.string.share)) { _, _ ->
                     val sendIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "${error.message}\n ${error.stackTraceToString()}")
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "${error.message}\n ${error.stackTraceToString()}"
+                                )
                         type = "text/plain"
                     }
 
@@ -34,10 +39,12 @@ class ErrorDialogFragment : DialogFragment() {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    companion object {
+    companion object
+    {
         const val TAG = "error_dialog"
 
-        fun newInstance(error: Exception): ErrorDialogFragment {
+        fun newInstance(error: Exception): ErrorDialogFragment
+        {
             val errorDialogFragment = ErrorDialogFragment()
             val args = Bundle()
             args.putSerializable("error", error as Serializable)
